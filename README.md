@@ -19,6 +19,7 @@ The following things are included in this game:
 - A MWM Resolution Changer.
 - RedCarDriver's LE-style catalog menus.
 - Whooplash's script modifications, straight and inspired from a Street Legal Racing: Redline build. Hm.
+- SweetFX that works in a way.
 
 # The Invision
 This is the TRUE Street Legal Racing: Redline starter package. It isn't much stable in its current condition. But I will guarantee that you, as a modder, will be able to make mods with a game like this.
