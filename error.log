@@ -1,0 +1,76 @@
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 98
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 99
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 96
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 98
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 98
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 97
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 91
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 88
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 89
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 91
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 91
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 92
+---
+!syntax error in file parts\engines\Toyota_2JZ_by_BB93\scripts\src\Toyota_2JZ_Block.java at line 92
+---
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_crankshaft at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_connecting_rods at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_oil_pan at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_cylinder_head at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_pistons at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_crankshaft_bearing_bridge at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_cylinder_head_cover_custom at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_intake_camshaft at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_exhaust_camshaft at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_camshaft_bearing_bridge at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_alternator at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_alternator_drive_belt at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_camshaft_drive_belt at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_timing_custom at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_flywheel at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_clutch at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_drift_transmission at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_turbo_header at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_turbos at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_plenum at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_fuel_rail at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_intercooler at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_trumpets at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_to_intercooler at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_trumpets at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_trumpets at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_trumpets at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location ( at parts\engines\Mitsubishi_4g63\scripts)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_air_filter at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DET_mesh at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DET_intercooler at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DET_trumpet at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_timing at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DET_to_intercooler at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DETT_trumpets at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_timing_clear at parts\engines\Nissan_Engine_Pack\scripts\RB26)
+!Package conflict: multiple packages placed at the same location (java.game.parts.engines.Nissan_Engine_Pack.RB26DE_timing_half at parts\engines\Nissan_Engine_Pack\scripts\RB26)

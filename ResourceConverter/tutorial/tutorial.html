@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>RPK Creator tutorial</title>
+<style type="text/css">
+<!--
+body,td,th {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+.style2 {font-size: xx-large}
+.style3 {
+	font-size: medium;
+	font-weight: bold;
+}
+.style4 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</style></head>
+
+<body>
+<p class="style2">RPK Creator</p>
+<p>by Rolts</p>
+<p>With this little thing, you can make addon RPKs for SLRR easily. You just have to put in the files,<br />
+  tell the catalog locations and it will do the RPK for you.<br />
+It will even edit the CFGs for you, automatically putting in the correct render, mesh, click and texture for each part.<br />
+For that reason, everything must be done, all meshes, cfgs and javas, before you use this.</p>
+<p>The catalog page list is dynamic, and it's superids.ini.
+You can change that file, if you need other catalog pages. It defaults to 2.2.1 MWM, so if you fucked it up or something, just delete it and it will be remade the next time you open the Catalog window. If you need 2.3.0LE catalog pages, just change the the IDs yourself. You can add or remove lines from there and you can call them whatever you want. The names will only be used in the Catalog window of this program. </p>
+<p>If you can't get it to work, <span class="style4">check if you have .NET Framework 3.5, it needs it!</span><br />
+Get it here: <a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6&amp;displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6&amp;displaylang=en</a></p>
+<p class="style3">Using it: </p>
+<p><img src="1.jpg" width="466" height="189" /></p>
+<p>This is the first screen. Make sure you fill in everything and do it correctly. The paintable texture is the texture that you used in Max as the color of the part. If none of your parts are paintable, just leave it as it is.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="2.jpg" width="466" height="189" /> </p>
+<p>Here, I've filled in everything correctly. Notice no ending slashes. DON'T PUT THEM!<br />
+Now when you're all done here, press Next. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="3.jpg" width="743" height="527" /> </p>
+<p>This is the main screen. So get started, and select all your files you want included in the RPK. Press Select .java files.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="4.jpg" width="565" height="421" /> </p>
+<p>And sellect all your javas.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="5.jpg" width="743" height="527" /> </p>
+<p>Here I've filled everything in. Notice how all the stuff are in the same order. They have to be like that, otherwise you'll get a part with one thing's .class, some other thing's .cfg and a third thing's .scx mesh. So if after putting all your files in you see that they aren't all in the same order, use the up/down buttons on the sides to move things around. After you're done setting everything, you can go to set the catalog pages for the parts. WARNING: After pressing the catalog button you can no longer move things around or add anything, so only do it when you're sure everything is correct. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="6.jpg" width="822" height="600" />  </p>
+<p>First click on the part in the main window, then on the catalog page you want and then press set. You HAVE to set a page for every part.<br />
+</p>
+<p>&nbsp; </p>
+<p>&nbsp;</p>
+<p><img src="7.jpg" width="743" height="527" /></p>
+<p>Now that everything's set, you can press next, to make your RDB source.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="8.jpg" width="784" height="625" /> </p>
+<p>Copy the output to a new text file, save it as an RDB and resconvert it. The Part TypeIDs window is there, incase you have addon parts, that need<br />
+to be attached to each other, so you can easily change the CFGs using that.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="9.jpg" width="903" height="254" /> </p>
+<p>So here they are. I only made the meshes, javas and copied cfgs of Invictus rims. I didn't change any cfgs by hand, the program put all the necessary TypeIDs in them. </p>
+</body>
+</html>

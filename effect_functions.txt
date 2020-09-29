@@ -1,0 +1,412 @@
+//--------------------------------------------------------------------------------------
+// Helpers
+//--------------------------------------------------------------------------------------
+
+float3 HUEtoRGB(in float H)
+{
+   float R = abs(H * 6.0 - 3.0) - 1.0;
+   float G = 2.0 - abs(H * 6.0 - 2.0);
+   float B = 2.0 - abs(H * 6.0 - 4.0);
+   return saturate(float3(R,G,B));
+}
+
+float RGBCVtoHUE(in float3 RGB, in float C, in float V)
+{
+     float3 Delta = (V - RGB) / C;
+     Delta.rgb -= Delta.brg;
+     Delta.rgb += float3(2.0,4.0,6.0);
+     Delta.brg = step(V, RGB) * Delta.brg;
+     float H;
+     H = max(Delta.r, max(Delta.g, Delta.b));
+     return frac(H / 6.0);
+}
+
+float3 HSVtoRGB(in float3 HSV)
+{
+   float3 RGB = HUEtoRGB(HSV.x);
+   return ((RGB - 1) * HSV.y + 1) * HSV.z;
+}
+ 
+float3 RGBtoHSV(in float3 RGB)
+{
+   float3 HSV = 0.0;
+   HSV.z = max(RGB.r, max(RGB.g, RGB.b));
+   float M = min(RGB.r, min(RGB.g, RGB.b));
+   float C = HSV.z - M;
+   if (C != 0.0)
+   {
+     HSV.x = RGBCVtoHUE(RGB, C, HSV.z);
+     HSV.y = C / HSV.z;
+   }
+   return HSV;
+}
+
+
+
+float Luminance( float3 c )
+{
+	return dot( c, float3(0.22, 0.707, 0.071) );
+}
+
+
+float GetLuminance(float3 sample)
+	 {
+		 return dot(sample.xyz, 0.333);
+	 }
+
+float4 TonemapPass( float4 colorInput )
+{
+	float3 color = colorInput.rgb;
+
+	
+	//mine
+	float3 curr = ((color*(A*color+C*B)+D*E)/(color*(A*color+B)+D*F))-E/F;
+    	float3 whiteScale = ((W*(A*W+C*B)+D*E)/(W*(A*W+B)+D*F))-E/F;
+	color = curr*whiteScale;
+
+	color = color*ExpAdjust;
+
+	color = lerp(color, 0.5 * (1 + sin((color - 0.5)*3.1415926)), AddContrast);
+
+
+	//end of mine
+
+	color = saturate(color - Defog * FogColor); // Defog
+	
+	color *= pow(2.0f, Exposure); // Exposure
+	
+	color = pow(color, Gamma);    // Gamma -- roll into the first gamma correction in main.h ?
+
+	//#define BlueShift 0.00	//Blueshift
+	//float4 d = color * float4(1.05f, 0.97f, 1.27f, color.a);
+	//color = lerp(color, d, BlueShift);
+	
+	float3 lumCoeff = float3(0.2126, 0.7152, 0.0722);
+	float lum = dot(lumCoeff, color.rgb);
+	
+	float3 blend = lum.rrr; //dont use float3
+	
+	float L = saturate( 10.0 * (lum - 0.45) );
+  	
+	float3 result1 = 2.0f * color.rgb * blend;
+	float3 result2 = 1.0f - 2.0f * (1.0f - blend) * (1.0f - color.rgb);
+	
+	float3 newColor = lerp(result1, result2, L);
+	float A2 = Bleach * color.rgb; //why use a float for A2 here and then multiply by color.rgb (a float3)?
+	//float3 A2 = Bleach * color.rgb; //
+	float3 mixRGB = A2 * newColor;
+	
+	color.rgb += ((1.0f - A2) * mixRGB);
+	
+	//float3 middlegray = float(color.r + color.g + color.b) / 3;
+	float3 middlegray = dot(color,(1.0/3.0)); //1fps slower than the original on nvidia, 2 fps faster on AMD
+	
+	float3 diffcolor = color - middlegray; //float 3 here
+	colorInput.rgb = (color + diffcolor * Saturation)/(1+(diffcolor*Saturation)); //saturation
+
+
+
+
+	
+	return colorInput;
+}
+
+
+
+float4 FilmPass(float4 B)
+{
+	float4 G = B;
+	float4 H = 0.01;
+ 
+	B = pow(abs(B), Linearization);
+	B = lerp(H, B, Contrast);
+ 
+	float A = GetLuminance(B.rgb);
+	float4 D = A;
+ 
+	B = pow(abs(B), 1.0 / BaseGamma);
+ 
+	float a = RedCurve;
+	float b = GreenCurve;
+	float c = BlueCurve;
+	float d = BaseCurve;
+ 
+	float y = 1.0 / (1.0 + exp(a / 2.0));
+	float z = 1.0 / (1.0 + exp(b / 2.0));
+	float w = 1.0 / (1.0 + exp(c / 2.0));
+	float v = 1.0 / (1.0 + exp(d / 2.0));
+ 
+	float4 C = B;
+ 
+	D.r = (1.0 / (1.0 + exp(-a * (D.r - 0.5))) - y) / (1.0 - 2.0 * y);
+	D.g = (1.0 / (1.0 + exp(-b * (D.g - 0.5))) - z) / (1.0 - 2.0 * z);
+	D.b = (1.0 / (1.0 + exp(-c * (D.b - 0.5))) - w) / (1.0 - 2.0 * w);
+ 
+	D = pow(abs(D), 1.0 / EffectGamma);
+ 
+	float4 Di = 1.0 - D;
+ 
+	D = lerp(D, Di, FBleach);
+ 
+	D.r = pow(abs(D.r), 1.0 / EffectGammaR);
+	D.g = pow(abs(D.g), 1.0 / EffectGammaG);
+	D.b = pow(abs(D.b), 1.0 / EffectGammaB);
+ 
+	if (D.r < 0.5)
+		C.r = (2.0 * D.r - 1.0) * (B.r - B.r * B.r) + B.r;
+	else
+		C.r = (2.0 * D.r - 1.0) * (sqrt(B.r) - B.r) + B.r;
+ 
+	if (D.g < 0.5)
+		C.g = (2.0 * D.g - 1.0) * (B.g - B.g * B.g) + B.g;
+	else
+		C.g = (2.0 * D.g - 1.0) * (sqrt(B.g) - B.g) + B.g;
+ 	//if (AgainstAllAutority) 
+	if (D.b < 0.5)
+		C.b = (2.0 * D.b - 1.0) * (B.b - B.b * B.b) + B.b;
+	else
+		C.b = (2.0 * D.b - 1.0) * (sqrt(B.b) - B.b) + B.b;
+ 
+	float4 F = lerp(B, C, Strenght);
+ 
+	F = (1.0 / (1.0 + exp(-d * (F - 0.5))) - v) / (1.0 - 2.0 * v);
+ 
+	float r2R = 1.0 - FSaturation;
+	float g2R = 0.0 + FSaturation;
+	float b2R = 0.0 + FSaturation;
+ 
+	float r2G = 0.0 + FSaturation;
+	float g2G = (1.0 - Fade) - FSaturation;
+	float b2G = (0.0 + Fade) + FSaturation;
+ 
+	float r2B = 0.0 + FSaturation;
+	float g2B = (0.0 + Fade) + FSaturation;
+	float b2B = (1.0 - Fade) - FSaturation;
+ 
+	float4 iF = F;
+ 
+	F.r = (iF.r * r2R + iF.g * g2R + iF.b * b2R);
+	F.g = (iF.r * r2G + iF.g * g2G + iF.b * b2G);
+	F.b = (iF.r * r2B + iF.g * g2B + iF.b * b2B);
+ 
+	float N = GetLuminance(F.rgb);
+	float4 Cn = F;
+ 
+	if (N < 0.5)
+		Cn = (2.0 * N - 1.0) * (F - F * F) + F;
+	else
+		Cn = (2.0 * N - 1.0) * (sqrt(F) - F) + F;
+ 
+	Cn = pow(abs(Cn), 1.0 / Linearization);
+ 
+	float4 Fn = lerp(B, Cn, Strenght);
+	return Fn;
+}
+
+float4 CrossProcess_PS(float4 color)
+ {
+		float4 image1 = color;
+		float4 image2 = color;
+
+		float gray = dot(float3(0.5,0.5,0.5), image1);  
+
+		image1 = lerp (gray, image1,CrossSaturation);
+
+		image1 = lerp (0.35, image1,CrossContrast);
+
+		image1 +=CrossBrightness;
+
+		image2.r = image1.r * CrossMatrix[0].x + CrossMatrix[0].y;
+		image2.g = image1.g * CrossMatrix[1].x + CrossMatrix[1].y;
+		image2.b = image1.b * CrossMatrix[2].x + CrossMatrix[2].y;
+
+		color = lerp(image1, image2, CrossAmount);
+
+		return color;
+ }
+
+
+float4 MoodPass( float4 colorInput )
+{
+	
+float4 colInput = colorInput;
+float4 colMood = 1.0f;
+colMood.r = moodR;
+colMood.g = moodG;
+colMood.b = moodB;
+float fLum = ( colInput.r + colInput.g + colInput.b ) / 3;
+colMood = lerp(0, colMood, saturate(fLum * 2.0));
+colMood = lerp(colMood, 1, saturate(fLum - 0.5) * 2.0);
+float4 colOutput = lerp(colInput, colMood, saturate(fLum * fRatio));
+colorInput=max(0, colOutput);
+//colorInput.w = 1.0;	
+
+
+	
+	return colorInput;
+}
+
+
+
+float4 FinalAdjusterPass( float4 colorInput )
+{
+	
+	float3 	FinalSaturation 	= SaturationDay;
+	float 	FinalBrightness 	= BrightnessDay;
+	float 	FinalContrast 		= clamp(ContrastDay, -1.0, 1.0);				
+	//convert to linear colorspace
+	colorInput.r 		= 1.0/(1.0+colorInput.r);
+	colorInput.g 		= 1.0/(1.0+colorInput.g);
+	colorInput.b 		= 1.0/(1.0+colorInput.b);
+	//reverse gamma correction
+	colorInput.rgb 		= pow(colorInput.rgb, 2.2);
+	//saturate
+	colorInput.rgb 		= lerp(dot(colorInput.rgb,(float3(0.299, 0.587, 0.114))), colorInput.rgb, FinalSaturation);
+	//brighten
+	colorInput.rgb		/= FinalBrightness;
+	//adjust contrast
+	float factorZ 	= (1.0156862745098039215686274509804 * (FinalContrast + 1.0)) / (1.0156862745098039215686274509804 - FinalContrast);
+	float newRed   	= saturate(factorZ * (colorInput.r   - 0.5078431372549019607843137254902) + 0.5078431372549019607843137254902);
+	float newGreen 	= saturate(factorZ * (colorInput.g - 0.5078431372549019607843137254902) + 0.5078431372549019607843137254902);
+	float newBlue  	= saturate(factorZ * (colorInput.b  - 0.5078431372549019607843137254902) + 0.5078431372549019607843137254902);
+	colorInput.rgb 		= float3(newRed, newGreen, newBlue);
+	//restore gamma correction
+	colorInput.rgb 		= pow(colorInput.rgb, 0.45454545454545454545454545454545);
+	//restore dynamic range
+	colorInput.r 		= (1.0/colorInput.r)-1.0;
+	colorInput.g 		= (1.0/colorInput.g)-1.0;
+	colorInput.b 		= (1.0/colorInput.b)-1.0;
+
+
+	
+	return colorInput;
+}
+
+float3 sampleblurred(float2 uvsrc)
+{
+	
+	float4	res;
+	res =tex2D(InputSampler, uvsrc);
+	float ScaleXY= (1/1024);
+
+	res+=tex2D(InputSampler, uvsrc+float2(-0.94201624*ScaleXY, -0.39906216*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.94558609*ScaleXY, -0.76890725*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.09418410*ScaleXY, -0.92938870*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.34495938*ScaleXY,  0.29387760*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.91588581*ScaleXY,  0.45771432*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.81544232*ScaleXY, -0.87912464*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.38277543*ScaleXY,  0.27676845*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.97484398*ScaleXY,  0.75648379*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.44323325*ScaleXY, -0.97511554*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.53742981*ScaleXY, -0.47373420*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.26496911*ScaleXY, -0.41893023*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.79197514*ScaleXY,  0.19090188*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.24188840*ScaleXY,  0.99706507*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2(-0.81409955*ScaleXY,  0.91437590*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.19984126*ScaleXY,  0.78641367*ScaleXY));
+	res+=tex2D(InputSampler, uvsrc+float2( 0.14383161*ScaleXY, -0.14100790*ScaleXY));
+res /= 17;
+
+
+
+res.xyz = dot(res.xyz, float3(0.3, 0.59, 0.11));
+
+
+res.xyz=res.xyz-float3(LenzThresh,LenzThresh,LenzThresh);
+
+if(res.x < 0)	
+	{
+res.x=0;
+}
+if(res.y < 0)	
+	{
+res.y=0;
+}
+if(res.z < 0)	
+	{
+res.z=0;
+}
+res.w= 1.0;
+
+
+
+res *= 4;
+	return res;
+}
+
+float3 BrightPass(float2 tex)
+{
+    float3 couleur = tex2D(InputSampler, tex).rgb;
+    float3 bC = max(couleur - float3(fFlareLuminance, fFlareLuminance, fFlareLuminance), 0.0);
+    float bright = dot(bC, 1.0);
+    bright = smoothstep(0.0f, 0.5, bright);
+    return lerp(0.0, couleur, bright);
+}
+
+
+float3 AnamorphicSample(int axis, float2 tex, float blur)
+{
+	tex = 2.0 * tex - 1.0;
+	if (!axis) tex.x /= -blur;
+	else tex.y /= -blur;
+	tex = 0.5 * tex + 0.5;
+	return BrightPass(tex);
+}
+
+float4 SepiaPass( float4 colorInput )
+{
+	float3 sepia = colorInput.rgb;
+	
+	// colorInput.rgbalculating amounts of input, grey and sepia colors to blend and combine
+	float grey = dot(sepia, float3(0.2126, 0.7152, 0.0722));
+	
+	sepia *= ColorTone;
+	
+	float3 blend2 = (grey * GreyPower) + (colorInput.rgb / (GreyPower + 1));
+
+	colorInput.rgb = lerp(blend2, sepia, SepiaPower);
+	
+	// returning the final color
+	return colorInput;
+}
+
+float Random(float2 co)
+{
+    return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+float Grain(float3 tex)
+{
+	float r = Random(tex.xy);
+	float grain = sin(PIX * tex.z * r * fGrainFreq) * fGrainScale * r;
+	return grain;
+}
+
+
+float linearlizeDepth(float nonlinearDepth)
+{
+	float2 dofProj=float2(0.0509804, 3098.0392);
+	float2 dofDist=float2(0.0, 0.0509804);
+
+	//float2 dofProj=float2(0.78, 3098.0392);
+	//float2 dofDist=float2(1.83, 0.0);
+		
+	float4 depth=nonlinearDepth;
+	
+	
+	depth.y=-dofProj.x + dofProj.y;
+	depth.y=1.0/depth.y;
+	depth.z=depth.y * dofProj.y; 
+	depth.z=depth.z * -dofProj.x; 
+	depth.x=dofProj.y * -depth.y + depth.x;
+	depth.x=1.0/depth.x;
+
+	depth.y=depth.z * depth.x;
+
+	depth.x=depth.z * depth.x - dofDist.y; 
+	depth.x+=dofDist.x * -0.5;
+
+	depth.x=max(depth.x, 0.0);
+		
+	return depth.x;
+}

@@ -1,0 +1,75 @@
+There are SuperIDs for all Catalog categories.
+By Miran.
+
+How to use:
+Take sure is 'parts\' at 4 position at external_links list at yours rdb (rpk).
+If you want to put yours part for something category create SuperID 0x0004[category number]
+and paste it as superid to your part's 'type of  8' (there is seting cfg and class files).
+
+Engine:
+025C - Engine Blocks
+025E - Crankshafts & Bearning
+00B7 - Connecting Rods
+00B6 - Pistons
+0252 - Oil Pans
+025D - Cylinder Heads
+025F - Intake & Exhaust Crankshafts
+026F - Air Delivery: Intakes
+0255 - Air Delivery: Air Filters
+026E - Fuel Delivery: Carburetors
+026B - Fuel Delivery: Injectors
+023C - Clutchs & Flywheels:  Flywheels
+0249 - Clutchs & Flywheels: Clutches
+023B - Transmission & Drivetrain: transmissions
+024A - Transmission & Drivetrain: differentials
+0250 - Exhaust System: Pipes
+0282 - Exhaust System: Headers
+00C9 - Exhaust Tips
+00BE - Drive Belts
+0012 - Accesories & Others: Alternators
+D122 -  Accesories & Others: Electrics/Electronics
+0010 - Accesories & Others: Batteries
+0279 - Charging System: Superchargers
+0281 - Charging System: Turbochargers
+00BD - Charging System: Pipes etc.
+0277 - N2O System:Canisters
+00B4 - N2O System: Injectors
+F27D - Pro tunning
+F23C - Engine Kits
+
+Body:
+F242 - Body Panels
+F24F - Replacement Parts
+F24C - Lights & Windows
+F24B - Neon Lights
+F233 - Areodynamic Tunning
+F228 - Others
+F23B - Body Kits
+
+Running Gear:
+F235 - Rims 
+F229 - Suspensions
+001C - Shock Absorbers
+F22A - Springs
+F22D - Disc Brakes
+009B - Drum Brakes
+F23E - Tyres
+D120 - Others
+D121 - Pro Tunning
+F249 - RG kits
+
+Interior:
+F243 - Steeringwheels
+F23f - Gearknobs
+F241 - Pedals
+F244 - Gauges
+F246 - Seats
+F247 - Rollbars
+F248 - Decoration
+
+Audio:
+F240 - Head Units
+0246 - Amplifiers
+0247 - Boxes
+0248 - Subwoofers
+025B - Audio Kits
