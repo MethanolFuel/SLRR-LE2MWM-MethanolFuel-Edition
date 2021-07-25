@@ -30,6 +30,4 @@ This is the TRUE Street Legal Racing: Redline starter package. It isn't much sta
 - My game crashed! What do I do?! Well, if you have way too many RPKs, the game wil obviously crash. It's not a surprise. The game is unstable in the beginning. Don't expect this build to be like NFS 2015.
 
 # Why is it on GitHub
-The invision was to share the build on GOM-Team as it was an exclusive that I made. Now? It's going to not only get published on GitHub, but it'll also be uploaded to the new ModdingForDummies website! That's right; a new website dedicated to most games and are willing to be super friendly.
-
-Come and join us @ https://moddingfordummies.proboards.com/
+The invision was to share the build on GOM-Team as it was an exclusive that I made. Now? It's going to not only get published on GitHub, exclusively.
