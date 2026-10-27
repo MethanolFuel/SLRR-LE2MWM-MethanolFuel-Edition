@@ -1,0 +1,179 @@
+class	method	conf	note
+java.lang.Object	*	H	Root of every script class (no superclass). Monitor methods work on ANY object, scripts use them as condition variables (see Thread notes).
+java.lang.Object	wait	H	Blocks the calling script thread until another thread calls notify/notifyAll on the SAME object. Pattern: `while(1){ obj.wait(); ... }` (GameLogic.run waits on `timeRefresher`, GameType.run waits on `mp`, LoadingScreen.run waits on `Frontend.render`). No timeout form exists. There is no matching lock/unlock: scripts never use `synchronized` (the in-engine compiler rejects it); mutual exclusion comes from the cooperative scheduler.
+java.lang.Object	notify	H	Wakes one thread waiting on this object. 13 typed sites; used by GameLogic.spendTime/setTimerText (wake the clock-text thread), MessagePort.putMessage (wake the async-event thread), SoftTimer (wake a dialog after a delay).
+java.lang.Object	notifyAll	H	Wakes every waiter (Signal.set, LoadingScreen.hide wakes `termSig`).
+java.lang.Object	toString	L	Native default text. Scripts mostly override it (Vehicle.toString returns chassis.vehicleName, Vector3/Ypr.toString). GameType.enterAsyncMode_Script uses it as the thread name.
+java.lang.Object	hashCode	L	Registered, no site in the shipped scripts.
+java.lang.Object	enableGC	L	Registered, no site in the shipped scripts. Pairs with disableGC; hypothesis: toggles the VM garbage collector around critical sections.
+java.lang.Object	disableGC	L	See enableGC.
+java.lang.Thread	*	H	Cooperative script thread. The VM runs threads in time slices (Thread::run(float budget), docs/research/script-vm-opcodes.md), there is no preemption inside a slice and no exceptions. A Thread is a java.lang.Native: `ptr` holds the engine thread object.
+java.lang.Thread	init	H	protected native called by the constructor `Thread(Runnable target, String name)` with the NAME only; the target is stored in the script field `target`. Order inside the constructor: `super(); init(name); this.target = target`. `Thread()` and `Thread(String)` use `this` as target.
+java.lang.Thread	start	H	Schedules the thread to run `target.run()`. The target may be a STATIC `run()` method (GameLogic declares `static void run()` and passes `this`), so the engine's lookup of `run` must accept static methods.
+java.lang.Thread	stop	H	Kills the thread (no unwinding, no finally). Used for `timeRefresher.stop()` in GameLogic.finalize, GameType.leaveAsyncMode_Script_Real, Mechanic/CarLot worker threads.
+java.lang.Thread	sleep	H	Static. Argument is MILLISECONDS as float: `Thread.sleep(waitTime * 1000)` (SoftTimer, waitTime in seconds), `sleep(600)` (FlashText blink), `sleep(50)` (HotkeyWatcher poll), `sleep(300)` (LoadingScreen). Values seen: 1000 x8, 4000, 20, 3000, 7000.
+java.lang.Thread	setPriority	M	Only call: `setPriority(Thread.MAX_PRIORITY)` in CarLot (MIN -10, NORM 0, MAX 10 are script constants).
+java.lang.Thread	isAlive	L	Registered, no site in the shipped scripts.
+java.lang.Thread	suspend	L	Registered, no site in the shipped scripts.
+java.lang.Thread	resume	L	Registered, no site in the shipped scripts.
+java.lang.Thread	setDaemon	L	Registered, no site in the shipped scripts.
+java.lang.Thread	getCurrentThread	L	Declared native in Thread.class, NOT registered in StreetLegal_Redline.exe and not called.
+java.lang.Signal	*	H	Pure script class (no natives). `set(v)` stores `value` and notifyAll(); `waitFor(v)` loops `while(value != v) wait()`. Both methods have flags 0x81 (public + 0x80; 0x80 is probably 'synchronized/atomic' in TUFA, never used by the compiler for anything else in the corpus).
+java.lang.Runnable	*	H	Interface with `run()`. Implementors: Thread, GameType (run() drains its message port), GameLogic, FlashText, SoftTimer, HotkeyWatcher.
+java.lang.Native	*	H	Marker base class whose only field is `int ptr`. Engine-backed classes: ResourceRef family, Thread, String, File, FindFile, Animation, DynoData, SfxTable, WheelRef. The engine stores the C++ object pointer in `ptr` (docs/research/script-vm-natives.md).
+java.lang.String	*	H	Strings are VM objects (`java.lang.Native` subclass). `+` concatenates and formats int/float operands (operator 0x10, `unsupported type (+)` otherwise). The float-to-text format of `+` is NOT known (open question 4); `Float.toString(f, fmt)` is the explicit formatter.
+java.lang.String	token	H	`s.token(i)` = i-th token, 0-based, default delimiters " \t\n" (script overload token(I) calls token(i, " \t\n")). Core of every text protocol: command strings, EVENT_CURSOR parameters (`p2.token(0).intValue()`), save-free key/value text. Pattern `s.token(++k)` with k starting at -1 walks the tokens.
+java.lang.String	intValue	H	Parses decimal int from the string (used on tokens). Behaviour on malformed input unknown.
+java.lang.String	floatValue	H	Parses float from the string (used on tokens).
+java.lang.String	append	M	`inputString = inputString.append(charCode)` in StringInput: appends the character with that code and returns the (new) string.
+java.lang.String	length	H	Number of characters.
+java.lang.String	finalize	L	Frees the native string buffer. 9 by-name sites are other classes' finalize.
+java.lang.Integer	*	H	Boxed int with script fields; only the two static helpers are native.
+java.lang.Integer	toString	H	Static. Decimal text of the int. Also reached by-name from the `+` operator machinery in 119 sites (shared name with Float.toString).
+java.lang.Integer	toHexString	M	Static. Hex text of the int. One by-name site (City debug id).
+java.lang.Float	*	H	Boxed float; only toString is native.
+java.lang.Float	toString	H	Static `Float.toString(float v, String fmt)`: printf-style format. 453 typed sites, formats seen: "   %1.0f degrees" x193, "   %1.3f" x189, "   %1.5f", "Frequency: %1.1f s", "%.0f". Used for every numeric text box.
+java.lang.Math	*	H	Only four natives; there is no sin/cos/abs/min/max natively. Scripts implement trigonometry through their own code or through Vector3/Ypr natives (rotate, length, normalize).
+java.lang.Math	random	H	Static, float in [0,1). 181 typed sites. Seeded by `Math.randomize()` (GameLogic ctor) or `Math.setrandseed(int)` (no site).
+java.lang.Math	sqrt	H	Static float sqrt.
+java.lang.Math	randomize	H	Static; reseeds from the clock. One typed site (GameLogic ctor), 22 by-name.
+java.lang.Math	setrandseed	L	Registered, no site in the shipped scripts.
+java.lang.System	*	H	All members static. See entry-points.md for startup use (System.openLib, rpkScan).
+java.lang.System	exit	H	`System.exit()` terminates the game (GameLogic.changeActiveSection(null) calls it when the new state is null). `exit(String msg)` is the fatal-error form (Bot.createCar "VehicleDescriptor null").
+java.lang.System	log	M	Writes a line to the script log (string 'Script log' in the exe). Used once (Dialog 'private constructor access').
+java.lang.System	buildNumber	M	Returns the engine build; MainMenuDialog compares it with Config.acceptBuild (601). The PE identifies as SL2 build 606.
+java.lang.System	info	L	Registered/declared, no site. Hypothesis: engine information string by index.
+java.lang.System	gc	L	No site in the shipped scripts.
+java.lang.System	runFinalization	L	No site in the shipped scripts.
+java.lang.System	compileAll	H	`System.compileAll(".")` from MainMenuDialog/OptionsDialog: recompiles every .java under the given root whose .class is out of date (the compiler lives in the exe: JVM::compileSource).
+java.lang.System	analyze	L	Debug helper (three overloads: Object, float, int); no site.
+java.lang.System	arraycopy	H	`System.arraycopy(src, srcPos, dst, dstPos, len)`, Vector.ensureCapacity/insert use it with element arrays.
+java.lang.System	currentTime	H	Real (wall) time in SECONDS as float. `TimeTextWait = currentTime() + 2` = two seconds. 22 sites.
+java.lang.System	simTime	H	Simulation clock in SECONDS (race timers: `botTime = simTime() - startTime`). Advances by dt*timeWarp. 56 sites.
+java.lang.System	timeWarp	H	Sets the simulation speed factor and RETURNS THE PREVIOUS ONE; `timeWarp(-1)` is the query form (Track: `float v = System.timeWarp(-1.0f)`). 1.0 normal, 0.0 pause, 2x steps for the debug time-acceleration keys.
+java.lang.System	syncGameTime	H	`System.syncGameTime(time)`: GameLogic pushes the in-game clock (seconds since midnight, float) to the engine (sky/sun position). Called from setTime and spendTime.
+java.lang.System	setMeasure	M	`setMeasure(1000)` or `1600` depending on Config.metricSystem: distance unit in metres (km or ~mile) used by the native speed/distance displays.
+java.lang.System	getConfigOptions	M	Called after OptionsDialog changes video/sound options; hypothesis: refreshes script `Config.*` statics from engine-side state.
+java.lang.System	netHost	L	Declared native, not registered in the Redline exe, no site (network play removed).
+java.lang.System	netJoin	L	Same as netHost.
+java.lang.System	netLeave	L	Same as netHost.
+java.lang.System	openLib	H	`System.openLib("MW_Mod.rpk")`: mounts an .rpk archive (path relative to the game root, backslash or slash) and makes its resource tree available. `rpkScan(dir)` is a SCRIPT static that calls it for every `dir\*.rpk` found via FindFile and returns the count.
+java.lang.System	isLoadingReset	H	Used by LoadingScreen.track(): resets the engine's 'is loading' state before showing the loading dialog.
+java.lang.System	isLoading	H	LoadingScreen.run polls it: while the resource streamer is busy the loading dialog stays; when it returns 0 the dialog is hidden (or waits for the user).
+java.lang.System	setLdPriority	M	`setLdPriority(System.LD_HIGH)` while a loading dialog is shown, `LD_NORM` otherwise: resource loader thread priority.
+java.lang.Vector3	*	H	Script class with float x,y,z; math helpers (add, sub, dot, mul, diff) are script code. Natives: length, distance, normalize, rotate(Ypr), rotate(Vector3,F) and the ctor from Ypr.
+java.lang.Vector3	length	H	Euclidean length.
+java.lang.Vector3	distance	H	Distance to another vector.
+java.lang.Vector3	normalize	H	In place, void.
+java.lang.Vector3	rotate	H	rotate(Ypr) returns this vector rotated by yaw/pitch/roll; rotate(Vector3 axis,float angle) rotates around an axis (angle in radians, by-name sites pass `new Ypr(a+1.57f,0,0)` forms).
+java.lang.Ypr	*	H	Yaw/pitch/roll in RADIANS (Ypr(0, 1.57f...) forms; Chassis.deg2rad exists for degree inputs). Fields y, p, r.
+java.lang.Ypr	mul	M	In place scalar-or-Ypr multiply; by-name sites multiply by a float.
+java.lang.GameType	*	H	Base of every scripted game object (Part, Vehicle, Osd, GameLogic, Init, Config, Controller...). Extends GameRef, so a GameType IS a handle to its own world-tree node. The engine instantiates subclasses; see entry-points.md for how and for the callbacks the engine invokes (handleEvent, handleEventAsync, control, drive, animate, getInfo, finalize).
+java.lang.GameType	addNotification	H	Subscriber API: `subscriber.addNotification(GameRef source, int eventMask, int deliverAs, String filter [, String handlerName])`. When `source` raises an event in eventMask, the engine calls `handlerName(GameRef source, int event, String params)` on the subscriber (default name `handleEvent`). deliverAs is always GameRef.EVENT_SAME (0), filter is always null in the corpus. Handler names seen: "event_handlerRocFence", "event_handlerRaceFinish", "event_handlerClick", "event_handler"+suffix (Osd.addHook, used for EVENT_CURSOR).
+java.lang.GameType	remNotification	H	Undoes addNotification(source, mask).
+java.lang.GameType	addTimer	H	`addTimer(float seconds, int id)`: ONE-SHOT timer. After `seconds` the engine calls `handleEvent(GameRef self, EVENT_TIME, id)` (int overload). GameLogic re-arms itself every time: `addTimer(timeRefreshRate, 0)` inside the handler. Values seen: seconds 1,5,3,10,2; ids 2,4,0,7,3.
+java.lang.GameType	removeAllTimers	H	Cancels pending timers of this object (called in finalize of Chassis and tracks).
+java.lang.GameType	setEventMask	H	Sets (replaces) the events THIS object accepts: EVENT_CURSOR x13, EVENT_TIME x7, EVENT_COLLISION, EVENT_COMMAND. Without EVENT_TIME in the mask addTimer events are not delivered (GameLogic calls setEventMask(EVENT_HOTKEY|EVENT_TIME)).
+java.lang.GameType	clearEventMask	H	`clearEventMask(EVENT_ANY)` in finalize/destructors (19 of 22 sites).
+java.lang.GameType	registerCallback	H	`registerCallback(GII_CONTROL)` / `registerCallback(GII_ANIMATE)`: asks the engine to call the script's `control(float dt)` / `animate()` every tick. enableControlHook/enableAnimateHook wrap it. Other GII_* ids (GII_DRIVE=9) probably select `drive()`.
+java.lang.GameType	unregisterCallback	H	Counterpart of registerCallback.
+java.lang.GameType	unregisterCallbacks	H	Drops all registered per-tick callbacks (Chassis.finalize).
+java.lang.GameType	createNativeInstance	H	Creates the engine-side (C++) twin of a script object that was made by `new` (not by GameRef.create). Args: (GameRef parent, int resourceId, String params, String name). `Dummy(parent)` passes RID_DUMMY and "dummy"; GameLogic() passes (null, 0, null, null) and so gets no world-tree node data. Controller passes "controller".
+java.util.resource.ResourceRef	*	H	Handle to a node of the resource tree (the .rpk entries merged into one tree). `ResourceRef` is a Native: the constructor runs newNative() then set(id); finalize runs deleteNative(). Equality of refs is by id(); null/0 means 'no resource'.
+java.util.resource.ResourceRef	newNative	H	Called by the constructor (`<init>() { super(); newNative(); }`). Allocates the C++ handle in `ptr`. Always paired with deleteNative() in finalize().
+java.util.resource.ResourceRef	deleteNative	H	Called from finalize() (script GC). Releases the handle.
+java.util.resource.ResourceRef	set	H	set(int id) / set(ResourceRef) rebinds the handle; `set(null)` or `set(0)` clears (release()). id is the global resource id; literals like `parts:0xAB5Cr` compile to constants of this id space.
+java.util.resource.ResourceRef	load	M	Synchronous load of the resource (mesh/texture/sound) or, on a save-game string, (by-name sites `Vehicle.load(path,...)`, `GameLogic.load` are unrelated script statics).
+java.util.resource.ResourceRef	unload	H	Releases the resource data (CarMarket/Garage unload the map ref on exit).
+java.util.resource.ResourceRef	cache	H	Preloads into the resource cache (GameLogic ctor caches SfxRefs and, via preCacheGametypes, every child of humans:0x1 and cars:0x4).
+java.util.resource.ResourceRef	precache	M	Like cache but non-blocking/queued (Track precaches sounds).
+java.util.resource.ResourceRef	destroy	H	Destroys the INSTANCE the ref points to (a GameRef to a car/part/map object, a RenderRef, a Viewport). 144 typed sites. After destroy the script object is garbage.
+java.util.resource.ResourceRef	type	M	Returns the entry type code. The RESTYPE_*/INSTANCE_*/RESOURCE_* constants equal the rpk TypeOfEntry values of system.rpk (INSTANCE_GAME=1 ins_game, RESOURCE_MESH=5, RESTYPE_RENDER_OBJECT=14, ...).
+java.util.resource.ResourceRef	id	H	Returns the global resource/instance id (int). 228 typed sites; ids are passed in text commands (`"leave " + car.id()`, `"look " + id`), stored in save files via File.write(ResourceRef) and compared with RID_* constants.
+java.util.resource.ResourceRef	getParentID	H	Id of the tree parent (Part.addPart uses it to place a new part next to the car: `new GameRef(car).getParentID()` = the map/world node).
+java.util.resource.ResourceRef	getParent	M	Same as getParentID but returns a ResourceRef.
+java.util.resource.ResourceRef	getFirstChild	H	Iteration: `for (r = root.getFirstChild(); r; r = r.getNextChild())` (GameLogic.preCacheGametypes, Catalog). countChildNodes/getChildNodes are script wrappers built on it. Returns null at the end.
+java.util.resource.ResourceRef	getNextChild	H	See getFirstChild.
+java.util.resource.ResourceRef	getWTRoot	L	World-tree root; no site.
+java.util.resource.ResourceRef	makeTexture	M	`makeTexture(ResourceRef dest, String path)`: creates a texture resource in `dest` from an image file path (DriverSelect uses it with 'humans/drivers/.../*.dds' skins and system.rpk:0x8 = res_texture).
+java.util.resource.ResourceRef	makeSound	L	Same idea for sounds; no site.
+java.util.resource.ResourceRef	scaleMesh	M	`scaleMesh(sx, sy, sz)`: scales the mesh of a TEMP copy made with duplicate() (DecorativeBodyPart/Wing scale 1.01/0.99 for the 'inflated' catalogue ghost).
+java.util.resource.ResourceRef	duplicate	M	Copies another resource into this (temp) ref; used before scaleMesh/changeResource.
+java.util.resource.GameRef	*	H	Handle to a game-object INSTANCE (world tree node with script and/or native twin). Subclass of ResourceRef, base of GameType. Constants: EVENT_* bit flags, RID_* system ids, WORLDTREEROOT=16/WORLDTREELEAF=64 flags.
+java.util.resource.GameRef	create	H	`parent.create(parent, typeRef, params, name)` is the central factory: instantiates the gametype `typeRef` (a gametype entry: script class + native cfg, see entry-points.md) under `parent` (null = no parent), places it with `params` = "x,y,z,yaw,pitch,roll" (comma separated, e.g. "0,0,0,0,0,0", "100,0,0,0,0,0" for loaded parts), `name` is a debug label ("chassis", "Vehicle", "loaded carpart", "VehicleType", "load Track script", "set_loader"). Returns the SCRIPT object (GameType subclass) or null; also rebinds `this` ref to the new instance. The new script object's `<init>(int id)` is called (1,569 classes define it).
+java.util.resource.GameRef	create_native	M	Variant that creates the engine object without a script constructor call (Valocity dummycar `create_native(map, typeRef, "0,-10000,0,0,0,0", "dummycar")`, parked far below the map).
+java.util.resource.GameRef	getFlags	L	No site.
+java.util.resource.GameRef	setFlags	M	WORLDTREEROOT (16) / WORLDTREELEAF (64) flags: Osd/Dummy/Group mark nodes as roots or leaves of the render world tree.
+java.util.resource.GameRef	clearFlags	M	See setFlags.
+java.util.resource.GameRef	getOri	H	Returns Ypr. 23 typed sites (camera/car orientation).
+java.util.resource.GameRef	getPos	H	Returns Vector3 in world metres. 71 typed sites.
+java.util.resource.GameRef	getVel	H	Velocity Vector3 (Track.cameraTarget, City.player.car).
+java.util.resource.GameRef	setPos	L	Only a by-name site.
+java.util.resource.GameRef	setMatrix	H	`setMatrix(Vector3 pos, Ypr ori)`; `null` means 'keep that part' (Vehicle ctor `setMatrix(null,null)`, ROCTrack passes pos with ori from startOri). 30 typed sites, 164 by-name (RenderRef/PhysicsRef share the name).
+java.util.resource.GameRef	setParent	H	Reparents in the world tree. Typical: `car.setParent(map)` after creating a car (19 of 31 sites), `setParent(player)`.
+java.util.resource.GameRef	setState	L	setState(pos, ori, vel, angvel); no site.
+java.util.resource.GameRef	isEmpty	L	No site.
+java.util.resource.GameRef	isScripted	H	`isScripted()` / `isScripted("java.game.parts.Part")`: true when the node has a script instance, optionally an instance of the named class. Catalog filters parts with it; MWM_Items_Scan keeps only scripted chassis nodes.
+java.util.resource.GameRef	getScriptInstance	H	Returns the script object (Object, cast by caller) behind the ref. 17 typed sites (`(Part) ref.getScriptInstance()`), the engine-to-script back-pointer.
+java.util.resource.GameRef	getInfo	H	`getInfo(int key[, int/String arg])`: generic info query on a game object; who answers which key (native object vs the script's getInfo override) is open (question 6). Keys seen: GII_TYPE x13 (resource id of the gametype), GII_OWNER x9, GII_CATEGORY x7 (GIR_CAT_* result), GII_BONE x6, GII_GETOUT_OK x3, GII_PART_CATEGORY, GII_INSTALL_OK, GII_COMPATIBLE (take a String like car id), GII_AXIS, GII_REMOVE_OK, GII_RENDER, GII_CAR_TRAFFICPTR, GII_SIZE, 52 (= GII_CAR_DRIVETYPE).
+java.util.resource.GameRef	queueEvent	H	`queueEvent(ResourceRef source, int eventCode, String params)`: posts an event to this object's queue; `command(s)` is `queueEvent(null, EVENT_COMMAND, s)`. Delivered later as `handleEvent(GameRef, EVENT_COMMAND, s)` to a scripted target or consumed by the native object (see entry-points.md command table).
+java.util.resource.GameRef	setActiveCollision	L	No site.
+java.util.resource.RenderRef	*	H	Handle to a render INSTANCE (mesh object, light, camera, text, particle system). Ids are tree nodes below a parent RenderRef.
+java.util.resource.RenderRef	create	H	`create(ResourceRef res, RenderRef parent, String name)` (native). The script overload create(res, int flags, name) wraps it with a ResourceRef(flags)? (flags/parent id). Constructors `RenderRef(res, parent, name)`.
+java.util.resource.RenderRef	getBoneId	L	No site.
+java.util.resource.RenderRef	setMatrix	H	`setMatrix(Vector3 pos, Ypr ori)` or with a bone/resource index first (`setMatrix(int, ResourceRef, Vector3, Ypr)`, DealerTrack). null = unchanged. Pori overload is script.
+java.util.resource.RenderRef	getPos	L	Declared native, not registered; by-name sites are other classes.
+java.util.resource.RenderRef	changeResource	H	`changeResource(ResourceRef old, ResourceRef new)`: swaps a mesh/texture on a live instance (DriverSelect skin preview).
+java.util.resource.RenderRef	setColor	M	ARGB int (-65536 = 0xFFFF0000 red).
+java.util.resource.RenderRef	setLight	H	`setLight(int c0, int c1, int c2)` 24-bit RGB ints on a sun/light instance (19 typed sites). Pattern: c0 == c2 and c1 is the dark value (night: (4612741, 463390, 4612741) where 463390 is also the night fog colour; day: (14538925, 4939375, 14538925)), so the order is probably (diffuse, ambient, specular).
+java.util.resource.RenderRef	setFlare	M	`setFlare(ResourceRef tex, int colorARGB, float a, float b, int c, int d)`: lens flare of a sun light (Scene passes skydome.rpk:0x100, -454761217, 1.0, 10.0, 15, 8). Roles of a..d unknown.
+java.util.resource.RenderRef	setType	L	No site.
+java.util.resource.RenderRef	getTypeID	M	Used by MouseCursor to read the cursor sprite type.
+java.util.resource.RenderRef	lineCreate	L	Debug line renderer; no site.
+java.util.resource.RenderRef	lineAdd	L	Debug line renderer; no site.
+java.util.resource.RenderRef	plotRoute	M	`plotRoute(ResourceRef a, ResourceRef b, int color, float width, Vector3 offset)`: draws the navigator route line (RaceSetup: color -65536, width 10).
+java.util.resource.PhysicsRef	*	H	Handle to a physics body INSTANCE below a parent GameRef.
+java.util.resource.PhysicsRef	create	H	create(parent, int type, name) native.
+java.util.resource.PhysicsRef	createBox	H	`createBox(GameRef parent, float sx, float sy, float sz, String name)`: static box collider. 27 typed sites in DealerTrack/Garage (jack, walls, platform) with names like "Platform Rotate physic". Sizes are half-extents or full extents: unknown.
+java.util.resource.PhysicsRef	createSphere	L	No site.
+java.util.resource.PhysicsRef	setMatrix	H	Pos+ori (null allowed).
+java.util.resource.PhysicsRef	setStatic	L	Declared native, not registered, no site.
+java.util.resource.PhysicsRef	getPos	H	Vector3 position (Gadget.phy).
+java.util.resource.PhysicsRef	getVel	L	Declared native, not registered, no site.
+java.util.resource.PhysicsRef	getAngVel	L	Declared native, not registered, no site.
+java.util.resource.PhysicsRef	getOri	L	No site.
+java.util.resource.Animation	*	H	Native animation player bound to a RenderRef skeleton: `new Animation(RenderRef obj, ResourceRef anim)` (ctor is native).
+java.util.resource.Animation	play	H	Plays once (City nrStarterLady). 110 by-name sites (names shared with Thread/others).
+java.util.resource.Animation	loopPlay	M	Loops (ROCTrack rocMen).
+java.util.resource.Animation	setSpeed	M	Playback speed factor (2.0 for the starter lady).
+java.util.resource.Animation	pause	L	No site.
+java.util.resource.Animation	setFade	L	No site.
+java.util.resource.Animation	seek	L	No site.
+java.util.resource.Animation	getPos	L	No site.
+java.util.resource.ParticleSystem	*	H	RenderRef subclass; created with `new ParticleSystem(ResourceRef cfg, RenderRef parent[, String name])` (init native).
+java.util.resource.ParticleSystem	stop	L	Stops emission; by-name sites are mostly SfxRef/Thread stop.
+java.util.resource.ParticleSystem	setFreq	L	No site.
+java.util.resource.SfxRef	*	H	Sound resource handle. Script wrappers: play() (3 overloads) call nplay. Flags SFX_NONE=0, SFX_LOOP=1, SFX_NOAUTOSTOP=0x80000000.
+java.util.resource.SfxRef	nplay	H	`nplay(Vector3 pos, float vol, float pitch, float x, int flags, int ?)`: all script play() overloads end here. Returns a play id (int) that must be passed to stop(id) for looping sounds. (arg order in the descriptor is (Vector3;FFFII)I.) Protected native (flags 0x44).
+java.util.resource.SfxRef	stop	H	`stop(int playId)`: stops a looping/long sound (Garage Jack_Move_SFX, Painter spray, ROCTrack applause).
+java.util.resource.GroundRef	*	H	GameRef subclass for the 'ground' native kind (system.rpk:0x35 `map`): the world root of a track. Provides water, fog, AI traffic, pedestrians, road routing. Track scripts keep it in `map`.
+java.util.resource.GroundRef	setWater	M	setWater(Vector3 point, Vector3 normal, float a, float b) (Track: point (0,-1e6,-1500) = effectively no water; Valocity: (0,-8,-1500), normal (0,1,0), 300, 50). Compact form (FFF) declared natively too.
+java.util.resource.GroundRef	addWaterLimit	M	(Vector3 point, Vector3 normal): clip plane limiting the water area (Drift/Damage tracks).
+java.util.resource.GroundRef	setFog	H	`setFog(int rgb, float near, float far)`: 24-bit RGB (463390 = 0x07121E), near 0..70, far 150..1000. 17 typed sites.
+java.util.resource.GroundRef	addTrafficCar	M	Registers a car as AI traffic; returns traffic id (stored in `traffic_id`).
+java.util.resource.GroundRef	remTrafficCar	M	Removes by traffic id.
+java.util.resource.GroundRef	notifyTrafficCar	L	(trafficId, flag).
+java.util.resource.GroundRef	addTrafficN	M	Spawn N traffic cars of a type: (GameRef type, int count*density, float, float, float). GroundRef.addTraffic script wrappers multiply by Config.trafficDensity.
+java.util.resource.GroundRef	addTrafficP	M	Spawn at a position: City uses (GRT_POLICECAR, pos, 1, 2, 5, 2) for the police.
+java.util.resource.GroundRef	delTraffic	H	Removes all traffic (Track exit).
+java.util.resource.GroundRef	setTrafficCarBehaviour	L	(trafficId, mode).
+java.util.resource.GroundRef	haltTrafficCross	M	City stops cross traffic at the race start: (pos, radius 15).
+java.util.resource.GroundRef	haltTrafficPath	M	(from, to) stops traffic on a path segment.
+java.util.resource.GroundRef	getNearestCross	H	`getNearestCross(Vector3 p, float maxDist)` returns the nearest road junction (0 = unlimited?).
+java.util.resource.GroundRef	getStartDirection	H	(start, finish) returns the road direction vector at the start for placing grid cars.
+java.util.resource.GroundRef	getRouteLength	H	(from, to) float length of the route along roads (RaceSetup). A (Vector3-less) overload is registered natively but not declared.
+java.util.resource.GroundRef	alignToRoad	H	`alignToRoad(Vector3 p)` returns Vector3[] {snapped position, direction?}.
+java.util.resource.GroundRef	setPedestrianDensityN	M	Density (script wrapper multiplies by Config.pedestrianDensity).
+java.util.resource.GroundRef	addPedestrianType	M	Registers a ped gametype (humans.rpk:0x57..0x5b are the `ped` natives).
+java.util.resource.GroundRef	remPedestrianType	L	Declared as remPedestrianType but registered as removePedestrianType (name skew).
+java.util.resource.GroundRef	pedestrianDistance	L	No site.

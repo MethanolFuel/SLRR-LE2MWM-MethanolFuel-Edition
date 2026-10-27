@@ -1,0 +1,94 @@
+class	method	conf	note
+java.io.File	*	H	Binary file handle (Native). Idiom everywhere: `File f = new File(path); if (f.open(File.MODE_WRITE)) { f.write(...); f.close(); }`, paths are relative to the game root with forward slashes (`save/temp/`, `save/cars/`, `save/controls/`). Binary format with an 8-byte `SDAT` header, raw little-endian ints/floats and u32-length-prefixed NUL-terminated strings (measured, see java.io.md). Save-game format = sequence of write(int/float/String/ResourceRef) calls, read back with readInt/readFloat/readString/readResID in the same order; every file starts with a magic int and a version int (GameLogic SAVEFILEID_MAIN 0x87654321, version 21 (loads >= 20)). finalize() closes the file.
+java.io.File	open	H	`open(File.MODE_READ=0 or MODE_WRITE=1)` returns non-zero on success; used as an `if` condition.
+java.io.File	close	H	Closes; safe to call twice (finalize also closes).
+java.io.File	write	H	Overloads int, float, String, ResourceRef (returns int status, never checked). write(ResourceRef) stores a resource reference (Part.save writes `new GameRef(getInfo(GII_TYPE))`); read back with readResID().
+java.io.File	readInt	H	Reads one 32-bit int.
+java.io.File	readFloat	H	Reads one 32-bit float.
+java.io.File	readResID	H	Reads a resource reference written by write(ResourceRef) and returns the resolved resource id (int); Part.createFromFile treats 0 as 'no part'.
+java.io.File	readString	H	Reads a string written by write(String). Behaviour at end of file is not observed in the scripts.
+java.io.File	delete	H	Static, deletes one path. `delete(dir, pattern)` (script overload) iterates FindFile, so wildcard patterns like "save/temp/CopyCar.*" work through FindFile.
+java.io.File	copy	H	Static `copy(src,dst)`; the 3-arg script overload copies a directory's files via FindFile(FILES_ONLY).
+java.io.File	move	H	Static `move(src,dst)`.
+java.io.File	exists	H	Static, int 0/1.
+java.io.File	TimeLow	L	Slrr_GI.exe extra, low dword of the file time (Windows FILETIME) - no site in the shipped scripts.
+java.io.File	TimeHigh	L	Slrr_GI.exe extra, high dword of the file time.
+java.io.FindFile	*	H	Directory iterator (Native, fields `handle`, `flags`). Idiom: `FindFile ff = new FindFile(); for (n = ff.first(pattern[,flags]); n; n = ff.next()) {...} ff.close();`
+java.io.FindFile	first	H	`first(String pattern, int flags)`: pattern with wildcards, e.g. "humans/drivers/Default_Driver/*.*", "parts\\engines\\*.rpk"; flags FILES_DIRS=0 (default), FILES_ONLY=1, DIRS_ONLY=2. Returns the BARE file name (callers prepend the directory) or null.
+java.io.FindFile	next	H	Next match or null.
+java.io.FindFile	close	H	Releases the find handle.
+java.io.Input	*	H	Static facade over the input layer. Axis ids AXIS_* (0..75), keyboard scan codes RCDIK_* (DirectInput DIK values: ESCAPE=1, A=30, ENTER=28, UP=200...), MAXPLAYERS = 1 in this build (so controllers[] has one element), VIRTUAL=1/KEY=2 hotkey kinds. Script helpers: initControllers, getInput(axis[,player]), isPlayerActive, enablePointingDevice, createGlobalHotkey.
+java.io.Input	getAxis	H	`getAxis(int axis, int player)` returns float value of a virtual axis (OptionsDialog calibration screen).
+java.io.Input	getDeviceName	H	`getDeviceName(i)` returns the i-th DirectInput device name, null after the last. Input.initControllers loops until null and skips the name "SysMouse" (the mouse is handled by the cursor, not as a game controller).
+java.io.Input	mapAxis	L	Declared native, no script site (superseded by Controller.user_Add).
+java.io.Input	setAxisSmooth	L	Declared native, no script site (superseded by Controller.user_SetAxisSmooth).
+java.io.Input	activeAxis	M	`activeAxis(deviceId)` returns the device axis/key currently active (OptionsDialog 'press a key to bind').
+java.io.Input	axisName	M	`axisName(device, axis)` human readable axis name for the control screens.
+java.io.Input	lastKey	M	Last key pressed (RCDIK_*), used by Osd text entry and StringInput.
+java.io.Input	createHotkey	H	`createHotkey(int key, int flags, Hotkey hk, GameRef handler, Osd osd, int eventFilter)`; called from Hotkey.activate() (`Input.createHotkey(key, flags, this, osd, osd, eventFilter)`). On a matching key the engine calls `handler.handleEvent(Hotkey hk)` (GameLogic.handleEvent(Hotkey) switches on hk.command). Global hotkeys (no osd) are created by Hotkey's 4-arg ctor via Input.createGlobalHotkey. Per-OSD hotkeys (Hotkey.activate) pass the OSD itself as handler: Osd.handleEvent(Hotkey) then handles menu navigation for commands carrying the PRIVATEEVENT bit and otherwise calls hk.handler.osdCommand(hk.command) (or posts Event(command,state) to its alienMp port); Hotkey.state is non-zero on key down.
+java.io.Input	deleteHotkey	H	Removes the registration (Hotkey.inactivate).
+java.io.Input	checkHotkeys	H	`checkHotkeys(Controller c, Osd topOsd)`: polled by HotkeyWatcher every 50 ms with the top-most Osd of Frontend.inputQueue; fires matching hotkeys whose osd is on top.
+java.io.Input	flushHotkeys	H	Drops queued hotkey presses (Input.flushKeys).
+java.io.Controller	*	H	One per player. `new Controller(GameRef parent, "0 0 <playerIndex>")` calls createNativeInstance(parent, system.rpk:0x32, params, "controller"); Input.initControllers then sends `queueEvent(null, EVENT_COMMAND, "device <i>")` per DirectInput device, `"setcontrol"` for the fallback. getInfo(GII_AXIS, axis) returns the axis value. Key bindings are plain text files (save/controls/active_control_set) read by ControlSet.load and pushed to the native layer with user_Add.
+java.io.Controller	user_Add	H	`user_Add(int virtualAxis, int deviceId, int deviceAxisOrKey, float fromMin, float fromMax, float toMin, float toMax)` maps a device axis/key range onto a virtual axis (AXIS_*). Controller.add computes fromMin as `min + (max-min)*deadzone`. Returns int status (never checked).
+java.io.Controller	user_Del	H	`user_Del(virtualAxis, deviceId, deviceAxisOrKey)` removes one mapping (Garage swaps cursor and look axes this way).
+java.io.Controller	user_SetAxisSmooth	H	`(virtualAxis, centerRange, factorCenter, factorOpposite, factorSame, power)` from ControlSet.vasp (VirtualAxisSmoothProperties).
+java.io.Controller	user_SetAxisSpeed	L	No site.
+java.io.Controller	user_GetAxisVal	L	No site.
+java.io.Controller	user_SetAxisForce	L	Force-feedback force for an axis; no site.
+java.io.Controller	user_Reset	H	Clears all mappings (called by setcontrol/reset/activateState before re-adding).
+java.io.MouseCursor	*	H	The on-screen pointer (GameType created from frontend.rpk:0x2A `native cursor`), fields cursor (GameRef), vp, camera, controller. It subscribes to its own EVENT_CURSOR (addNotification) and routes EC_* codes to the Osd under it.
+java.io.MouseCursor	getPos	H	Cursor position as Vector3 (screen space, Osd coordinates).
+java.io.MouseCursor	getPickedPos	H	World position under the cursor (picking ray hit) - used by Painter (spray target) and RaceSetup (place markers).
+java.io.ControlSet	*	H	Script class that parses a control file: groups of bindings (`group[i]`, `deviceID`, `axisID`, `vaxisID`, `from_min/max`, `to_min/max`, `dead_zone`). Groups are DEFAULTSET/MENUSET/DRIVERSET states switched by Controller.activateState.
+java.render.GfxEngine	*	H	Static facade for display and video. `Frontend.render` holds the one GfxEngine instance whose monitor the engine notifies each frame (LoadingScreen.run waits on it).
+java.render.GfxEngine	forceRendering	H	Renders one frame immediately from inside a script (LoadingDialog calls it so the loading picture appears before a blocking load).
+java.render.GfxEngine	setGlobalEnvmap	H	`setGlobalEnvmap(ResourceRef cube)` sets the reflection environment map; every track script calls it in enter() with skydome.rpk or MW_Mod.rpk resources (22 name-only sites).
+java.render.GfxEngine	numDisplayModes	L	Declared/registered, no script site.
+java.render.GfxEngine	currDisplayMode	L	No site.
+java.render.GfxEngine	displayModeName	L	No site.
+java.render.GfxEngine	changeVideoMode	H	`changeVideoMode(w, h, bitsPerPixel)` (320,240,16 and 640,480,32 seen in OptionsDialog).
+java.render.GfxEngine	printScreen	H	Saves a screenshot to the file name; `printScreenIndexed("screenshots\\sl_shot")` (script) appends an index (hotkey AXIS_PRINTSCREEN).
+java.render.GfxEngine	flush	M	Called 14 times by track scripts right after building a scene (DealerTrack, Wichur_Drift_Track): hypothesis: submits/streams pending render instances before the first frame.
+java.render.GfxEngine	openVideo	H	`openVideo(path, int, int)` opens an AVI (`Data\\Fmv\\Prime.avi`, args 1,1 in 4 of 5 sites); returns non-zero on success. Shown by MainMenuDialog/TrackSelect.
+java.render.GfxEngine	closeVideo	H	Stops and closes the video.
+java.render.GfxEngine	isPlayingVideo	H	Polled to leave the video screen when playback ends.
+java.render.Viewport	*	H	Screen rectangle (normalised 0..1 coordinates) that cameras render into; a ResourceRef (RESOURCE_VIEWPORT=18). Created by `new Viewport(int layer, float x, float y, float w, float h)`; the 7-arg script ctor letterboxes to an aspect ratio. Osd owns one per screen.
+java.render.Viewport	create	H	Native create(layer, x, y, w, h); layer is e.g. 127 for the sound debug view and the mouse cursor; Osd takes it as the last argument of its own constructor.
+java.render.Viewport	destroy	H	Destroys the viewport (finalize calls it).
+java.render.Viewport	activate	H	`activate(int renderFlags)`: starts rendering into it; RENDERFLAG_CLEARDEPTH=1, RENDERFLAG_CLEARTARGET=2 (CarMarket passes both). The no-arg script form passes CLEARDEPTH.
+java.render.Viewport	deactivate	H	Stops rendering into it.
+java.render.Viewport	getAspect	H	Width/height ratio.
+java.render.Viewport	getWidth	H	Normalised width.
+java.render.Viewport	getHeight	H	Normalised height (Text.getHeight divides pixel font height by Config.video_y * height).
+java.render.Viewport	getTop	H	Normalised top.
+java.render.Viewport	getLeft	H	Normalised left.
+java.render.Viewport	resize	H	`resize(l, t, w, h)` (Navigator minimap resizes between small/large).
+java.render.Viewport	unproject	L	Screen-to-world ray helper `(Vector3 screen, int)`; no site.
+java.render.Camera	*	H	RenderRef subclass. Script ctor Camera(parentNode, Viewport, int flags[, aov, near, far, lodBias, lodAmp, culling, planeTest]) passes `aov*0.5` to the native create (DEF_AOV 90). Camera objects are driven by command strings (see entry-points.md): "look", "move", "dist", "angle", "zoom", "smooth", "force", "torque", "roll", "render", "viewport", "hide".
+java.render.Camera	create	H	Native create(parent, viewport, flags, halfFov, near, far, lodBias, lodAmp, culling, planeTest).
+java.render.Camera	destroy	H	Destroys the camera instance.
+java.render.Camera	activate	L	Declared native (Viewport, int flags), NOT registered in the Redline exe; the by-name sites are Viewport.activate.
+java.render.Camera	deactivate	L	Declared native, not registered.
+java.render.Camera	setFog	L	Registered in the exe as Camera.setFog(int,float,float) but not declared in the shipped Camera.class (fog is set via GroundRef.setFog).
+java.render.Text	*	H	On-screen text instance. Script ctor Text(Group parent, ResourceRef font, String text, float x, float y[, int yAdjust, Viewport vp]) calls native create(parentNode, font, x, y) then changeText(text) (script: stores `text`, calls update()). finalize destroys `renderinst`. Fonts are bitmap font resources in frontend.rpk (RID_SLII24 = frontend.rpk:0x25, RID_CONSOLE5 = frontend.rpk:0xB2, ...). Alignment ALIGN_RIGHT=0, CENTER=1, LEFT=2.
+java.render.Text	create	H	Native create(ResourceRef parentNode, ResourceRef font, float x, float y).
+java.render.Text	changeColor	H	ARGB int (signed): -4144960 = 0xFFC0C0C0, -10752 = 0xFFFFD600, -65536 = red; COLOR_UNSELECTED constants in menus. 61 typed sites.
+java.render.Text	changeAlign	H	One of the ALIGN_* ints.
+java.render.Text	setPos	L	No typed site.
+java.render.Text	getPos	L	No typed site.
+java.render.Text	update	H	Re-uploads the `text` field after a change (changeText calls it).
+java.render.Text	getWidthPixels	H	Static `getWidthPixels(String s, ResourceRef font)` returns the pixel width; script getWidth normalises by Config.video_x * viewport width.
+java.render.Text	getDefaultColor	L	Registered, not declared in shipped Text.class.
+java.render.Text	setDefaultColor	L	Registered, not declared in shipped Text.class.
+java.sound.Sound	*	H	Static facade. Script statics: init() (creates a debug Viewport/Camera when enableDebugDump succeeds), increaseVolume/decreaseVolume (clamp 0..1 and call setVolume). Channels CHANNEL_EFFECTS=0, MUSIC=1, ENGINE=2; music sets NONE=-1, GARAGE=0, DRIVING=1, RACE=2, MENU=3. Config saves the three volumes in save/game/options.
+java.sound.Sound	changeMusicSet	H	`changeMusicSet(MUSIC_SET_*)`: selects the playlist category (menu, garage, driving, race).
+java.sound.Sound	nextTrack	H	Hotkey AXIS_MUSIC_SELECT_NEXT (GameLogic.handleEvent(Hotkey)).
+java.sound.Sound	prevTrack	H	Hotkey AXIS_MUSIC_SELECT_PREV.
+java.sound.Sound	setVolume	H	`setVolume(int channel, float 0..1)`.
+java.sound.Sound	getVolume	H	`getVolume(int channel)`.
+java.sound.Sound	enableDebugDump	L	`enableDebugDump(ResourceRef dummy)` returns non-zero if the engine can draw the sound debug display; Sound.init then builds a Viewport(127,..) and Camera. Debug only.
+java.sound.Sound	getMode	L	Registered, not declared in the shipped class; Config.Sound_3D_HW / Sound_Mix_HW suggest hardware mode queries.
+java.sound.Sound	setMode	L	Registered, not declared.
+java.sound.Sound	has3DHardware	L	Registered, not declared.
+java.sound.Sound	hasMixHardware	L	Registered, not declared.

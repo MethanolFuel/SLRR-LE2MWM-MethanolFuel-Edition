@@ -1,0 +1,50 @@
+class	method	conf	note
+java.lang.Thread	getPriority	L	Registered, no site in the shipped scripts (setPriority is used once).
+java.lang.Vector3	<init>	L	`Vector3(Ypr)` native constructor (direction vector from yaw/pitch/roll); no typed site. The other constructors are script code.
+java.lang.Ypr	<init>	L	`Ypr(Vector3)` native constructor (yaw/pitch/roll from a direction vector); no typed site.
+java.lang.RawEdit	*	H	Slrr_GI.exe only (the Redline exe registers none of its natives). Static class; the script wrappers GetIntFromRawAddress/GetFloatFromRawAddress/SetIntOnRawAddress/SetFloatOnRawAddress take address holder objects (IntValueAddress/FloatValueAddress).
+java.lang.RawEdit	getI	H	`getI(int address)` reads the 32-bit int at an ABSOLUTE address of the running Slrr_GI.exe process (source comment).
+java.lang.RawEdit	getF	H	`getF(int address)` reads a 32-bit float at an absolute address.
+java.lang.RawEdit	setI	H	`setI(int address, int value)` writes; returns the address overwritten (source comment).
+java.lang.RawEdit	setF	H	`setF(int address, float value)` writes; returns the address overwritten.
+java.lang.RawEdit	CentCur	H	Source comment: centres the cursor on the client window; the parameter is unused, the return value is the new x position.
+java.util.resource.GameRef	getDetail	L	Registered in the exe, not declared in the shipped GameRef.class.
+java.util.resource.RenderRef	getDetail	L	Registered in the exe, not declared in the shipped RenderRef.class.
+java.util.resource.GroundRef	findRoute	L	Registered, not declared: `float findRoute(Vector3 from, Vector3 to)` route search handle/length.
+java.util.resource.GroundRef	getRouteDist	L	Registered, not declared.
+java.util.resource.GroundRef	getRoutePos	L	Registered, not declared: `Vector3 getRoutePos(float distance)` position along a found route.
+java.util.resource.GroundRef	removePedestrianType	L	Registered under this name; the shipped class declares `remPedestrianType` (name skew, neither is called).
+java.util.resource.Animation	<init>	H	Native constructor `Animation(RenderRef obj, ResourceRef anim)`; the script field `obj` keeps the RenderRef alive.
+java.util.resource.Animation	finalize	H	Native finalizer: releases the animation player (9 name-only 'finalize' sites are other classes).
+java.util.resource.ParticleSystem	init	H	Called by the constructors `ParticleSystem(ResourceRef cfg, RenderRef parent[, String name])`; creates the emitter from a particle cfg (docs/formats: `[STATE]/[ACTION]` sections).
+java.util.resource.ParticleSystem	setDirectSource	L	No script site. Emitter action control: (action name, Vector3, 2 floats, Vector3, 3 floats, String).
+java.util.resource.ParticleSystem	setSource	L	Same signature as setDirectSource; no site.
+java.util.resource.ParticleSystem	setCounter	L	(action name, Vector3, float); no site.
+java.util.resource.ParticleSystem	getCounter	L	(action name) -> int; no site.
+java.util.resource.ParticleSystem	delAction	L	(action name); no site.
+java.util.resource.ParticleSystem	modePermanent	L	(int flag); no site.
+java.game.Racer	*	H	Base of Player and Bot: name, car (Vehicle), prestige, club; has a save/load pair.
+java.game.CarSelect	*	M	Scene state for picking a car (like CarMarket without trading).
+java.game.DriverSelect	*	M	Scene state for choosing the driver skin (uses ResourceRef.makeTexture/changeResource on the humans skin textures).
+java.game.TrackSelect	*	M	Map/track chooser screen with video preview (GfxEngine.openVideo).
+java.game.OptionsDialog	*	H	Options screen (video, sound, controls, game) built from Osd gadgets; calls System.getConfigOptions, System.setMeasure, GfxEngine.changeVideoMode, System.compileAll.
+java.game.MainMenuDialog	*	H	Main menu dialog with the intro videos and the About/Options entries (extends OptionsDialog).
+java.game.IngameMenu	*	H	In-race pause menu (extends OptionsDialog).
+java.game.CarInfo	*	H	Car information screens (engine, financial, records) reading WheelRef/DynoData/Chassis data.
+java.game.ClubInfo	*	M	Club standings screen.
+java.game.RocInfo	*	M	ROC tournament table screen.
+java.game.NightracesData	*	M	Static start/finish positions and orientations of the night races (18 each).
+java.game.DealerData	*	M	Car placement arrays of a dealer map (subclasses DealerNewData, DealerSHData).
+java.game.CarLotData	*	M	Camera/dummy car positions for the used-car lot (10 spots).
+java.game.LoadingText	*	M	Thread subclass animating the 'loading' text.
+java.game.InventoryItem	*	M	Base of inventory entries (Part, Folder, Paint) with getName/getPrice/getDescription/installToCar/copyToInventory.
+java.game.InventoryPanel	*	M	OSD panel showing inventory items; CatalogInventoryPanel/VisualInventory build on it.
+java.game.TrafficTracker	*	M	Record linking a traffic car, its traffic id and its marker (City).
+java.game.ParkingCar	*	M	Parked-car record (position, orientation) used by CarLot/City.
+java.game.PoliceScout	*	M	Record of a police bot chasing the player.
+java.game.SMarker	*	M	Start marker (Marker subclass).
+java.game.DMarker	*	M	Destination marker (Marker subclass).
+java.game.PaintCan	*	M	Paint can item: colour + capacity.
+java.game.Animater	*	L	One-line empty Runnable stub.
+java.game.GE_F_mask	*	H	Mod class: Miran's Destruction Tools front mask (DestructionTools.rpk gametype with `script DestructionTools\Scripts\GE_F_Mask.class`), a plain Part.
+java.game.Pneumatic_SA	*	H	Mod class: pneumatic shock absorber (MW_Mod.rpk:0x83), extends Pneumatic_ShockAbsorber; Chassis.Hsuspension drives it.
