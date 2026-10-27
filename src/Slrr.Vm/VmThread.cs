@@ -264,12 +264,18 @@ public sealed partial class VmThread
         for (var i = 0; i < args.Length; i++)
         {
             var a = args.Length - 1 - i;
-            f.Locals[slot + i] = VmTypes.Coerce(args[a], m.Params[a]);
+            f.Locals[slot + i] = VmTypes.Coerce(NumberToStringParam(args[a], m.Params[a]), m.Params[a]);
             f.LocalTypes[slot + i] = m.Params[a];
         }
 
         _frames.Add(f);
     }
+
+    /// <summary>A number passed for a String parameter becomes its text (`dayTxt.changeText(day)` in GameLogic.run).</summary>
+    private Value NumberToStringParam(Value v, string paramDescriptor) =>
+        v.Kind is VmKind.Int or VmKind.Float && paramDescriptor == "Ljava.lang.String;"
+            ? Value.Obj(Vm.NewString(Vm.ToScriptString(v)))
+            : v;
 
     /// <summary>A number stored into a String variable becomes its text (the engine converts on assignment).</summary>
     private Value ToStringStorage(VmVariable target, Value v) =>

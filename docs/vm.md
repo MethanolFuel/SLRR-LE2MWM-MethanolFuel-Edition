@@ -106,3 +106,4 @@ confirmed in the engine's interpreter.
 | A number assigned to a `String` variable becomes its text (`%d` / `%.3f`, as for `+`) | garage clock thread |
 | A non-void method that ends without `return` yields the default of its type (0, 0.0, null) | garage loading screen waits on such a method |
 | String literals are interned: equal literals are the same object | `==` against literals; tyre names showed `<unnamed>` |
+| A number passed for a `String` parameter becomes its text | `dayTxt.changeText( day )` in `GameLogic.run` |

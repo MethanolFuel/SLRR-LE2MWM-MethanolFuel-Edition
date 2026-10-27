@@ -149,3 +149,18 @@ In the order the scripts hit it after `TrackSelect → TAKE IT` (or Garage → C
 4. Link rules (P0 #5): is the reverse attach/compatible rule real, and does an explicit parent part fall back to the car tree?
 5. `EC_LDROP` token 1, and `SfxRef.nplay`'s floats and return value (P1 #10).
 6. Save compatibility of `write(ResourceRef)` ids across sessions (P1 #12): the round trip here only uses one session's ids.
+
+## Update after the Slrr.Vm fixes (lead)
+
+VM gaps 1-5 above were fixed in `Slrr.Vm` (see the table at the end of `docs/vm.md`; all inferred, none read from the
+exe). Measured effect on the repository data:
+
+* `play --smoke` still passes 50/50 and now has **0 script thread errors** (the garage clock thread used to die on
+  `dayTxt.changeText( day )`, an int passed for a `String` parameter, which needed a fifth fix: number-to-String on
+  call arguments).
+* A saved career with a bought car and an installed part **reloads completely** (name, money, car, part types).
+* Choosing a career in the load requester now loads it directly; the old extra OK click is gone.
+* `drive` runs on the real script-computed engine data instead of the C# stand-in for the dyno step.
+* The negative-control test `WithoutHostNativesTheGarageNeverFinishesLoading` no longer sees the
+  `Button.setToolTip` thread error (that gap was the empty-object-return one); the missing host natives
+  (`SfxRef.nplay`) are what it still checks.

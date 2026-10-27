@@ -36,24 +36,18 @@ public class SmokePathTests
             using var again = new GameHost(new GameHostOptions { Root = root, SaveRoot = save });
             Assert.True(again.Boot());
             Assert.True(again.RunUntil(() => Section(again) == "MainMenu", 30));
-            Assert.True(Click(again, "LOAD CAREER"));
-            Assert.True(Click(again, "Bob-1"));
-            Assert.True(Click(again, "LOAD CAREER"));           // the requester's OK button (top Osd first)
+            Assert.True(Click(again, "LOAD CAREER"));           // main menu button, opens the requester
+            Assert.True(Click(again, "Bob-1"));                 // choosing the career loads it (no separate OK any more)
             again.RunFor(10);
             Assert.Equal("Bob", again.View.PlayerName);
             Assert.Equal(moneyAfterPart, again.View.Money);
 
-            // The car file loads through Vehicle.load -> Part.createFromFile -> updatevariables, which stops on the
-            // VM gap `float && float` (docs/phase4/game.md, VM gap 1). Until the VM accepts it, the reloaded car is
-            // either complete or the load thread died exactly there.
-            if (again.View.Car is not null && again.View.InstalledParts.Count > 1)
-            {
-                Assert.Contains(again.View.InstalledPartTypes, t => t == installedType);
-            }
-            else
-            {
-                Assert.Contains(again.ThreadErrors, e => e.Contains("non-integral operands (&&)", StringComparison.Ordinal));
-            }
+            // The car file loads through Vehicle.load -> Part.createFromFile -> updatevariables. That used to stop on the
+            // VM gap `float && float` (docs/phase4/game.md, VM gap 1); with the VM fixed the whole car comes back.
+            Assert.NotNull(again.View.Car);
+            Assert.True(again.View.InstalledParts.Count > 1);
+            Assert.Contains(again.View.InstalledPartTypes, t => t == installedType);
+            Assert.Empty(again.ThreadErrors);
         }
         finally
         {
@@ -191,8 +185,9 @@ public class SmokePathTests
         Assert.True(host.Boot());
         var runner = new PlayRunner(host) { StopOnFailure = true, ClickTimeout = 1f };
         runner.Run(PlayScript.Parse(PlayCommand.SmokeScript()));
+        // The empty-object-return gap this used to show as a Button.setToolTip thread error is now fixed in Slrr.Vm;
+        // the host natives (e.g. SfxRef.nplay) are still what lets the garage finish loading.
         Assert.True(runner.Failed);
-        Assert.Contains(host.ThreadErrors, e => e.Contains("Button.setToolTip", StringComparison.Ordinal));
         Assert.Contains(host.Missing, m => m.Key.Name == "nplay");
     }
 

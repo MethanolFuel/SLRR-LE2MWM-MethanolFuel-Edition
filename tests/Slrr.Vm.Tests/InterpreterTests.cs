@@ -358,4 +358,15 @@ public class InterpreterTests
         var b = new ClassBuilder(T).Method("f", "()I", a => a.Str("abc").Str("abc").O(Operator.Eq).ReturnValue(), isStatic: true);
         Assert.Equal(1, CallStatic(NewVm(b), T, "f").AsInt);
     }
+
+    [Fact]
+    public void NumberPassedForAStringParameterBecomesItsText()
+    {
+        // static String id(String s) { return s; }  ;  static String f() { return id(7); }
+        var b = new ClassBuilder(T)
+            .Method("id", "(Ljava.lang.String;)Ljava.lang.String;", a => a.Local(0).ReturnValue(), isStatic: true)
+            .Method("f", "()Ljava.lang.String;", a => a.Int(7).CallStatic(1, T, "id", "(Ljava.lang.String;)Ljava.lang.String;").ReturnValue(), isStatic: true);
+        var vm = NewVm(b);
+        Assert.Equal("7", vm.GetString(CallStatic(vm, T, "f").AsObject));
+    }
 }
