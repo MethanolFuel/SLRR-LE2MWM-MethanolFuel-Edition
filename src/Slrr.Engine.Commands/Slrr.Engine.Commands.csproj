@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Engine.Commands</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
+  </ItemGroup>
+</Project>
