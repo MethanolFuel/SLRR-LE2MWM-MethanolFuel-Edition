@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Slrr.Cli</RootNamespace>
     <AssemblyName>slrr</AssemblyName>
-    <DefineConstants>$(DefineConstants);SLRR_PHYSICS;SLRR_GAME_PHYSICS</DefineConstants>
+    <DefineConstants>$(DefineConstants);SLRR_PHYSICS;SLRR_GAME_PHYSICS;SLRR_AI;SLRR_CAREER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Slrr.Formats\Slrr.Formats.csproj" />
@@ -24,5 +24,9 @@
     <ProjectReference Include="..\..\src\Slrr.Game.Audio\Slrr.Game.Audio.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Game.Render\Slrr.Game.Render.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Race\Slrr.Race.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Roads\Slrr.Roads.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.AI\Slrr.AI.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Career\Slrr.Career.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.App\Slrr.App.csproj" />
   </ItemGroup>
 </Project>

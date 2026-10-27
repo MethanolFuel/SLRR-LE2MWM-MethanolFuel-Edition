@@ -1,0 +1,124 @@
+name: release
+
+# Builds self-contained packages of the command-line tool (slrr) and the interactive game (slrr-app) for macOS (Apple
+# Silicon and Intel), Windows x64 and Linux x64 on one Linux runner (the managed code cross-publishes, each package ships
+# the native GLFW and OpenAL libraries of its platform), smoke-tests every package on a runner of its own operating system
+# and publishes a pre-release. Run it from the Actions tab (workflow_dispatch) or push a tag preview-*.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['preview-*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Publish every platform
+        run: |
+          set -e
+          mkdir -p out
+          for rid in osx-arm64 osx-x64 win-x64 linux-x64; do
+            find src tools -type d \( -name obj -o -name bin \) -prune -exec rm -rf {} +
+            mkdir -p out/$rid
+            dotnet publish tools/Slrr.Cli -c Release -r $rid --self-contained -o out/$rid
+            dotnet publish src/Slrr.App -c Release -r $rid --self-contained -o out/$rid
+            cp docs/RUNNING.md out/$rid/RUNNING.md
+            case $rid in
+              win-x64) (cd out/$rid && zip -qr ../slrr-$rid.zip .) ;;
+              linux-x64) tar -C out/$rid -czf out/slrr-$rid.tar.gz . ;;
+              *) chmod +x out/$rid/slrr out/$rid/slrr-app; (cd out/$rid && zip -qr ../slrr-$rid.zip .) ;;
+            esac
+          done
+          ls -la out/*.zip out/*.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slrr-packages
+          path: |
+            out/*.zip
+            out/*.tar.gz
+
+  smoke:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { rid: osx-arm64, runner: macos-latest, archive: zip, exe: "" }
+          - { rid: osx-x64, runner: macos-15-intel, archive: zip, exe: "" }
+          - { rid: win-x64, runner: windows-latest, archive: zip, exe: ".exe" }
+          - { rid: linux-x64, runner: ubuntu-latest, archive: tar.gz, exe: "" }
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: slrr-packages
+          path: dist
+      - name: Unpack
+        run: |
+          mkdir pkg
+          if [ "${{ matrix.archive }}" = "zip" ]; then python3 -m zipfile -e dist/slrr-${{ matrix.rid }}.zip pkg; else tar -xzf dist/slrr-${{ matrix.rid }}.tar.gz -C pkg; fi
+          chmod +x pkg/slrr${{ matrix.exe }} pkg/slrr-app${{ matrix.exe }} || true
+          xattr -dr com.apple.quarantine pkg 2>/dev/null || true
+          uname -a
+      - name: Linux display libraries
+        if: matrix.rid == 'linux-x64'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglx-mesa0 libopenal1
+      - name: Headless smoke test
+        run: |
+          set -x
+          pkg/slrr${{ matrix.exe }} coverage . | tail -12
+          pkg/slrr${{ matrix.exe }} engine-boot . | tail -4
+          pkg/slrr${{ matrix.exe }} play --smoke --root . | grep -E "result|thread errors|natives missing"
+          pkg/slrr${{ matrix.exe }} race-play --root . --track "Drag Track" --seconds 5 | tail -6
+      - name: Interactive app, headless drive (no window)
+        run: |
+          pkg/slrr-app${{ matrix.exe }} --root . --save-root "$RUNNER_TEMP/slrr-save" --headless-frames 3000 --input-script builtin:drive 2>&1 | tail -12
+      - name: OpenGL probe (informational)
+        continue-on-error: true
+        run: |
+          if [ "${{ matrix.rid }}" = "linux-x64" ]; then export LIBGL_ALWAYS_SOFTWARE=1; PREFIX="xvfb-run -a"; fi
+          $PREFIX pkg/slrr${{ matrix.exe }} gl-probe 2>&1 | tail -20
+      - name: Windowed app and render (needs OpenGL; informational)
+        continue-on-error: true
+        run: |
+          if [ "${{ matrix.rid }}" = "linux-x64" ]; then export LIBGL_ALWAYS_SOFTWARE=1; PREFIX="xvfb-run -a"; fi
+          mkdir -p frames
+          $PREFIX pkg/slrr-app${{ matrix.exe }} --root . --save-root "$RUNNER_TEMP/slrr-save2" --lockstep --input-script builtin:drive --capture-every 90 --out frames --size 640x480 --no-audio 2>&1 | tail -12
+          ls -la frames | head
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frames-${{ matrix.rid }}
+          path: frames
+          if-no-files-found: ignore
+
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: slrr-packages
+          path: dist
+      - name: Create pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="preview-${{ github.run_number }}"
+          ls -la dist
+          gh release create "$TAG" dist/* --repo "${{ github.repository }}" --target "${{ github.sha }}" --prerelease \
+            --title "Preview $TAG" \
+            --notes "Self-contained preview of the C# rewrite built from ${{ github.sha }}: slrr-osx-arm64.zip (Apple Silicon), slrr-osx-x64.zip (Intel Mac), slrr-win-x64.zip (Windows), slrr-linux-x64.tar.gz (Linux). Each has slrr (command-line tool) and slrr-app (the interactive game). The game data is not included: clone this repository and point --root at it. See RUNNING.md inside the package. Binaries are unsigned. The smoke jobs of the workflow run these exact packages on each operating system; check them before relying on a package."

@@ -1,4 +1,9 @@
 # Street Legal Racing Redline: LE2MWM MethanolFuel Edition
+
+> **New: a C# (.NET 8) rewrite of the engine runs this game's scripts and data on macOS, Windows and Linux (early preview).**
+> How to download and run it on each platform: **[docs/RUNNING.md](docs/RUNNING.md)**. Plan and status: [docs/CSHARP_ENGINE_REWRITE_PLAN.md](docs/CSHARP_ENGINE_REWRITE_PLAN.md).
+> The rest of this file describes the original mod build.
+
 MethanolFuel's Street Legal build is finally on GitHub! And of course, he's ready to serve.
 
 # The Purposes

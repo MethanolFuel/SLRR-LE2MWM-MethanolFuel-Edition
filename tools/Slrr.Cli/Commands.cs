@@ -41,6 +41,12 @@ public static class Commands
           race-play [...]                      all race adapters together: career, used car, track, drive (PNG/WAV)
           gameaudio <drive|formula>            in-game audio: scripted drive rendered to WAV, engine-sound formula
           game-render <demo|play|cull|stream>  in-game renderer: scripted sequences to PNGs
+          roads <stats|dump|map|route|verify|bench>  road graph of the city (city.trc), road natives
+          ai-race [...]                        AI opponents and traffic on a road, deterministic race
+          career [...]                         scripted career race flows (ROC, City day and night races)
+          physcheck [...]                      physics regression scenarios over the shipped cars
+          app [...]                            start the interactive windowed game (same as slrr-app)
+          gl-probe [--no-window]               check OpenGL 3.3 core support stage by stage (use on a new machine)
           run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
         """;
 
@@ -74,6 +80,12 @@ public static class Commands
                 "render" => CmdRender.Run(args[1..], o, e),
                 "drive" => CmdDrive.Run(args[1..], o, e),
                 "play" => CmdPlay.Run(args[1..], o, e),
+                "roads" => CmdRoads.Run(args[1..], o, e),
+                "ai-race" => CmdAi.Run(args[1..], o, e),
+                "career" => CmdCareer.Run(args[1..], o, e),
+                "physcheck" => CmdPhysCheck.Run(args[1..], o, e),
+                "app" => CmdApp.Run(args[1..], o, e),
+                "gl-probe" => CmdGlProbe.Run(args[1..], o, e),
                 "maps" => CmdMaps.Run(args[1..], o, e),
                 "carsim" => CmdCarSim.Run(args[1..], o, e),
                 "race" => CmdRace.Run(args[1..], o, e),
