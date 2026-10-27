@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- tools/Slrr.Cli/CmdAi.cs is wrapped in #if SLRR_AI so Slrr.Cli keeps building until it references Slrr.AI. -->
+    <DefineConstants>$(DefineConstants);SLRR_AI</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Slrr.AI\Slrr.AI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The `ai-race` CLI command lives in tools/Slrr.Cli (the lead wires it into Commands.cs); compiled here so it is built and tested in isolation. -->
+    <Compile Include="..\..\tools\Slrr.Cli\CmdAi.cs" Link="Cli\CmdAi.cs" />
+  </ItemGroup>
+</Project>
