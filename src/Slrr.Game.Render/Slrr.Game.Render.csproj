@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Game.Render</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Host/**" />
+    <None Remove="Host/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Game\Slrr.Game.csproj" />
+    <ProjectReference Include="..\Slrr.Render\Slrr.Render.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Slrr.Game.Render.Tests" />
+  </ItemGroup>
+</Project>

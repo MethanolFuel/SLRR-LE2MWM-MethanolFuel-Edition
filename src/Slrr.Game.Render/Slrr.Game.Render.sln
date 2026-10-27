@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Game.Render", "Slrr.Game.Render.csproj", "{93DE9398-905C-4CCC-9CA0-E899ECAD6C97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "slrr-game-render", "Host\slrr-game-render.csproj", "{D80458DC-14AC-4ECF-9675-CA5A24873514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Game.Render.Tests", "..\..\tests\Slrr.Game.Render.Tests\Slrr.Game.Render.Tests.csproj", "{7456807B-628E-48EE-BF21-6FC6558455E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93DE9398-905C-4CCC-9CA0-E899ECAD6C97}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{93DE9398-905C-4CCC-9CA0-E899ECAD6C97}.Debug|Any CPU.Build.0 = Debug|x64
+		{93DE9398-905C-4CCC-9CA0-E899ECAD6C97}.Release|Any CPU.ActiveCfg = Release|x64
+		{93DE9398-905C-4CCC-9CA0-E899ECAD6C97}.Release|Any CPU.Build.0 = Release|x64
+		{D80458DC-14AC-4ECF-9675-CA5A24873514}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{D80458DC-14AC-4ECF-9675-CA5A24873514}.Debug|Any CPU.Build.0 = Debug|x64
+		{D80458DC-14AC-4ECF-9675-CA5A24873514}.Release|Any CPU.ActiveCfg = Release|x64
+		{D80458DC-14AC-4ECF-9675-CA5A24873514}.Release|Any CPU.Build.0 = Release|x64
+		{7456807B-628E-48EE-BF21-6FC6558455E4}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7456807B-628E-48EE-BF21-6FC6558455E4}.Debug|Any CPU.Build.0 = Debug|x64
+		{7456807B-628E-48EE-BF21-6FC6558455E4}.Release|Any CPU.ActiveCfg = Release|x64
+		{7456807B-628E-48EE-BF21-6FC6558455E4}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal
