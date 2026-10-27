@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Viewer", "Slrr.Viewer.csproj", "{D0E31F70-A176-4795-A633-08F6220B680F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Formats", "..\Slrr.Formats\Slrr.Formats.csproj", "{DEF2348A-396D-4801-87E7-70A9254F932E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Core", "..\Slrr.Core\Slrr.Core.csproj", "{0FCBB837-0D36-4939-B1AC-B573FE8D1D88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Viewer.Tests", "..\..\tests\Slrr.Viewer.Tests\Slrr.Viewer.Tests.csproj", "{8353E176-7C05-4246-A001-39EC7A0C6A91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0E31F70-A176-4795-A633-08F6220B680F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{D0E31F70-A176-4795-A633-08F6220B680F}.Debug|Any CPU.Build.0 = Debug|x64
+		{D0E31F70-A176-4795-A633-08F6220B680F}.Release|Any CPU.ActiveCfg = Release|x64
+		{D0E31F70-A176-4795-A633-08F6220B680F}.Release|Any CPU.Build.0 = Release|x64
+		{DEF2348A-396D-4801-87E7-70A9254F932E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DEF2348A-396D-4801-87E7-70A9254F932E}.Debug|Any CPU.Build.0 = Debug|x64
+		{DEF2348A-396D-4801-87E7-70A9254F932E}.Release|Any CPU.ActiveCfg = Release|x64
+		{DEF2348A-396D-4801-87E7-70A9254F932E}.Release|Any CPU.Build.0 = Release|x64
+		{0FCBB837-0D36-4939-B1AC-B573FE8D1D88}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0FCBB837-0D36-4939-B1AC-B573FE8D1D88}.Debug|Any CPU.Build.0 = Debug|x64
+		{0FCBB837-0D36-4939-B1AC-B573FE8D1D88}.Release|Any CPU.ActiveCfg = Release|x64
+		{0FCBB837-0D36-4939-B1AC-B573FE8D1D88}.Release|Any CPU.Build.0 = Release|x64
+		{8353E176-7C05-4246-A001-39EC7A0C6A91}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{8353E176-7C05-4246-A001-39EC7A0C6A91}.Debug|Any CPU.Build.0 = Debug|x64
+		{8353E176-7C05-4246-A001-39EC7A0C6A91}.Release|Any CPU.ActiveCfg = Release|x64
+		{8353E176-7C05-4246-A001-39EC7A0C6A91}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal
