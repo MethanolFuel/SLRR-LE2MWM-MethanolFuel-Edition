@@ -1,4 +1,4 @@
- package java.game;
+package java.game;
 
 import java.io.*;
 import java.util.*;
@@ -219,7 +219,7 @@ public class OptionsDialog extends Dialog
 		
 		TextureSizeText = new String[7];
 		TextureSizeText[0] = "64 PTX";
-		TextureSizeText[1] = "124 PTX";
+		TextureSizeText[1] = "128 PTX";
 		TextureSizeText[2] = "256 PTX";
 		TextureSizeText[3] = "512 PTX";
 		TextureSizeText[4] = "1024 PTX";
@@ -228,7 +228,7 @@ public class OptionsDialog extends Dialog
 
 		ShadowSizeText = new String[8];
 		ShadowSizeText[0] = "OFF";
-		ShadowSizeText[1] = "124 PTX";
+		ShadowSizeText[1] = "128 PTX";
 		ShadowSizeText[2] = "256 PTX";
 		ShadowSizeText[3] = "512 PTX";
 		ShadowSizeText[4] = "1024 PTX";
@@ -292,15 +292,10 @@ public class OptionsDialog extends Dialog
 	// Look for current resolution mode
 		for (int i=0; i<=ResX_list.length-1; i++ ) 
 		{
-			if( aspectX == ResX_list[i] ) // identical only X size (used UNCOMMON RES, or similar mode)
+			if( aspectX == ResX_list[i] && aspectY == ResY_list[i] ) // found identical mode
 			{
-				Current_Resolution = i; 
-
-				if(aspectX == ResX_list[i]) // found identical mode
-				{
-					Current_Resolution = i;
-					i += ResX_list.length; //end 'for' loop
-				}
+				Current_Resolution = i;
+				i += ResX_list.length; //end 'for' loop
 			}
 		}
 
@@ -312,10 +307,10 @@ public class OptionsDialog extends Dialog
 		if( Config.resource_refreshrate == 2 )
 			loading_primary = 0;
 		else
-		if( Config.resource_refreshrate == 1024 )
+		if( Config.resource_refreshrate == 512 )
 			loading_primary = 1;
 		else
-		if( Config.resource_refreshrate == 4096 )
+		if( Config.resource_refreshrate == 2048 )
 			loading_primary = 2;
 
 		tmp_lp = loading_primary;
@@ -420,7 +415,7 @@ public class OptionsDialog extends Dialog
 
 		m = osd.createMenu( Menu_Left, 0.3, -0.4, 0 );
 		m.setSliderStyle( sld1, sldk );
-		m.addItem( "gamma", CMD_GAMMA, Config.video_gamma, 0.4, 4.0, 0, "Max shadow texture size" ).printValue( "%.2f" );
+		m.addItem( "gamma", CMD_GAMMA, Config.video_gamma, 0.4, 4.0, 0, "Screen gamma (brightness)" ).printValue( "%.2f" );
 
 		m = osd.createMenu( Menu_Left, 0.6, -0.18, 0 );
 		m.addItem( "shadow detail", CMD_SHADOW_DETAIL, shadow_size, ShadowSizeText, "Max shadow texture size" );
@@ -462,7 +457,7 @@ public class OptionsDialog extends Dialog
 		m.addItem( "mirror:", CMD_MIRROR, Config.mirror, detailTextOO, null );
 
 		m = osd.createMenu( Menu_Center_Small, -0.5, -0.05, 0 );
-		MirrorDist_Text = m.addItem( "view distance: " + Float.toString(Config.camera_mirror_viewrange, "%.0f m"), CMD_UNUSED, null );
+		MirrorDist_Text = m.addItem( "mirror view distance: " + Float.toString(Config.camera_mirror_viewrange, "%.0f m"), CMD_UNUSED, null );
 		m = osd.createMenu( Menu_Left_Small, -0.5, 0.0, 0 );
 		m.setSliderStyle( sld2, sldk );
 		m.addItem( null, CMD_MIRROR_DISTANCE, Config.camera_mirror_viewrange, 5, 105, 41, null );
@@ -796,7 +791,7 @@ public class OptionsDialog extends Dialog
 
 		m.addItem( "driver movement/steer", CMD_HMF_1, Config.head_move_steer, 0.0, 2.0, 0, "HOW THE STEERING WHEELS POSITION AFFECTS THE DRIVERS MOVEMENT" );
 		m.addItem( "driver movement/velocity", CMD_HMF_2, Config.head_move_vel, 0.0, 2.0, 0, "HOW THE CARS VELOCITY AFFECTS THE DRIVERS MOVEMENT"  );
-		m.addItem( "driver movement/acceleratio", CMD_HMF_3, Config.head_move_acc, 0.0, 2.0, 0, "HOW THE CARS ACCELERATION AFFECTS THE DRIVERS MOVEMENT"  );
+		m.addItem( "driver movement/acceleration", CMD_HMF_3, Config.head_move_acc, 0.0, 2.0, 0, "HOW THE CARS ACCELERATION AFFECTS THE DRIVERS MOVEMENT"  );
 		m.addSeparator();
 		m.addItem( "traffic density", CMD_TRAFFICDENSITY, Config.trafficDensity, 0.0, 1.5, 0, null );
 		m.addItem( "pedestrian density", CMD_PEDESTRIANDENSITY, Config.pedestrianDensity, 0.0, 1.5, 0, null );
@@ -1057,8 +1052,8 @@ public class OptionsDialog extends Dialog
 			if(aspect == 15)	Res_Aspect = "14:9"; else
 			if(aspect == 16)	Res_Aspect = "5:3"; else
 			if(aspect == 17)	Res_Aspect = "16:9"; else
-			if(aspect == 20)	Res_Aspect = "6:3"; else
-			if(aspect == 23)	Res_Aspect = "12:5"; else
+			if(aspect == 20)	Res_Aspect = "2:1"; else
+			if(aspect == 23)	Res_Aspect = "21:9"; else
 			if(aspect == 24)	Res_Aspect = "12:5"; else
 			Res_Aspect = "OTHER";
 
@@ -1326,7 +1321,7 @@ public class OptionsDialog extends Dialog
 		if (command == CMD_SKIDMARK)
 		{
 			Config.skidmark_max = osd.sliderValue * 4.0;
-			SkidMark_Text.changeLabelText("SKIDMARKS LENGTH: "+Config.skidmark_max/4+" m");
+			SkidMark_Text.changeLabelText("skidmarks length: "+Config.skidmark_max/4+" m");
 		}
 		else
 		if (command == CMD_CLUTCH)
@@ -1727,7 +1722,7 @@ class UR_Dialog extends Dialog
 	{
 		super( GameLogic.player.controller, DF_MODAL|DF_DEFAULTBG|DF_HIGHPRI|DF_DARKEN, "uncommon resolution", "" );
 
-		Res_list = new int[24];
+		Res_list = new int[26];
 		Res_list[0] = 120;
 		Res_list[1] = 160;
 		Res_list[2] = 200;
@@ -1818,8 +1813,8 @@ class UR_Dialog extends Dialog
 		if(TMPasp == 15)	Res_Aspect = "14:9"; else
 		if(TMPasp == 16)	Res_Aspect = "5:3"; else
 		if(TMPasp == 17)	Res_Aspect = "16:9"; else
-		if(TMPasp == 20)	Res_Aspect = "6:3"; else
-		if(TMPasp == 23)	Res_Aspect = "12:5"; else
+		if(TMPasp == 20)	Res_Aspect = "2:1"; else
+		if(TMPasp == 23)	Res_Aspect = "21:9"; else
 		if(TMPasp == 24)	Res_Aspect = "12:5"; else
 		Res_Aspect = "OTHER";
 

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Audio.OpenAL</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Audio\Slrr.Audio.csproj" />
+    <PackageReference Include="Silk.NET.OpenAL" Version="2.22.0" />
+  </ItemGroup>
+</Project>

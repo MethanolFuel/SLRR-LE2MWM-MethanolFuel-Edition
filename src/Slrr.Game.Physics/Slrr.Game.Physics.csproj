@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Game.Physics</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Game\Slrr.Game.csproj" />
+    <ProjectReference Include="..\Slrr.Physics\Slrr.Physics.csproj" />
+    <ProjectReference Include="..\Slrr.World\Slrr.World.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Slrr.Cli</RootNamespace>
+    <AssemblyName>slrr</AssemblyName>
+    <DefineConstants>$(DefineConstants);SLRR_PHYSICS;SLRR_GAME_PHYSICS;SLRR_AI;SLRR_CAREER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Slrr.Formats\Slrr.Formats.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Decompiler\Slrr.Decompiler.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Parts\Slrr.Engine.Parts.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.System\Slrr.Engine.System.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Ui\Slrr.Engine.Ui.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Audio\Slrr.Audio.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.World\Slrr.World.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Render\Slrr.Render.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Physics\Slrr.Physics.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Game\Slrr.Game.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.MapNatives\Slrr.Engine.MapNatives.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Commands\Slrr.Engine.Commands.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Game.Physics\Slrr.Game.Physics.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Game.Audio\Slrr.Game.Audio.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Game.Render\Slrr.Game.Render.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Race\Slrr.Race.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Roads\Slrr.Roads.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.AI\Slrr.AI.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Career\Slrr.Career.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.App\Slrr.App.csproj" />
+  </ItemGroup>
+</Project>

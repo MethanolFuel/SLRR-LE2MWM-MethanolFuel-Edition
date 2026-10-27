@@ -1,0 +1,51 @@
+class	method	conf	note
+java.render.Frontend	*	H	Static holder of the 2D front end: `render` (GfxEngine instance whose monitor the engine notifies every frame), `loadingScreen`, `inputQueue` (Vector of Osd, top = receives hotkeys), `pointers`/fonts (frontend.rpk resources chosen by Config.video_x/y), `hotkeyWatcherThread` (HotkeyWatcher polls every 50 ms). `init()` is called by Init.<init>. The exe reads the static field `render` by name every frame (0x428db9) and notifies it.
+java.render.LoadingScreen	*	H	Thread subclass; shows/hides the modal loading dialog and the 'PRESS ENTER TO CONTINUE...' flash while System.isLoading() is true. Wakes on Frontend.render once per frame.
+java.render.Osd	*	H	Base class of every on-screen display (menus, HUD, dialogs): a GameType with a Viewport, Groups, Texts, Rectangles, Buttons. enableControl() sets the event mask EVENT_CURSOR|EVENT_HOTKEY and the animate hook; cursor events arrive in event_handler(GameRef,int,String) where `p2.token(0)` is the EC_* code and a click on a registered button calls `buttonHandler[i].osdCommand(buttonCommand[i])`.
+java.render.Group	*	H	Dummy subclass (a GameType node) used as the parent node for the Texts/Rectangles of one OSD group so they can be shown/hidden together.
+java.render.Rectangle	*	H	Textured quad on screen (from RectangleTemplate).
+java.render.RectangleTemplate	*	H	Template resource + size for Rectangle.
+java.render.SimpleLoadingDialog	*	H	Full-screen picture dialog used by LoadingScreen.show(ResourceRef).
+java.render.FlashText	*	H	Runnable that blinks 'PRESS ENTER TO CONTINUE...' (sleep 600 ms on/off).
+java.render.HotkeyWatcher	*	H	Runnable: `while(1){ Thread.sleep(50); Input.checkHotkeys(Input.cursor.controller, Frontend.inputQueue.lastElement()); }`.
+java.render.SoftTimer	*	H	Runnable: `Thread.sleep(waitTime*1000); listener.notify();`.
+java.render.osd.Gadget	*	H	Base of interactive widgets (Button, Slider, MultiChoice, StringInput). `sendMessage()`: if the handler is a GameType that has a MessagePort (async mode, e.g. a tuned part) it queues `new Event(cmd, F_GAD_CHANGE)` with `gadget = this` on that port, otherwise it calls `handler.osdCommand(cmd)` synchronously. Event flags: F_KEY_PRESS 1, F_KEY_RELEASE 2, F_GAD_CHANGE 4.
+java.render.osd.Menu	*	M	Vertical list of Gadgets with keyboard focus handling.
+java.render.osd.Style	*	M	Visual style record (fonts, colours, align) passed to Osd.createButton/Slider/Menu.
+java.render.osd.dialog.Dialog	*	H	Base modal dialog (GameType). Flags DF_MODAL, DF_DEFAULTBG, DF_FULLSCREEN, DF_FREEZE, DF_LEAVEPOINTER; display() blocks the calling script thread until the dialog calls notify (SoftTimer or user action).
+java.game.Init	*	H	The first game script class (sl.rpk:0x40 `script java.game.Init`). `<init>(int)`: Sound.init(); Frontend.init(); Frontend.loadingScreen.show(); Input.initControllers(this, "save/controls/active_control_set"); Input.enablePointingDevice(); gameLogic = new GameLogic(). finalize() reverses it.
+java.game.GameState	*	H	Interface with enter(GameState previous) / exit(GameState next); implemented by every screen: MainMenu, Garage, CarMarket, CarLot, Catalog, Track (and its map subclasses), TrackSelect, RaceSetup, CarInfo, ClubInfo, RocInfo, SplashScreen, Painter. GameLogic.changeActiveSection(state) calls exit(new) on the old and enter(old) on the new, and System.exit() when the new state is null.
+java.game.Scene	*	H	GameType base for 3D screens: sky dome, sun light (RenderRef.setLight/setFlare), fog (GroundRef.setFog) chosen from the game clock via time2Config(float).
+java.game.Track	*	H	Scene + GameState for a drivable map: cameras, triggers, HUD. Each addon map script (DealerTrack, Nevada_Track, Wichur_Drift_Track, TopGearTrack, Physic_Lab_Track...) extends it; maps are found as children of MW_Mod:0x0ABC whose entry says `script ...Track.class`.
+java.game.City	*	H	The open-world map (Track subclass, 2,489 decompiled lines): traffic, police, races, night races.
+java.game.Racer	*	H	Base of Player and Bot: name, car (Vehicle), prestige, club.
+java.game.Bot	*	H	AI opponent: creates a Vehicle from a VehicleDescriptor and drives it through the `bot` native kind (sl.rpk:0x6E botbrain); controlled with brain command strings such as "AI_BeginRace 1.0", "osd N".
+java.game.Player	*	H	The human racer (controller, money, club, owned car, decals).
+java.game.VehicleType	*	H	Per-make catalogue record; the per-make *_VT scripts (Baiern_VT...) are gametype entries below cars:0x1000 that fill `vtdarr` with VehicleModel records (resource id, VS_* set mask, prevalence, min/max power and optical tuning, prestige, qm figures, name).
+java.game.VehicleModel	*	H	One sellable model: cars.rpk id, set mask, prevalence, power/optical ranges, prestige, name.
+java.game.VehicleDescriptor	*	H	A concrete car to spawn: model id, colour index, power, optical, tear, wear.
+java.game.Catalog	*	H	Parts catalogue / shop (3,160 decompiled lines): enumerates `parts` gametypes with isScripted("java.game.parts.Part"), creates temp rims/tyres with create(..., "temp rim").
+java.game.Garage	*	H	Garage screen (1,571 lines): install/remove parts by drag and drop using EVENT_CURSOR events, `install_OK`, `install`/`remove` commands, cheats via kismajomCheck.
+java.game.Mechanic	*	H	Part-inventory/mechanic UI used by the garage; sends commands to the car ("suspend", "filter N M", "flap_toggle").
+java.game.CarMarket	*	H	Car dealer screen (dealer.rpk/dealer2.rpk maps).
+java.game.CarLot	*	H	Used-car lot screen (carlot.rpk map, 10 parking spots x 10 floors).
+java.game.RaceSetup	*	H	Race configuration screen (prize, route preview with RenderRef.plotRoute).
+java.game.Roc	*	H	Race of Champions tournament (16 competitors, 4 rounds).
+java.game.Round	*	H	One round of the ROC tournament.
+java.game.Trigger	*	H	Script wrapper around a native trigger (system.rpk:0x34 `native trigger`) plus a Navigator marker.
+java.game.Marker	*	H	Navigator marker render instances (frontend.rpk resources).
+java.game.Inventory	*	M	Player part inventory (VisualInventory/CatalogInventory/PaintInventory subclasses show it as panels).
+java.game.Decal	*	M	ResourceRef subclass for decal textures.
+java.game.parts.Descriptor	*	H	Spawn description passed through addStockParts: wear, tear, color, optical, power (values >1 mean tuned stock parts).
+java.game.parts.Set	*	H	GameType that loads a 'part set' (Catalog calls create(null, parts, null, "set_loader")).
+java.game.parts.Audio	*	M	Part subclass for audio parts (speakers).
+java.game.parts.BodyPart	*	H	Part subclass for body panels, lights, glass, seats, wings; adds drag_reduction.
+java.game.parts.EnginePart	*	H	Part subclass for engine internals; adds fillDynoData participation.
+java.game.parts.RGearPart	*	H	Part subclass for 'running gear': wheels, tyres, brakes, springs, shocks, suspensions, sway bars.
+java.util.Config	*	H	See the text above the table.
+java.util.Message	*	H	type (MT_SYSTEM 0, MT_GAME 1, MT_EVENT 2), cmd, data. MC_SYS_TERMINATE=0 ends a GameType async thread.
+java.util.Event	*	H	Message subclass with flags F_KEY_PRESS 1 / F_KEY_RELEASE 2 / F_GAD_CHANGE 4 and the Gadget that raised it.
+java.util.MessagePort	*	H	FIFO + notify: putMessage appends and notifies, getMessage pops or returns null.
+java.util.Vector	*	H	Growable object array (elementData/elementCount), 26 script methods, uses System.arraycopy.
+java.util.StringTokenizer	*	M	Script tokenizer (3 fields).
+java.util.VideoMode	*	M	Record of a display mode.

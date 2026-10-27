@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Decompiler</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
+    <ProjectReference Include="..\Slrr.Formats\Slrr.Formats.csproj" />
+  </ItemGroup>
+</Project>

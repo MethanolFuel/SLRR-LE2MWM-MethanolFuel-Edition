@@ -235,8 +235,9 @@ public class GameLogic extends GameType implements Runnable
 		float key = Math.random()*100;
 		if( MainMenu.Check(key) != Math.sqrt(key)+3.75 )
 		{
-			new WarningDialog( GameLogic.player.controller, Dialog.DF_MODAL|Dialog.DF_DEFAULTBG, "PROTECTION ERROR", "Miran Wichur Mod protection error: \n \n CORRUPTED FILES \n \n Sorry game will be close. \n Please reinstall Miran Wichur Mod." ).display();
+			new WarningDialog( Input.controllers[0], Dialog.DF_MODAL|Dialog.DF_DEFAULTBG, "PROTECTION ERROR", "Miran Wichur Mod protection error: \n \n CORRUPTED FILES \n \n Sorry game will be close. \n Please reinstall Miran Wichur Mod." ).display();
 			GameLogic.changeActiveSection( null );
+			return;
 		}
 
 		preCacheGametypes( new GameRef( humans:0x00000001r ) );
@@ -1014,15 +1015,18 @@ public class GameLogic extends GameType implements Runnable
 			}
 
 			//fill carmarket:
-			carDescriptors_New = new VehicleDescriptor[saveGame.readInt()];
-			for( int i=0; i<carDescriptors_New.length; i++ )
-				if( saveGame.readInt() )
-					carDescriptors_New[i] = new VehicleDescriptor().load( saveGame );
+			if( !error )
+			{
+				carDescriptors_New = new VehicleDescriptor[saveGame.readInt()];
+				for( int i=0; i<carDescriptors_New.length; i++ )
+					if( saveGame.readInt() )
+						carDescriptors_New[i] = new VehicleDescriptor().load( saveGame );
 
-			carDescriptors_Used = new VehicleDescriptor[saveGame.readInt()];
-			for( int i=0; i<carDescriptors_Used.length; i++ )
-				if( saveGame.readInt() )
-					carDescriptors_Used[i] = new VehicleDescriptor().load( saveGame );
+				carDescriptors_Used = new VehicleDescriptor[saveGame.readInt()];
+				for( int i=0; i<carDescriptors_Used.length; i++ )
+					if( saveGame.readInt() )
+						carDescriptors_Used[i] = new VehicleDescriptor().load( saveGame );
+			}
 
 
 			//load cars:

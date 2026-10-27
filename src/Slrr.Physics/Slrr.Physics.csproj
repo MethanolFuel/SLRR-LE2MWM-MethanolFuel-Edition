@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Physics</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
+    <ProjectReference Include="..\Slrr.Formats\Slrr.Formats.csproj" />
+    <ProjectReference Include="..\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Parts\Slrr.Engine.Parts.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
+  </ItemGroup>
+</Project>

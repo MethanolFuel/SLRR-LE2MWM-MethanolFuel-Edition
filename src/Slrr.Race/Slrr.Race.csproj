@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Race</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Game\Slrr.Game.csproj" />
+    <ProjectReference Include="..\Slrr.Physics\Slrr.Physics.csproj" />
+    <ProjectReference Include="..\Slrr.World\Slrr.World.csproj" />
+    <ProjectReference Include="..\Slrr.Audio\Slrr.Audio.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.MapNatives\Slrr.Engine.MapNatives.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Commands\Slrr.Engine.Commands.csproj" />
+    <ProjectReference Include="..\Slrr.Game.Physics\Slrr.Game.Physics.csproj" />
+    <ProjectReference Include="..\Slrr.Game.Audio\Slrr.Game.Audio.csproj" />
+    <ProjectReference Include="..\Slrr.Game.Render\Slrr.Game.Render.csproj" />
+  </ItemGroup>
+</Project>

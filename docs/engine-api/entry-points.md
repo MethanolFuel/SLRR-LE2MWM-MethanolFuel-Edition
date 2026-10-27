@@ -1,0 +1,266 @@
+# Scripting entry points
+
+How the engine reaches scripts and how scripts reach engine objects. Every row says where the fact comes from:
+`exe 0xADDR` = disassembly/strings of `StreetLegal_Redline.exe` (the patched `Slrr_GI.exe` has the same layout, docs/research),
+`class` = decompiled shipped script, `rpk` = text entry inside an `.rpk` (read with `tools/analysis/rpk_script_bindings.py`).
+
+## 1. Boot sequence
+
+| Step | What happens | Evidence |
+|---|---|---|
+| 1 | Start-up function prints `SL2 build %d (%s %s), distr. %s` (606, "Feb  7 2005", "v2.2.1"), checks the disc, mounts `system.rpk` (`Data is missing. (distr. %s is needed)` if absent) | exe 0x58c700..0x58c76f |
+| 2 | VM bootstrap (0x427980, M): builds `ResourceRef`s for seven fixed `system.rpk` entries (strings at 0x60caec..0x60cb34), calls the three native-registration thunks (0x487f20, 0x46b530, 0x4427e0 contain the 360 `registerNative` sites of docs/research/script-vm-natives.md) and looks up the script class named **`Config`** (string 0x60cb40 at 0x427b08). The classes the engine itself touches by name are `java.lang.String/Object/Vector3/Ypr`, `java.util.resource.GameRef/ResourceRef`, `java.game.parts.WheelRef/SfxTable/DynoData`, `...bodypart.Chassis`, `java.game.Vehicle` (strings 0x60e4c0..0x60f424) | exe 0x427980..0x427b0d |
+| 3 | The exe reads the STATIC fields of `java.util.Config` by name: `acceptBuild` (> 606 -> `Incorrect executable build number`), `version` (must equal `"v2.2.1"`), `FILD`, `video_x/y/depth/windowed`, `shadows`, `resource_refreshrate`, `Sound_3D_HW`, `Sound_Mix_HW`, then initialises video (0x4fc1b0) and sound with them (M) | exe 0x58c7ae..0x58c92c; Config class |
+| 4 | Intro movies `Data\FMV\Activision.avi`, `Invictus.avi`, `StreetLegal.avi` | exe 0x58c934..0x58c944 |
+| 5 | Game init (0x428960): reads the static int `Config.init` (= `sl.rpk:0x40`, the gametype entry `Init`) with `GetConfigData`, wraps it in a `ResourceRef` of type 8 and calls the engine's create routine **0x53a5e0 with (root 0x636460, type, params buffer 0x63c560, name `"GameInit"`)** | exe 0x4289a0..0x4289e5; Config.init initialiser `sl.rpk:0x40r` |
+| 6 | The create routine checks that the node is a gametype (`create: Wrong GameType! %s:0x%08X`), builds the instance (`_gameinst`), and calls the script constructor in a VM thread named `THRD-CREATE` (`create: Undefined GameType Constructor! %08X (%s)` otherwise). The same routine is what the native `GameRef.create` (0x47d7b0) calls | exe 0x53a5e0..0x53a9e0 |
+| 7 | `sl.rpk:0x40` carries the text `script java.game.Init`, so `java.game.Init.<init>(int)` runs: `Sound.init(); Frontend.init(); Frontend.loadingScreen.show(); Input.initControllers(this, "save/controls/active_control_set"); Input.enablePointingDevice(); gameLogic = new GameLogic();` | rpk sl.rpk; class java.game.Init |
+| 8 | `new GameLogic()`: `createNativeInstance()`, mounts content (`System.rpkScan`, `openLib`), scans vehicle types/chassis/maps, creates `Garage`, hotkeys and the clock thread, hides the loading screen and calls `changeActiveSection(new SplashScreen(frontend.rpk:0x5))`. From here on the game is script driven; the exe only runs the frame loop, physics, rendering and event delivery | class java.game.GameLogic |
+| frame | Per frame the exe loads class `java.render.Frontend`, reads its static field `render` and runs the same wake routine as `Object.notifyAll` on it (see java.lang.md); delivers events/timers/callbacks to scripts; steps physics; renders | exe 0x428db9..0x428dda |
+
+Not yet known: how `Config` is instantiated and when `save/game/options` is applied relative to step 3 (open question 2),
+what the 'params' buffer at 0x63c560 holds for the root (bss, filled at run time), and the content of `Config.esp_*`
+fields the exe expects (strings `esp_steer_scale`, `esp_angvel_scale`, `esp_yaw_allowed`, `esp_brake_level`,
+`esp_power_level` exist in the exe but not in the shipped `Config.class`; `vm_get_float_field: unknown field` is the
+engine's reaction, whether fatal is unknown).
+
+## 2. Gametype entries: how a cfg/rpk id becomes a script object
+
+A **gametype** is an `.rpk` entry with `TypeOfEntry = 8` (`RESTYPE_GAME`, `typ_game_object` in `system.rpk`). Its data is CRLF text
+(docs/formats/rpak.md). Lines relevant here (measured over all 87 archives with `tools/analysis/rpk_script_bindings.py`:
+1,616 text entries carry `script` and/or `native`):
+
+```
+script  java.game.parts.Part                      ; dotted class name ...
+script  cars\racers\Baiern_data\scripts\X.class   ; ... or a path to the .class file (the class name INSIDE the file decides, e.g. GE_Hood.class declares java.game.GE_hood)
+native  part  parts\scripts\RGearPart.cfg         ; native object kind + its cfg file
+native  car   cars\racers\Baiern_data\scripts\_main_CoupeSport.cfg
+native  sun   0x0000019F                          ; some kinds take an id instead of a cfg
+```
+
+* `native` kinds seen (1,574 entries): `part` 1,502, `car` 45, `ped` 6, `road` 6, `button` 3, `sun` 3, `walk` 2, and one each of
+  `bot`, `camera`, `player`, `ground`, `trigger`, `cursor`, `invitem`. The exe's kind vocabulary additionally contains `object`, `trlight`,
+  `building` (strings at 0x60c8e8..0x60c94c).
+* The script class is found by walking the entry's `superId` chain (high 16 bits = slot in the archive's reference table, 0 = same
+  archive) until an entry has a `script` line: of the 1,574 `native` entries 1,504 carry their own `script`, 13 inherit
+  `java.game.parts.Part` from the `part` root node of `parts.rpk` (id 0x3), and 57 have none (pure native objects such as `camera`, `map`, `trigger`,
+  `ped`, `cursor`, `botbrain`; hypothesis: an engine default script such as `java.lang.GameType` applies, unconfirmed).
+  `tools/analysis/rpk_gametype_resolve.py` reproduces these counts.
+* Gametype roots used by scripts (all measured): `sl.rpk:0x40` Init (parent `system.rpk:0x1` = `typ_game_object`); `system.rpk` children of 0x1:
+  `Config` 0x47 (`java.util.Config`), `Dummy` 0x1B (`java.util.resource.Dummy`), `game` 0x4C, `native` 0x15 with children `camera` 0x33, `Controller` 0x32
+  (`system\Scripts\io\Controller.class` + `native player`), `map` 0x35 (`native ground`), `trigger` 0x34; `cars.rpk:0x1000` = `VEHICLETYPE_ROOT`
+  (children = the per-make `*_VT` script gametypes); `cars.rpk:0x0101` = `CHASSIS_ROOT` (the chassis gametypes, `GameRef.isScripted()` selects those with scripts);
+  `MW_Mod.rpk:0x0ABC` = `MAPS_ROOT` (children `Script` 0xDC1 of each map archive, text `script ...Track.class`); `parts.rpk:0x3` = root of all parts
+  (`script java.game.parts.Part`).
+* Placed objects in map archives are instance-tree records (`RSD\0` text `gametype 0xSSSSIIII` + `params x,y,z,a,b,c`, docs/formats/instances.md,
+  29,026 objects): the high 16 bits of the id select a slot of the archive's reference table, the low 16 bits the entry. The exe parses
+  `gametype %d` and `params %2048s` (0x619b40/0x619b50) and the script-visible `create(parent, type, params, name)` takes the **same
+  params text** (`"0,0,0,0,0,0"`, `"100,0,0,0,0,0"`, `"0,-10000,0,0,0,0"`): hypothesis (M) that both go through the same parser; the six numbers are x, y, z,
+  yaw, pitch, roll.
+
+### GameRef.create
+
+```
+GameType  parent.create(GameRef parent, GameRef type, String params, String name)    // native, 0x47d7b0 -> 0x53a5e0
+```
+
+* `this` is rebound to the new node, the return value is the script instance (can be null on failure).
+* The script constructor is `<init>(int id)`: 1,569 of the shipped classes declare it and chain `super(id)` up to `GameRef(I)` -> `ResourceRef(I)` -> `set(id)`,
+  so `id` is the new instance's resource id (M: inferred from the constructor chain, the exe call into the constructor not read).
+* Constructors run on a VM thread (`THRD-CREATE`), i.e. they may block (`wait`, `sleep`), and other threads run meanwhile.
+* Destruction: `ref.destroy()` (144 typed sites) or parent destruction; the script's `finalize()` is called by the VM (`THRD-FIN`);
+  the exe warns `Gametype destructor (ID %08X): still has %d instances` when types outlive their instances.
+
+### createNativeInstance (script-first creation)
+
+`new GameLogic()`, `new Osd(...)`, `new Controller(...)`, `new MouseCursor()`, `new Dummy(...)` create the script object FIRST (plain `new`) and
+then call `createNativeInstance(GameRef parent, int typeResourceId, String params, String name)` (native 0x481a70) to create the engine twin.
+`GameType.createNativeInstance()` = `(null, 0, null, null)`; `Dummy` passes `GameRef.RID_DUMMY` and `"dummy"`; `Controller` passes
+`Controller.RESOURCEID` (system.rpk:0x32), its param string and `"controller"`. Scripts that do not call it (e.g. `Init`) are plain script objects whose
+`GameRef` part is bound by the `create` path.
+
+### Handles
+
+`ResourceRef`, `GameRef`, `RenderRef`, ... subclasses of `java.lang.Native` are cheap handles: constructor -> `newNative()`, `finalize()` ->
+`deleteNative()`; `DynoData` has its own `newNative`/`deleteNative`. `Thread`, `String`, `File`, `FindFile`, `Animation`, `WheelRef`, `SfxTable` are `Native`
+as well (`ptr` field). A `WheelRef`/`SfxTable` is never `new`ed by scripts: the engine hands out instances (`Chassis.getWheel(i)`, `getSfxTable(i)`).
+
+## 3. Callbacks: what the engine calls on scripts
+
+Method names found as strings in the exe or defined-but-never-called in the scripts. "Defs" = number of shipped classes that define it.
+
+| Callback | Signature | Armed by | Evidence | Defs |
+|---|---|---|---|---|
+| constructor | `<init>(int id)` | `GameRef.create` | exe 0x53a5e0 messages; 1,569 classes | 1,569 |
+| `handleEvent` | `(GameRef obj, int event, int param)` and `(GameRef obj, int event, String params)` | `setEventMask`, `addNotification`, `addTimer` (EVENT_TIME, `param` = timer id) | exe strings `handleEvent` x3 (0x60c9d0, 0x60ca08, 0x60ca14); `asyncMode` read at 0x425f12; GameLogic, Garage, Track | 10 + 10 |
+| `handleEvent` | `(Hotkey hk)` | `Input.createHotkey` / global hotkey | GameLogic, Osd | 2 |
+| `handleEventAsync` | same two overloads | object has `asyncMode == 1` | exe strings x2; implemented only in GameType (`mp.putMessage(...)`) | 2 |
+| `event_handler<Name>` | `(GameRef obj, int event, String params)` | `addNotification(src, mask, EVENT_SAME, null, "event_handler<Name>")` | Osd.addHook, Nevada/ROC/City tracks (`event_handlerRocFence`, `event_handlerRaceFinish`, `event_handlerClick`) | 21 |
+| `control` | `(float dt)` | `registerCallback(GII_CONTROL)` / `enableControlHook()` | exe strings `control` x3; Painter overrides | 2 |
+| `animate` | `()` | `registerCallback(GII_ANIMATE)` / `enableAnimateHook()` (Osd.enableControl) | exe string; 8 map/menu classes | 9 |
+| `drive` | `()` | probably `registerCallback(GII_DRIVE)` | exe string only; GameType has an empty body | 1 |
+| `getInfo` | `(int key[, int arg])` | engine queries `GII_*` keys on the script | exe string `getInfo` x2; default `GameType.getInfo(I)I` returns 0 | 4 |
+| `run` | `()` | `Thread.start()` | exe 0x612d18; target may be static | 33 |
+| `finalize` | `()` | GC / destroy | exe `THRD-FIN` (docs/research) | 26 |
+| `install` / `remove` / `falloff` | `()` | engine part-link commands (section 5) | exe strings 0x6124ac / 0x6124d0 / 0x612464; never called by scripts, all 22 `install` overrides call `super.install()` | 22 / 2 / 2 |
+| `addpart` / `rempart` | `(GameRef child)` | a child part got linked / unlinked | exe strings 0x612328 / 0x612350 (each preceded by the `GameRef` + `ptr` argument construction); Part keeps `attachedParts` | 1 / 1 |
+| `updatevariables` | `()` | engine after `add_*/rem_*` structure changes; scripts call it recursively | exe strings x4 (0x6100b8, 0x61078c, 0x6123cc, 0x61244c); 259 definitions | 259 |
+| `updateDamage` | `()` | damage events of a part | exe string 0x60e4b0; Part (empty) | 1 |
+| `reCreate` | `()` | after mesh/texture/skin rebuild | exe string 0x60cfb4; Part (empty) | 1 |
+| `update` | `()` | exe string 0x60cfac | 4 inventory classes define it (exe use unconfirmed) | 4 |
+
+Script-to-script conventions that are NOT engine callbacks (listed because they are 70% of the method names): `GameState.enter(GameState prev)` / `exit(GameState next)`
+(GameLogic.changeActiveSection), `osdCommand(int)` (Osd buttons, 35 definitions), `handleMessage(Message|Event)` (async port, 4 + 44), `show()/hide()`, `refresh*`,
+`save(File)/load(File)`, `isDriveable()/isDynoable()/isTuneable()`, `buildTuningMenu(Menu)`, `endTuningSession(int)`, `calcPoliceFine`, `check4warnings`.
+
+**Event delivery contract (from the scripts).** `handleEvent(GameRef source, int event, String params)`; `params` is a space separated token list parsed with
+`String.token(i)`. Known event kinds and parameter layouts as consumed by Garage/CarMarket/Track:
+
+| Event | params tokens |
+|---|---|
+| `EVENT_COLLISION` | token0 = id of the colliding object (Garage compares with the jack vehicle id) |
+| `EVENT_CURSOR` | token0 = `EC_*` code (1..16), then per code: `EC_LDROP`: dragged object id, target id, 3 floats drop position, button physics id; `EC_RCLICK`: object id, 3 floats hit position; click/hover: object id |
+| `EVENT_TRIGGER_ON/OFF` | (handler `event_handlerRocFence` etc.) trigger node as `source` |
+| `EVENT_COMMAND` | the command string itself (also used scriptside by Valocity on `map`) |
+| `EVENT_TIME` | int overload: `param` = id passed to `addTimer` |
+
+## 4. Event masks and timers
+
+* `setEventMask(mask)` replaces the object's accepted events, `clearEventMask(EVENT_ANY)` is the standard teardown. Without `EVENT_TIME` in the mask timers are silent.
+* `addTimer(seconds, id)` is one-shot; periodic behaviour re-arms in the handler (GameLogic every 10 s with id 0, Garage every 1 s with id 2).
+* `addNotification(source, mask, EVENT_SAME, null[, "handlerName"])` subscribes THIS object to `source`'s events (the handler defaults to `handleEvent`).
+* `queueEvent(source, code, params)` posts; `command(s)` = `queueEvent(null, EVENT_COMMAND, s)`.
+
+## 5. Command strings (the `GameRef.command` / `EVENT_COMMAND` vocabulary)
+
+Native objects are driven through text commands; this is the second large interface after the natives. The exe parses them with `sscanf` formats
+(`%*s` skips the verb). The table merges (a) every verb the shipped scripts send (call-site count and receivers) with (b) the formats found
+in the exe next to the verb word. Groups by exe address: Controller 0x60d848..0x60d90c (copy at 0x612b24), bot brain 0x60d930..0x60da38, camera 0x60dcbc..0x60e008,
+car 0x61047c..0x6108fc, cursor/ground 0x610ce0..0x610fd8, part 0x6124b4..0x6125c4 (group membership by address adjacency is M).
+
+| Verb | Script sends | Typical receivers | exe sscanf format (VA) | Example script argument |
+|---|---|---|---|---|
+| abs | 1 | ? | `%*s %f` (0x610548) | `("abs " + p0)` |
+| activate | 2 | cursor | `%*s %d` (0x60de90); `%*s %d %d %d` (0x6104c4) | `("activate " + controller.id())` |
+| add_light | 0 |  | `%*s %d %d` (0x6107a8) |  |
+| add_linked | 0 |  | `%*s %d %d %d %d` (0x610840) |  |
+| add_mslot | 0 |  | `%*s %d %d` (0x610898) |  |
+| add_part | 0 |  | `%*s %d` (0x610770); `%*s %d` (0x6125a0) |  |
+| add_rollbar | 2 | the_car | `%*s %d %d %f %f` (0x610808) | `((("add_rollbar 0 1 " + force) + " ") + damping)` |
+| add_wing | 0 |  | `%*s %d %d` (0x6107d8) |  |
+| addroll | 0 |  | `%*s %f` (0x610670) |  |
+| AI_BeginRace | 9 | brain | `%*s %f` (0x60d960) | `"AI_BeginRace 0.5"` |
+| ai_cheat | 0 |  | `%*s %f %f %f %f %f %f %f` (0x6108fc) |  |
+| AI_follow | 2 | brain | `%*s %f,%f,%f %d` (0x60d990) | `((("AI_follow 0,0," + p1) + " ") + p0.id())` |
+| AI_GoToTarget | 1 | brain | `%*s %f,%f,%f %f,%f,%f` (0x60d9d4) | `("AI_GoToTarget " + p0.toString())` |
+| AI_GoToTraffic | 1 | brain |  | `"AI_GoToTraffic"` |
+| AI_horn | 0 |  | `%*s %d` (0x60da24) |  |
+| AI_level | 1 | brain | `%*s %f` (0x60da00) | `("AI_level " + aiLevel)` |
+| AI_NightRace | 1 | brain | `%*s %f` (0x60d930) | `"AI_NightRace"` |
+| AI_params | 2 | brain | `%*s %f %f` (0x60da38) | `"AI_params 50.0 50.35"` |
+| AI_race | 1 | brain | `%*s %f,%f,%f %d` (0x60d940) | `((("AI_race " + p0.toString()) + " ") + p1.car.id())` |
+| AI_smooth | 0 |  | `%*s %f` (0x60da14) |  |
+| AI_spline | 1 | brain | `%*s %f %s %d` (0x60d974) | `((((("AI_spline " + p0) + " ") + p1) + " ") + p2)` |
+| AI_stop | 1 | brain |  | `"AI_stop"` |
+| AI_suspend | 2 | brain |  | `"AI_suspend"` |
+| angle | 21 | cam | `%*s %f %f %f %f` (0x60df98) | `"angle 0 4.0 0.7853"` |
+| asr | 1 | ? | `%*s %f` (0x610554) | `("asr " + p0)` |
+| autozoom | 1 | cam | `%*s %d %f %f %f` (0x60df80) | `((("autozoom 1 0 " + (0.2f + (Math.random() * 0.8f))) + " ") + (Math.random() * 0.2f))` |
+| brake | 13 | car |  | `"brake"` |
+| camera | 16 | brain, controller, v1 | `%*s %d` (0x60d8a8); `%*s %d` (0x612bb0) | `("camera " + cam.id())` |
+| color | 0 |  | `%*s %d` (0x610d10) |  |
+| colorscheme | 0 |  | `%*s %d` (0x61258c) |  |
+| control | 0 |  | `%*s %d` (0x60d8ec); `%*s %d` (0x60deb4) |  |
+| controllable | 16 | controller, brain | `%*s %d` (0x60d8cc); `%*s %d` (0x612bd4) | `("controllable " + player.car.id())` |
+| corpse | 6 | car, p0, dummycar | `%*s %d %d` (0x610510) | `"corpse 0 0"` |
+| cruise | 1 | ? | `%*s %f` (0x610598) | `("cruise " + p0)` |
+| cursor | 1 | cursor | `%*s %d %d %d` (0x610ce0) | `((((("cursor " + vp.id()) + " ") + camera.id()) + " ") + cursor.id())` |
+| damage_multiplier | 1 | ? | `%*s %f` (0x6105b4) | `("damage_multiplier " + p0)` |
+| deactivate | 1 | controlledcam | `%*s %d` (0x6104e0) | `"deactivate"` |
+| decal | 0 |  | `%*s %d,%d %f,%f,%f %f,%f,%f %f %f %d %d` (0x610720); `%*s %d,%d %f,%f,%f %f,%f,%f %f %f %d %d` (0x61253c) |  |
+| device | 1 | v7 | `%*s %d` (0x60d848); `%*s %d` (0x612b24) | `("device " + v4)` |
+| difflock | 2 | ? | `%*s %f` (0x610574) | `("difflock " + diff_lock)` |
+| disable | 1 | cursor |  | `"disable"` |
+| dist | 15 | cam, p0 | `%*s %f %f` (0x60df18) | `"dist 2.5 4.6"` |
+| enable | 1 | cursor |  | `"enable"` |
+| esp | 0 |  | `%*s %f` (0x610560) |  |
+| filter | 17 | car | `%*s %d %d` (0x6108c4); `%*s %d %d` (0x6125c4) | `("filter 1 " + filterEngine)` |
+| flap_toggle | 1 | v8 |  | `"flap_toggle"` |
+| fog | 0 |  | `%*s %d &f &f` (0x60de64); `%*s %d &f &f` (0x610fb0) |  |
+| follow | 0 |  | `%*s %d` (0x60dff4) |  |
+| force | 8 | cam, p0 | `%*s %f %f %f` (0x60df50) | `"force 0.3 0.5 -0.7"` |
+| height | 1 | cam | `%*s %f` (0x60dfc0) | `"height 1.9"` |
+| hide | 6 | renderer, cam | `%*s %d` (0x60de7c); `%*s %d %d` (0x6104ac) | `("hide " + osd.getViewport().id())` |
+| idle | 34 | car |  | `"idle"` |
+| install | 5 | v4, v6, v7 | `%*s %d %d %d %d %d` (0x6106b0); `%*s %d %d %d %d %d %f %f %f` (0x6124b4) | `((((((((("install " + 0) + " ") + id()) + " ") + v5) + " ") + id()) + " ") + v4)` |
+| leave | 15 | controller, brain | `%*s %d` (0x60d8dc); `%*s %d` (0x612be4) | `("leave " + player.car.id())` |
+| lock | 4 | cursor |  | `"lock"` |
+| look | 23 | cam, p0, camera | `%*s %d %f,%f,%f %f,%f,%f %f %f,%f,%f` (0x60dec4) | `(("look " + cars[curcar].id()) + " 0,0,0 0,0,0")` |
+| lost | 0 |  | `%*s %d` (0x60d8fc); `%*s %d` (0x612c04) |  |
+| maxpitch | 0 |  | `%*s %f` (0x60dfe4) |  |
+| mesh | 0 |  | `%*s %d` (0x610704); `%*s %d` (0x612520) |  |
+| mode | 1 | cursor | `%*s %d %1s %d` (0x610cf8) | `((("mode 0 " + pointer) + " ") + p0.id())` |
+| move | 18 | cam, p0, Cam | `%*s %d %f,%f,%f %f %f,%f,%f` (0x60def4); `%*s %f,%f` (0x610da4) | `(((("move " + map.id()) + " ") + getCameraPos(curcar).toString()) + " 0.01")` |
+| next | 0 |  | `%*s %d` (0x6104f0) |  |
+| obs_add | 4 | map | `%*s %d` (0x610fc8) | `("obs_add " + player.car.id())` |
+| obs_rem | 3 | map | `%*s %d` (0x610fd8) | `("obs_rem " + player.car.id())` |
+| osd | 6 | controller, raceBot, demoBot | `%*s %d` (0x60d868); `%*s %d %d` (0x610520) | `"osd 0"` |
+| paint | 0 |  | `%*s %f %f %d %d %f` (0x610750); `%*s %f %f %d %d %f` (0x61256c) |  |
+| pickup | 0 |  | `%*s %d %d` (0x6105d4) |  |
+| pitch | 0 |  | `%*s %f` (0x60dfd0) |  |
+| prev | 0 |  | `%*s %d` (0x610500) |  |
+| relmove | 0 |  | `%*s %f,%f` (0x610d88) |  |
+| reload | 10 | car, prime |  | `"reload"` |
+| rem_light | 0 |  | `%*s %d %d` (0x6107c0) |  |
+| rem_linked | 0 |  | `%*s %d %d %d %d` (0x61086c) |  |
+| rem_mslot | 0 |  | `%*s %d %d` (0x6108b0) |  |
+| rem_part | 0 |  | `%*s %d` (0x610784); `%*s %d` (0x6125b4) |  |
+| rem_rollbar | 0 |  | `%*s %d %d %f %f` (0x610824) |  |
+| rem_wing | 0 |  | `%*s %d %d` (0x6107f0) |  |
+| remove | 2 | v8, p1 | `%*s %d %d` (0x6106cc); `%*s %d %d` (0x6124d8) | `("remove 0 " + map.id())` |
+| render | 19 | cam, cameraTarget, Cam | `%*s %d` (0x60dccc); `%*s %d %d %d %d %d` (0x60de34) | `((("render " + osd.getViewport().id()) + " 0 0 1 ") + (Viewport.RENDERFLAG_CLEARDEPTH \| Viewport.RENDERFLAG_CL` |
+| renderinstance | 8 | controller, brain | `%*s %d` (0x60d898); `%*s %d` (0x612ba0) | `("renderinstance " + player.render.id())` |
+| repair | 1 | ? | `%*s %d` (0x6124f4) | `"repair"` |
+| reset | 32 | car, chassis, dummycar |  | `"reset"` |
+| roll | 5 | cam | `%*s %f` (0x60dfb0) | `("roll " + (Math.random() - 0.5f))` |
+| sens | 1 | cursor |  | `"sens"` |
+| setcontrol | 1 | v7 |  | `"setcontrol"` |
+| sethorn | 5 | car, dummycar | `%*s %d` (0x6106a0) | `"sethorn 1"` |
+| setpitch | 0 |  | `%*s %f` (0x610660) |  |
+| setsteer | 35 | car, chassis, Car[v1] | `%*s %f` (0x61064c) | `(("setsteer " + (Math.random() * 1.0f)) - 0.5f)` |
+| setvel | 0 |  | `%*s %f,%f,%f,%f,%f,%f` (0x610680) |  |
+| simulate | 15 | cam | `%*s %d` (0x60e008) | `"simulate 1"` |
+| smooth | 10 | cam, p0 | `%*s %f %f` (0x60df2c) | `"smooth 0.05 0.5"` |
+| start | 33 | car, cars[curcar], cars[0] |  | `"start"` |
+| status | 0 |  | `%*s %d` (0x60dcbc) |  |
+| steerhelp | 1 | ? | `%*s %f` (0x610588) | `("steerhelp " + p0)` |
+| stop | 31 | car, cars[p1], p0 |  | `"stop"` |
+| suspend | 10 | car |  | `"suspend"` |
+| team | 0 |  | `%*s %d` (0x60d90c); `%*s %d` (0x6105c4) |  |
+| texture | 5 | car, CurrentCar, dummycar | `%*s %d %d` (0x6106f0); `%*s %d` (0x612510) | `(("texture " + GameLogic.CARCOLORS[ColorIDX]) + " 1")` |
+| torque | 8 | cam, p0 | `%*s %f` (0x60df40) | `"torque 0.06"` |
+| transmission | 1 | ? | `%*s %d` (0x61053c) | `("transmission " + p0)` |
+| unlock | 4 | cursor |  | `"unlock"` |
+| viewport | 6 | v1, controller, brain | `%*s %d` (0x60d85c); `%*s %d` (0x612b64) | `"viewport 0"` |
+| wakeup | 4 | the_car, ? |  | `"wakeup"` |
+| zoom | 8 | cam, Cam, p0 | `%*s %f %f` (0x60df68) | `"zoom 60 5"` |
+
+Verbs the scripts send without an exe format are (M) plain words matched by string compare: `idle`, `start`, `stop`, `reset`, `brake`, `suspend`,
+`reload`, `wakeup`, `lock`, `unlock`, `flap_toggle`, `AI_stop`, `AI_suspend`, `AI_GoToTraffic`, `enable`, `disable`, `sens`, `setcontrol`.
+Note the exe's own typo in the `fog` formats (`%*s %d &f &f`, 0x60de64 and 0x610fb0): the original parser would read a literal `&f` token, so
+`fog` is probably unusable and no script sends it. Several formats are listed twice (Controller copy at 0x612b24, Part copy 0x6124b4..): the same verbs
+are accepted by more than one native kind.
+
+### Part commands in detail
+
+`install` (exe 0x475f6d..): `sscanf(s, "%*s %d %d %d %d %d %f %f %f")` -> ints i1..i5 and floats x,y,z; with fewer than 8 fields the position is ignored.
+Measured use of the ints: i2 -> reference to the car/target instance (stored at part+0x60), i4 -> reference to the target PART, i5 -> slot id
+on that part (passed by pointer to the install check 0x473b10, 0 = choose), i1 and i3 are parsed but not used by this handler (scripts pass 0 for i1;
+`Part.load` passes the child's own slot id in i3). If the check fails the command returns 0, otherwise the attach routine 0x474600 runs and the engine then
+calls the script callbacks of section 3. `remove` (0x476091..): `"%*s %d %d"`, the second int is the instance the part is moved to (the map).
+
+## 6. The cfg side: parts, slots and `attach`
+
+See java.game.parts.md ("The part / slot / attach protocol"): the cfg declares geometry and ids (`slot`, `attach`, `compatible`, `slottype`, `slotdmgmode`,
+`stockpart`), the script classes hard-code the same ids and compute the physics numbers, the engine matches both through `install` and reads the Chassis
+fields back by name.
