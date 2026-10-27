@@ -91,17 +91,29 @@ public sealed class RenderScene
 
     public static RenderScene Empty(SurfaceTable table) => new(table, []);
 
-    public static RenderScene Build(InstanceForest forest, SurfaceTable table)
+    public static RenderScene Build(InstanceForest forest, SurfaceTable table) => Build([(forest, 0)], table);
+
+    /// <summary>Several forests in one scene (a map plus the archives its EXTP chunk attaches); each forest's POLY
+    /// material indices are shifted by its offset into the merged <paramref name="table"/>.</summary>
+    public static RenderScene Build(IEnumerable<(InstanceForest Forest, int MaterialOffset)> forests, SurfaceTable table)
     {
         var chunks = new List<RenderChunk>();
         var bad = 0;
-        foreach (var node in forest.AllNodes())
+        foreach (var (forest, offset) in forests)
         {
-            foreach (var c in node.Chunks.Where(c => c.Tag == InstanceChunk.TagPoly))
+            foreach (var node in forest.AllNodes())
             {
-                var subs = ParsePoly(c.Payload);
-                bad += subs.Count(s => s.Material >= table.Count);
-                chunks.Add(new RenderChunk { NodeId = node.Record.Id, NodeName = node.Record.Alias, Box = node.Box, Submeshes = subs });
+                foreach (var c in node.Chunks.Where(c => c.Tag == InstanceChunk.TagPoly))
+                {
+                    var subs = ParsePoly(c.Payload);
+                    if (offset != 0)
+                    {
+                        subs = subs.Select(s => new RenderSubmesh { Material = s.Material + offset, VertexCount = s.VertexCount, VertexData = s.VertexData, Indices = s.Indices }).ToList();
+                    }
+
+                    bad += subs.Count(s => s.Material >= table.Count);
+                    chunks.Add(new RenderChunk { NodeId = node.Record.Id, NodeName = node.Record.Alias, Box = node.Box, Submeshes = subs });
+                }
             }
         }
 

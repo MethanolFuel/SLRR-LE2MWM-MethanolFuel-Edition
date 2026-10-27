@@ -28,6 +28,10 @@ public sealed class PlacedObject
     public required InstanceBox RecordBox { get; init; }
 
     public ObjectType? Type { get; init; }
+
+    /// <summary>Archive whose reference table <see cref="GameType"/> is relative to: null = <see cref="StaticWorld.Archive"/>,
+    /// otherwise an archive attached through an <c>EXTP</c> chunk (see <see cref="StaticWorld.Extensions"/>).</summary>
+    public RpakArchive? SourceArchive { get; init; }
 }
 
 /// <summary>A movable (mass &gt; 0) body of a placed object, for the physics engine.</summary>
@@ -95,8 +99,16 @@ public sealed class StaticWorld
     /// <summary>Path of the .scm the root names (<c>params ...,mesh.scm</c>), or null.</summary>
     public string? ScmPath { get; init; }
 
+    /// <summary>Archives attached through <c>EXTP</c> chunks and merged into this world (reference-table names, e.g.
+    /// <c>maps\city2.rpk</c> for city.rpk), in load order. Their surfaces follow this archive's in <see cref="Surfaces"/>.</summary>
+    public IReadOnlyList<WorldExtension> Extensions { get; init; } = [];
+
     public IGroundQuery Ground => Collision;
 }
+
+/// <summary>An archive merged into a <see cref="StaticWorld"/> through an <c>EXTP</c> chunk: its name in the referencing
+/// archive's table, the archive, and the offset of its materials in the merged surface table.</summary>
+public sealed record WorldExtension(string Name, RpakArchive Archive, int SurfaceOffset, int SurfaceCount, string? ScmPath);
 
 /// <summary>Options for <see cref="WorldLoader"/>.</summary>
 public sealed class WorldLoadOptions
@@ -108,6 +120,12 @@ public sealed class WorldLoadOptions
     public bool IncludeObjectCollision { get; init; } = true;
 
     public bool BuildRenderScene { get; init; } = true;
+
+    /// <summary>Merge the archives named by <c>EXTP</c> chunks (u32 reference-table slots; city.rpk's root carries slot 3 =
+    /// maps\city2.rpk) into the world. Needs <see cref="GameRoot"/>. The exe's tree parser reads EXTP and loads resource
+    /// <c>slot &lt;&lt; 16</c> (MEASURED 0x53e0d6 / 0x544370); merging the geometry is GUESSED from that and from the data
+    /// (the city's road graph and Valo City's garages lie in city2.rpk's area, see docs/gaps/roads.md).</summary>
+    public bool FollowExtensions { get; init; } = true;
 }
 
 public static class WorldLoader
@@ -135,14 +153,149 @@ public static class WorldLoader
         var mark = sw.Elapsed.TotalMilliseconds;
 
         var forest = InstanceForest.Read(archive);
+        var catalog = options.GameRoot is { } gr ? new ObjectCatalog(gr) : null;
+
+        // the archive itself plus every archive its EXTP chunks attach (recursively, each archive once)
+        var parts = new List<Part> { new(null, archive, forest, catalog) };
+        if (options.FollowExtensions && options.GameRoot is { } extRoot)
+        {
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { name };
+            for (var i = 0; i < parts.Count; i++)
+            {
+                foreach (var slot in ExtensionSlots(parts[i].Forest))
+                {
+                    if (slot < 1 || slot > parts[i].Archive.References.Count)
+                    {
+                        continue;
+                    }
+
+                    var refName = parts[i].Archive.References[slot - 1].Name;
+                    var partCatalog = new ObjectCatalog(extRoot);
+                    if (!seen.Add(Path.GetFileNameWithoutExtension(refName.Replace('\\', '/'))) || partCatalog.ResolvePath(refName) is not { } refPath)
+                    {
+                        continue;
+                    }
+
+                    var extArchive = RpakArchive.Read(refPath);
+                    parts.Add(new Part(refName, extArchive, InstanceForest.Read(extArchive), partCatalog));
+                }
+            }
+        }
+
         stats.ReadForestMs = sw.Elapsed.TotalMilliseconds - mark;
         mark = sw.Elapsed.TotalMilliseconds;
 
-        var catalog = options.GameRoot is { } gr ? new ObjectCatalog(gr) : null;
-
-        // surface table from the .scm named by the root
+        // PHYS: world-space triangles (already placed in the tree; MEASURED vertex boxes lie inside the node boxes in map coordinates).
+        // Each part's surface ids index its own .scm; extension parts are shifted behind the previous parts' materials.
+        var soup = new TriangleSoupBuilder();
         string? scmPath = null;
-        SurfaceTable? table = null;
+        var surfaces = new List<SurfaceInfo>();
+        var extensions = new List<WorldExtension>();
+        var renderParts = new List<(InstanceForest, int)>();
+        foreach (var part in parts)
+        {
+            var offset = surfaces.Count;
+            var (partTable, partScm) = ReadSurfaceTable(part.Forest, part.Catalog);
+            var maxSurface = -1;
+            foreach (var node in part.Forest.AllNodes())
+            {
+                stats.Nodes++;
+                foreach (var chunk in node.Chunks)
+                {
+                    if (chunk.Tag == InstanceChunk.TagPhys)
+                    {
+                        stats.PhysChunks++;
+                        maxSurface = Math.Max(maxSurface, AddPhys(chunk.Payload, (int)node.Record.Id, soup, stats, offset));
+                    }
+                    else if (chunk.Tag == InstanceChunk.TagPoly)
+                    {
+                        stats.PolyChunks++;
+                    }
+                }
+            }
+
+            // the .scm may list fewer materials than the PHYS data uses (or be missing): pad with anonymous entries so every id resolves
+            var maxLocal = maxSurface < 0 ? -1 : maxSurface - offset;
+            partTable ??= SurfaceTable.Anonymous(maxLocal + 1);
+            var count = Math.Max(partTable.Count, maxLocal + 1);
+            for (var i = 0; i < count; i++)
+            {
+                surfaces.Add(i < partTable.Count ? Reindex(partTable.Items[i], offset + i) : new SurfaceInfo(offset + i, "material " + i));
+            }
+
+            if (part.RefName is null)
+            {
+                scmPath = partScm;
+            }
+            else
+            {
+                extensions.Add(new WorldExtension(part.RefName, part.Archive, offset, count, partScm));
+            }
+
+            renderParts.Add((part.Forest, offset));
+        }
+
+        var table = new SurfaceTable(surfaces);
+        stats.MapTriangles = soup.Count;
+        stats.CollisionExtractMs = sw.Elapsed.TotalMilliseconds - mark;
+        mark = sw.Elapsed.TotalMilliseconds;
+
+        // placed objects
+        var objects = new List<PlacedObject>();
+        var dynamics = new List<DynamicBody>();
+        var scxCache = new Dictionary<string, (Vector3[] V, int[] I)?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var part in parts)
+        {
+            AddObjects(part, options, stats, soup, objects, dynamics, scxCache);
+        }
+
+        stats.Objects = objects.Count;
+        stats.ObjectsMs = sw.Elapsed.TotalMilliseconds - mark;
+        mark = sw.Elapsed.TotalMilliseconds;
+
+        var collision = new CollisionWorld(soup, table);
+        stats.DegenerateDropped = collision.DegenerateDropped;
+        stats.BvhBuildMs = sw.Elapsed.TotalMilliseconds - mark;
+        mark = sw.Elapsed.TotalMilliseconds;
+
+        var render = options.BuildRenderScene ? RenderScene.Build(renderParts, table) : RenderScene.Empty(table);
+        stats.RenderSceneMs = sw.Elapsed.TotalMilliseconds - mark;
+        stats.TotalMs = sw.Elapsed.TotalMilliseconds;
+
+        return new StaticWorld
+        {
+            Name = name,
+            Archive = archive,
+            Surfaces = table,
+            Collision = collision,
+            Render = render,
+            Objects = objects,
+            DynamicBodies = dynamics,
+            Stats = stats,
+            ScmPath = scmPath,
+            Extensions = extensions,
+        };
+    }
+
+    private sealed record Part(string? RefName, RpakArchive Archive, InstanceForest Forest, ObjectCatalog? Catalog);
+
+    /// <summary>Reference-table slots named by the forest's EXTP chunks (payload = u32 slots; MEASURED: city.rpk root, payload 3).</summary>
+    public static IEnumerable<int> ExtensionSlots(InstanceForest forest)
+    {
+        foreach (var node in forest.AllNodes())
+        {
+            foreach (var c in node.Chunks.Where(c => c.Tag == InstanceChunk.TagExtp))
+            {
+                for (var o = 0; o + 4 <= c.Payload.Length; o += 4)
+                {
+                    yield return (int)BinaryPrimitives.ReadUInt32LittleEndian(c.Payload.AsSpan(o));
+                }
+            }
+        }
+    }
+
+    private static (SurfaceTable? Table, string? Path) ReadSurfaceTable(InstanceForest forest, ObjectCatalog? catalog)
+    {
         foreach (var root in forest.Roots)
         {
             var p = root.Rsd?.Params;
@@ -155,48 +308,32 @@ public static class WorldLoader
                 .FirstOrDefault(s => s.EndsWith(".scm", StringComparison.OrdinalIgnoreCase));
             if (scm is not null && catalog?.ResolvePath(scm) is { } path)
             {
-                scmPath = path;
-                table = SurfaceTable.TryParse(File.ReadAllBytes(path));
-                break;
+                return (SurfaceTable.TryParse(File.ReadAllBytes(path)), path);
             }
         }
 
-        // PHYS: world-space triangles (already placed in the tree; MEASURED vertex boxes lie inside the node boxes in map coordinates)
-        var soup = new TriangleSoupBuilder();
-        var maxSurface = -1;
-        foreach (var node in forest.AllNodes())
-        {
-            stats.Nodes++;
-            foreach (var chunk in node.Chunks)
-            {
-                if (chunk.Tag == InstanceChunk.TagPhys)
-                {
-                    stats.PhysChunks++;
-                    maxSurface = Math.Max(maxSurface, AddPhys(chunk.Payload, (int)node.Record.Id, soup, stats));
-                }
-                else if (chunk.Tag == InstanceChunk.TagPoly)
-                {
-                    stats.PolyChunks++;
-                }
-            }
-        }
+        return (null, null);
+    }
 
-        stats.MapTriangles = soup.Count;
-        stats.CollisionExtractMs = sw.Elapsed.TotalMilliseconds - mark;
-        mark = sw.Elapsed.TotalMilliseconds;
+    private static SurfaceInfo Reindex(SurfaceInfo s, int index) => s.Index == index ? s : new SurfaceInfo(index, s.Name)
+    {
+        Class = s.Class,
+        Friction = s.Friction,
+        RollResistance = s.RollResistance,
+        CollisionCoeff = s.CollisionCoeff,
+        SkidMarkResource = s.SkidMarkResource,
+        SkidMarkColor = s.SkidMarkColor,
+        SkidParticleResource = s.SkidParticleResource,
+        SkidSoundResource = s.SkidSoundResource,
+        HasExplicitProperties = s.HasExplicitProperties,
+    };
 
-        table ??= SurfaceTable.Anonymous(maxSurface + 1);
-        if (table.Count <= maxSurface)
-        {
-            // the .scm lists fewer materials than the PHYS data uses: pad with anonymous entries so every id resolves
-            table = new SurfaceTable(table.Items.Concat(Enumerable.Range(table.Count, maxSurface + 1 - table.Count).Select(i => new SurfaceInfo(i, "material " + i))));
-        }
-
-        // placed objects
-        var objects = new List<PlacedObject>();
-        var dynamics = new List<DynamicBody>();
-        var scxCache = new Dictionary<string, (Vector3[] V, int[] I)?>(StringComparer.OrdinalIgnoreCase);
-        foreach (var n in forest.AllNodes().Where(x => x.IsObject))
+    private static void AddObjects(Part part, WorldLoadOptions options, WorldStats stats, TriangleSoupBuilder soup, List<PlacedObject> objects,
+        List<DynamicBody> dynamics, Dictionary<string, (Vector3[] V, int[] I)?> scxCache)
+    {
+        var archive = part.Archive;
+        var catalog = part.Catalog;
+        foreach (var n in part.Forest.AllNodes().Where(x => x.IsObject))
         {
             var rsd = n.Rsd;
             if (rsd?.GameType is not { } gt || rsd.Placement is not { } pl)
@@ -216,6 +353,7 @@ public static class WorldLoader
                 Transform = Placement.Transform(pos, pl.Yaw, pl.Pitch, pl.Roll),
                 RecordBox = n.Box,
                 Type = catalog?.Resolve(archive, gt),
+                SourceArchive = part.RefName is null ? null : archive,
             };
             objects.Add(obj);
             if (obj.Type is not { Bodies.Count: > 0 } t)
@@ -244,32 +382,6 @@ public static class WorldLoader
                 }
             }
         }
-
-        stats.Objects = objects.Count;
-        stats.ObjectsMs = sw.Elapsed.TotalMilliseconds - mark;
-        mark = sw.Elapsed.TotalMilliseconds;
-
-        var collision = new CollisionWorld(soup, table);
-        stats.DegenerateDropped = collision.DegenerateDropped;
-        stats.BvhBuildMs = sw.Elapsed.TotalMilliseconds - mark;
-        mark = sw.Elapsed.TotalMilliseconds;
-
-        var render = options.BuildRenderScene ? RenderScene.Build(forest, table) : RenderScene.Empty(table);
-        stats.RenderSceneMs = sw.Elapsed.TotalMilliseconds - mark;
-        stats.TotalMs = sw.Elapsed.TotalMilliseconds;
-
-        return new StaticWorld
-        {
-            Name = name,
-            Archive = archive,
-            Surfaces = table,
-            Collision = collision,
-            Render = render,
-            Objects = objects,
-            DynamicBodies = dynamics,
-            Stats = stats,
-            ScmPath = scmPath,
-        };
     }
 
     /// <summary>Body-local to object-local matrix (row vectors).</summary>
@@ -277,7 +389,7 @@ public static class WorldLoader
         Placement.Rotation(b.Angles.X, b.Angles.Y, b.Angles.Z) * Matrix4x4.CreateTranslation(b.Position);
 
     /// <summary>Parses a PHYS payload straight into the soup (same layout as <c>PhysMesh</c>). Returns the largest surface id seen.</summary>
-    private static int AddPhys(byte[] payload, int source, TriangleSoupBuilder soup, WorldStats stats)
+    private static int AddPhys(byte[] payload, int source, TriangleSoupBuilder soup, WorldStats stats, int surfaceOffset = 0)
     {
         var span = payload.AsSpan();
         if (span.Length < 4)
@@ -308,7 +420,7 @@ public static class WorldLoader
         for (var t = 0; t < triCount; t++)
         {
             var o = 4 + (t * 28);
-            var surf = BinaryPrimitives.ReadUInt32LittleEndian(span[o..]);
+            var surf = BinaryPrimitives.ReadUInt32LittleEndian(span[o..]) + (uint)surfaceOffset;
             var a = BinaryPrimitives.ReadUInt32LittleEndian(span[(o + 4)..]);
             var b = BinaryPrimitives.ReadUInt32LittleEndian(span[(o + 8)..]);
             var c = BinaryPrimitives.ReadUInt32LittleEndian(span[(o + 12)..]);

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Roads</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
+    <ProjectReference Include="..\Slrr.Formats\Slrr.Formats.csproj" />
+    <ProjectReference Include="..\Slrr.World\Slrr.World.csproj" />
+    <ProjectReference Include="..\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.MapNatives\Slrr.Engine.MapNatives.csproj" />
+  </ItemGroup>
+</Project>
