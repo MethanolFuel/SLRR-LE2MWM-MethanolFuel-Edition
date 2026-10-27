@@ -1,0 +1,4374 @@
+{
+ "summary": {
+  "addresses": 69,
+  "by_origin": {
+   "mod variable over former vanilla string": 39,
+   "vanilla variable": 30
+  },
+  "class_vs_source_address_mismatches": [],
+  "rawedit_class_methods": [
+   [
+    "GetIntFromRawAddress",
+    "(Ljava.lang.IntValueAddress;)I",
+    "0x9"
+   ],
+   [
+    "GetFloatFromRawAddress",
+    "(Ljava.lang.FloatValueAddress;)F",
+    "0x9"
+   ],
+   [
+    "SetFloatOnRawAddress",
+    "(Ljava.lang.FloatValueAddress;F)V",
+    "0x9"
+   ],
+   [
+    "SetIntOnRawAddress",
+    "(Ljava.lang.IntValueAddress;I)V",
+    "0x9"
+   ],
+   [
+    "getI",
+    "(I)I",
+    "0x48"
+   ],
+   [
+    "getF",
+    "(I)F",
+    "0x48"
+   ],
+   [
+    "setF",
+    "(IF)I",
+    "0x48"
+   ],
+   [
+    "setI",
+    "(II)I",
+    "0x48"
+   ],
+   [
+    "CentCur",
+    "(I)I",
+    "0x48"
+   ]
+  ],
+  "class_sites": 8,
+  "class_files_with_sites": [
+   "parts/scripts/bodypart/Chassis.class"
+  ],
+  "java_source_hits": 37,
+  "java_source_files": [
+   "parts/scripts/bodypart/Src/Chassis.java",
+   "parts/scripts/bodypart/Src/HeadlightController.java",
+   "parts/scripts/src/SfxTable.java",
+   "sl/Scripts/game/src/Catalog.java",
+   "src/Catalog.java"
+  ],
+  "patch_inventory": {
+   ".text": {
+    "ranges": 125,
+    "bytes": 2128
+   },
+   ".rdata": {
+    "ranges": 0,
+    "bytes": 0
+   },
+   ".data": {
+    "ranges": 16,
+    "bytes": 575
+   },
+   ".rsrc": {
+    "ranges": 0,
+    "bytes": 0
+   },
+   ".reloc": {
+    "ranges": 0,
+    "bytes": 0
+   },
+   ".code": {
+    "nonzero_bytes": 1372,
+    "last_used": "0x7c0660"
+   }
+  },
+  "by_confidence": {
+   "H": 28,
+   "M": 38,
+   "L": 3
+  },
+  "by_group": {
+   "Ai": 5,
+   "Clock": 2,
+   "Damage": 8,
+   "Drivetrain": 5,
+   "Graphics": 10,
+   "Physics": 24,
+   "ResourceBudget": 13,
+   "Wear": 2
+  },
+  "relative_offsets": [
+   [
+    "WheelRef.ptr + 0xC8",
+    "float",
+    "WheelRef",
+    "Physics.Wheel.SteerAngle (WheelRef.getSteer reads [obj+0xC8], WheelRef.setSteer writes it; both natives at 0x440e50/0x440e90 in Redline)",
+    "H (field identity); M (script uses it as max steer)"
+   ],
+   [
+    "Chassis.getIndexedAddr(0x20FC - k)",
+    "float/int",
+    "Chassis",
+    "named telemetry/state fields of the native chassis object (RPM, Mileage, gear, pedals, LEDs). Offsets are relative to the Chassis C++ object; see table in rawedit.md",
+    "M"
+   ],
+   [
+    "SfxTable.AddItemPtr(...) + 0x10..0x20",
+    "float",
+    "SfxTable",
+    "fields of the freshly added sound item (+0x10 pitch; +0x14..+0x20 unknown) - all uses are commented out in the source",
+    "L"
+   ]
+  ]
+ },
+ "chassis_indexed": [
+  {
+   "name": "IndexedData_Mileage",
+   "offset": "0x20fc",
+   "expr": "0x20FC",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_RPM",
+   "offset": "0x1f4c",
+   "expr": "0x20FC-0x1B0",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_GearStrength",
+   "offset": "0x1dd8",
+   "expr": "0x20FC-0x324",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_CarRuntime",
+   "offset": "0x1e2c",
+   "expr": "0x20FC-0x2D0",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_ExhaustActivity",
+   "offset": "0x1e28",
+   "expr": "0x20FC-0x2D4",
+   "comment": "related to turbo but returns values even when there is no turbo installed"
+  },
+  {
+   "name": "IndexedData_CurrentSteering1",
+   "offset": "0x1dac",
+   "expr": "0x20FC-0x350",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_CurrentSteering2",
+   "offset": "0x1db0",
+   "expr": "0x20FC-0x34C",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_CurrentSteering3",
+   "offset": "0x1f10",
+   "expr": "0x20FC-0x1EC",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_Handbreak",
+   "offset": "0x1dc0",
+   "expr": "0x20FC-0x33C",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_BreakStrength",
+   "offset": "0x1db8",
+   "expr": "0x20FC-0x344",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_ThrottleStrength",
+   "offset": "0x1db4",
+   "expr": "0x20FC-0x348",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_ClutchStrength",
+   "offset": "0x1dbc",
+   "expr": "0x20FC-0x340",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_NitroStrength",
+   "offset": "0x1dc4",
+   "expr": "0x20FC-0x338",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_NOSLevel",
+   "offset": "0x1ef8",
+   "expr": "0x20FC-0x204",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_EngineWear",
+   "offset": "0x1e38",
+   "expr": "0x20FC-0x2C4",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_HandbreakLED",
+   "offset": "0x3cc",
+   "expr": "0x20FC-0x1D30",
+   "comment": "return 0.0 if it is not lit returns something else if it is"
+  },
+  {
+   "name": "IndexedData_OverDriveLED",
+   "offset": "0x3dc",
+   "expr": "0x20FC-0x1D20",
+   "comment": "return 0.0 if it is not lit returns something else if it is"
+  },
+  {
+   "name": "IndexedData_ASRLED",
+   "offset": "0x3bc",
+   "expr": "0x20FC-0x1D40",
+   "comment": "return 0.0 if it is not lit returns something else if it is"
+  },
+  {
+   "name": "IndexedData_ABSLED",
+   "offset": "0x3ac",
+   "expr": "0x20FC-0x1D50",
+   "comment": "return 0.0 if it is not lit returns something else if it is"
+  },
+  {
+   "name": "IndexedData_GearNumber",
+   "offset": "0x1df8",
+   "expr": "0x20FC-0x304",
+   "comment": "this is an int getIndexedData will return strange but the RawEdit.getI with getIndexedAddr will suffice"
+  },
+  {
+   "name": "IndexedData_Flags",
+   "offset": "0x70",
+   "expr": "0x70",
+   "comment": ""
+  },
+  {
+   "name": "IndexedData_SpeedLimit",
+   "offset": "0x2104",
+   "expr": "0x2104",
+   "comment": ""
+  }
+ ],
+ "addresses": [
+  {
+   "name": "I_SoftwareFrustrumCullReturnOverwrite",
+   "type": "int",
+   "address": "0x006185bc",
+   "class_address": "0x006185bc",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1852404565",
+   "redline_ascii": "Using offscreen surfaces and StretchCopy()",
+   "gi_default": "4",
+   "config_key": "",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ObjectsBehindCameraUnloadMode",
+   "prop_type": "int",
+   "meaning": "1 = unload objects behind the camera (vanilla, slow); 4 = never unload. Editor tooltip; GI default 4",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x54bc80"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x54bcfc",
+     "where": "0x54bc80",
+     "ins": "mov eax, dword ptr [0x6185bc]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x54bdce",
+     "where": "0x54bc80",
+     "ins": "mov eax, dword ptr [0x6185bc]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "I_DisableFlop",
+   "type": "int",
+   "address": "0x006185d0",
+   "class_address": "0x006185d0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "29541",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Damage",
+   "proposed_property": "Damage.DoorsOpenOnCollision",
+   "prop_type": "bool",
+   "meaning": "0 = doors do not open on collision (name says Disable, tooltip says '== 0 disables'); GI default 1",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x401890",
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 3,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x4018c2",
+     "where": "0x401890",
+     "ins": "mov eax, dword ptr [0x6185d0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x475756",
+     "where": "0x474b00",
+     "ins": "test dword ptr [0x6185d0], 0",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x47576c",
+     "where": "0x474b00",
+     "ins": "test dword ptr [0x6185d0], 0",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_instance_current",
+   "type": "int",
+   "address": "0x00765f60",
+   "class_address": "0x00765f60",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.InstancesInUse",
+   "prop_type": "int (read-only)",
+   "meaning": "live instance counter: ++/-- by instance create/destroy, compared with instance_max/min in the budget routine 0x537ed0",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x479fb0",
+    "0x537ed0",
+    "0x53a2a0",
+    "0x53a5e0",
+    "0x53dee0",
+    "0x53ec20"
+   ],
+   "redline_refs": 8,
+   "gi_refs": 8,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x47a26d",
+     "where": "0x479fb0",
+     "ins": "mov edx, dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x538057",
+     "where": "0x537ed0",
+     "ins": "mov eax, dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x538230",
+     "where": "0x537ed0",
+     "ins": "mov ecx, dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x53a3fa",
+     "where": "0x53a2a0",
+     "ins": "inc dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x53a767",
+     "where": "0x53a5e0",
+     "ins": "inc dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x53e5e0",
+     "where": "0x53dee0",
+     "ins": "mov eax, dword ptr [0x765f60]"
+    },
+    {
+     "va": "0x53e5e9",
+     "where": "0x53dee0",
+     "ins": "mov dword ptr [0x765f60], eax"
+    },
+    {
+     "va": "0x53ef7a",
+     "where": "0x53ec20",
+     "ins": "dec dword ptr [0x765f60]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x47a26d",
+     "where": "0x479fb0",
+     "ins": "mov edx, dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x538057",
+     "where": "0x537ed0",
+     "ins": "mov eax, dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x538230",
+     "where": "0x537ed0",
+     "ins": "mov ecx, dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53a3fa",
+     "where": "0x53a2a0",
+     "ins": "inc dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53a767",
+     "where": "0x53a5e0",
+     "ins": "inc dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53e5e0",
+     "where": "0x53dee0",
+     "ins": "mov eax, dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53e5e9",
+     "where": "0x53dee0",
+     "ins": "mov dword ptr [0x765f60], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53ef7a",
+     "where": "0x53ec20",
+     "ins": "dec dword ptr [0x765f60]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_instance_max",
+   "type": "int",
+   "address": "0x00618d5c",
+   "class_address": "0x00618d5c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2048",
+   "redline_ascii": "",
+   "gi_default": "1000",
+   "config_key": "mem_instance_max",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.InstanceMax",
+   "prop_type": "int",
+   "meaning": "script/render instance budget (max); loader stores config key mem_instance_max here",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428003",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d5c], eax"
+    },
+    {
+     "va": "0x53805c",
+     "where": "0x537ed0",
+     "ins": "cmp eax, dword ptr [0x618d5c]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x53805c",
+     "where": "0x537ed0",
+     "ins": "cmp eax, dword ptr [0x618d5c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_instance_min",
+   "type": "int",
+   "address": "0x00618d60",
+   "class_address": "0x00618d60",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1024",
+   "redline_ascii": "",
+   "gi_default": "0",
+   "config_key": "mem_instance_min",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.InstanceMin",
+   "prop_type": "int",
+   "meaning": "instance budget lower watermark; config key mem_instance_min",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428014",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d60], eax"
+    },
+    {
+     "va": "0x538236",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d60]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x538236",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d60]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_sound_max",
+   "type": "int",
+   "address": "0x00618d64",
+   "class_address": "0x00618d64",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "8388608",
+   "redline_ascii": "",
+   "gi_default": "1048576000",
+   "config_key": "mem_sound_max",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.SoundMax",
+   "prop_type": "int (bytes)",
+   "meaning": "sound memory budget (max); config key mem_sound_max (optional key)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428034",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d64], eax"
+    },
+    {
+     "va": "0x538081",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d64]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x538081",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d64]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_sound_min",
+   "type": "int",
+   "address": "0x00618d68",
+   "class_address": "0x00618d68",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6291456",
+   "redline_ascii": "",
+   "gi_default": "0",
+   "config_key": "mem_sound_min",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.SoundMin",
+   "prop_type": "int (bytes)",
+   "meaning": "sound memory lower watermark; config key mem_sound_min",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428041",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d68], eax"
+    },
+    {
+     "va": "0x53826d",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d68]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x53826d",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d68]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_texture_current",
+   "type": "int",
+   "address": "0x0065c234",
+   "class_address": "0x0065c234",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.TextureBytesInUse",
+   "prop_type": "int (read-only)",
+   "meaning": "running texture byte total: add/sub in the texture load/unload routines (0x5065f0, 0x506c70, 0x507530, 0x5062a0)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x479fb0",
+    "0x5062a0",
+    "0x5065f0",
+    "0x506c70",
+    "0x507530",
+    "0x537ed0"
+   ],
+   "redline_refs": 11,
+   "gi_refs": 11,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x47a1ca",
+     "where": "0x479fb0",
+     "ins": "mov eax, dword ptr [0x65c234]"
+    },
+    {
+     "va": "0x50630b",
+     "where": "0x5062a0",
+     "ins": "sub dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x506360",
+     "where": "0x5062a0",
+     "ins": "sub dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x5066c0",
+     "where": "0x5065f0",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x506959",
+     "where": "0x5065f0",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x5071bc",
+     "where": "0x506c70",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x507508",
+     "where": "0x506c70",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x507962",
+     "where": "0x507530",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x507dbf",
+     "where": "0x507530",
+     "ins": "add dword ptr [0x65c234], eax"
+    },
+    {
+     "va": "0x53800e",
+     "where": "0x537ed0",
+     "ins": "mov eax, dword ptr [0x65c234]"
+    },
+    {
+     "va": "0x5381cc",
+     "where": "0x537ed0",
+     "ins": "mov edx, dword ptr [0x65c234]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x47a1ca",
+     "where": "0x479fb0",
+     "ins": "mov eax, dword ptr [0x65c234]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50630b",
+     "where": "0x5062a0",
+     "ins": "sub dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x506360",
+     "where": "0x5062a0",
+     "ins": "sub dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5066c0",
+     "where": "0x5065f0",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x506959",
+     "where": "0x5065f0",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5071bc",
+     "where": "0x506c70",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x507508",
+     "where": "0x506c70",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x507962",
+     "where": "0x507530",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x507dbf",
+     "where": "0x507530",
+     "ins": "add dword ptr [0x65c234], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53800e",
+     "where": "0x537ed0",
+     "ins": "mov eax, dword ptr [0x65c234]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5381cc",
+     "where": "0x537ed0",
+     "ins": "mov edx, dword ptr [0x65c234]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_texture_max",
+   "type": "int",
+   "address": "0x00618d54",
+   "class_address": "0x00618d54",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "134217728",
+   "redline_ascii": "",
+   "gi_default": "1048576000",
+   "config_key": "mem_texture_max",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.TextureMax",
+   "prop_type": "int (bytes)",
+   "meaning": "texture memory budget (max); config key mem_texture_max",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x457d5b",
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 3,
+   "redline_sites": [
+    {
+     "va": "0x427fe5",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d54], eax"
+    },
+    {
+     "va": "0x538013",
+     "where": "0x537ed0",
+     "ins": "cmp eax, dword ptr [0x618d54]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x457dbd",
+     "where": "0x457d5b",
+     "ins": "mov dword ptr [0x618d54], eax",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x457dda",
+     "where": "0x457d5b",
+     "ins": "mov eax, dword ptr [0x618d54]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x457df4",
+     "where": "0x457d5b",
+     "ins": "mov dword ptr [0x618d54], eax",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x538013",
+     "where": "0x537ed0",
+     "ins": "cmp eax, dword ptr [0x618d54]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_texture_min",
+   "type": "int",
+   "address": "0x00618d58",
+   "class_address": "0x00618d58",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "8388608",
+   "redline_ascii": "",
+   "gi_default": "0",
+   "config_key": "mem_texture_min",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.TextureMin",
+   "prop_type": "int (bytes)",
+   "meaning": "texture memory lower watermark; config key mem_texture_min",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427ff4",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d58], eax"
+    },
+    {
+     "va": "0x5381d2",
+     "where": "0x537ed0",
+     "ins": "cmp edx, dword ptr [0x618d58]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x5381d2",
+     "where": "0x537ed0",
+     "ins": "cmp edx, dword ptr [0x618d58]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_vertex_current",
+   "type": "int",
+   "address": "0x0065bd44",
+   "class_address": "0x0065bd44",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.VertexBytesInUse",
+   "prop_type": "int (read-only)",
+   "meaning": "running vertex-buffer byte total (add/sub in 0x4ffe90, 0x500380, 0x500ad0, 0x504070, 0x5041c0)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x479fb0",
+    "0x4ffe90",
+    "0x500380",
+    "0x500ad0",
+    "0x504070",
+    "0x5041c0",
+    "0x537ed0"
+   ],
+   "redline_refs": 13,
+   "gi_refs": 13,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x47a212",
+     "where": "0x479fb0",
+     "ins": "mov ecx, dword ptr [0x65bd44]"
+    },
+    {
+     "va": "0x4fff2b",
+     "where": "0x4ffe90",
+     "ins": "sub dword ptr [0x65bd44], ecx"
+    },
+    {
+     "va": "0x500056",
+     "where": "0x4ffe90",
+     "ins": "sub dword ptr [0x65bd44], eax"
+    },
+    {
+     "va": "0x5000ef",
+     "where": "0x4ffe90",
+     "ins": "add dword ptr [0x65bd44], edx"
+    },
+    {
+     "va": "0x500433",
+     "where": "0x500380",
+     "ins": "sub dword ptr [0x65bd44], ecx"
+    },
+    {
+     "va": "0x50045f",
+     "where": "0x500380",
+     "ins": "sub dword ptr [0x65bd44], edx"
+    },
+    {
+     "va": "0x500ba7",
+     "where": "0x500ad0",
+     "ins": "mov edi, dword ptr [0x65bd44]"
+    },
+    {
+     "va": "0x500baf",
+     "where": "0x500ad0",
+     "ins": "mov dword ptr [0x65bd44], edi"
+    },
+    {
+     "va": "0x500bc6",
+     "where": "0x500ad0",
+     "ins": "mov dword ptr [0x65bd44], edi"
+    },
+    {
+     "va": "0x504101",
+     "where": "0x504070",
+     "ins": "add dword ptr [0x65bd44], ecx"
+    },
+    {
+     "va": "0x5041f3",
+     "where": "0x5041c0",
+     "ins": "sub dword ptr [0x65bd44], ecx"
+    },
+    {
+     "va": "0x538032",
+     "where": "0x537ed0",
+     "ins": "mov ecx, dword ptr [0x65bd44]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x47a212",
+     "where": "0x479fb0",
+     "ins": "mov ecx, dword ptr [0x65bd44]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fff2b",
+     "where": "0x4ffe90",
+     "ins": "sub dword ptr [0x65bd44], ecx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x500056",
+     "where": "0x4ffe90",
+     "ins": "sub dword ptr [0x65bd44], eax",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5000ef",
+     "where": "0x4ffe90",
+     "ins": "add dword ptr [0x65bd44], edx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x500433",
+     "where": "0x500380",
+     "ins": "sub dword ptr [0x65bd44], ecx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50045f",
+     "where": "0x500380",
+     "ins": "sub dword ptr [0x65bd44], edx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x500ba7",
+     "where": "0x500ad0",
+     "ins": "mov edi, dword ptr [0x65bd44]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x500baf",
+     "where": "0x500ad0",
+     "ins": "mov dword ptr [0x65bd44], edi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x500bc6",
+     "where": "0x500ad0",
+     "ins": "mov dword ptr [0x65bd44], edi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x504101",
+     "where": "0x504070",
+     "ins": "add dword ptr [0x65bd44], ecx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5041f3",
+     "where": "0x5041c0",
+     "ins": "sub dword ptr [0x65bd44], ecx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x538032",
+     "where": "0x537ed0",
+     "ins": "mov ecx, dword ptr [0x65bd44]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_vertex_max",
+   "type": "int",
+   "address": "0x00618d4c",
+   "class_address": "0x00618d4c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "131072",
+   "redline_ascii": "",
+   "gi_default": "1048576000",
+   "config_key": "mem_vertex_max",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.VertexMax",
+   "prop_type": "int (bytes)",
+   "meaning": "vertex memory budget (max); config key mem_vertex_max",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x457d5b",
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 3,
+   "redline_sites": [
+    {
+     "va": "0x427fc7",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d4c], eax"
+    },
+    {
+     "va": "0x538038",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d4c]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x457dc7",
+     "where": "0x457d5b",
+     "ins": "mov dword ptr [0x618d4c], eax",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x457de8",
+     "where": "0x457d5b",
+     "ins": "mov eax, dword ptr [0x618d4c]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x457df9",
+     "where": "0x457d5b",
+     "ins": "mov dword ptr [0x618d4c], eax",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x538038",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d4c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_mem_vertex_min",
+   "type": "int",
+   "address": "0x00618d50",
+   "class_address": "0x00618d50",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "32768",
+   "redline_ascii": "",
+   "gi_default": "0",
+   "config_key": "mem_vertex_min",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.VertexMin",
+   "prop_type": "int (bytes)",
+   "meaning": "vertex memory lower watermark; config key mem_vertex_min",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537ed0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427fd6",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d50], eax"
+    },
+    {
+     "va": "0x538203",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d50]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x538203",
+     "where": "0x537ed0",
+     "ins": "cmp ecx, dword ptr [0x618d50]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_cfg_skidmarks_max",
+   "type": "int",
+   "address": "0x00618bf4",
+   "class_address": "0x00618bf4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "256",
+   "redline_ascii": "",
+   "gi_default": "8200",
+   "config_key": "skidmark_max",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.SkidmarksMax",
+   "prop_type": "int",
+   "meaning": "maximum skid-mark length/count (compared at 0x521d0c); config key skidmark_max",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x521cf0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427f6e",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618bf4], eax"
+    },
+    {
+     "va": "0x521d0c",
+     "where": "0x521cf0",
+     "ins": "cmp ecx, dword ptr [0x618bf4]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x521d0c",
+     "where": "0x521cf0",
+     "ins": "cmp ecx, dword ptr [0x618bf4]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_resource_loadrate",
+   "type": "int",
+   "address": "0x00618d6c",
+   "class_address": "0x00618d6c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "16",
+   "redline_ascii": "",
+   "gi_default": "20",
+   "config_key": "resource_loadrate",
+   "group": "ResourceBudget",
+   "proposed_property": "ResourceBudget.LoadsPerFrame",
+   "prop_type": "int",
+   "meaning": "max resource load operations per frame (read by 0x537790/0x5378d0); config key resource_loadrate",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x537790",
+    "0x5378d0"
+   ],
+   "redline_refs": 3,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428055",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x618d6c], eax"
+    },
+    {
+     "va": "0x5378b0",
+     "where": "0x537790",
+     "ins": "mov eax, dword ptr [0x618d6c]"
+    },
+    {
+     "va": "0x53792c",
+     "where": "0x5378d0",
+     "ins": "mov eax, dword ptr [0x618d6c]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x5378b0",
+     "where": "0x537790",
+     "ins": "mov eax, dword ptr [0x618d6c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x53792c",
+     "where": "0x5378d0",
+     "ins": "mov eax, dword ptr [0x618d6c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_AISlideIgnoreMod",
+   "type": "int",
+   "address": "0x006185e8",
+   "class_address": "0x006185e8",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1668506948",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "172",
+   "config_key": "",
+   "group": "Ai",
+   "proposed_property": "Ai.SlideIgnoreMod",
+   "prop_type": "int",
+   "meaning": "higher = AI ignores sliding more (it mistook sideways slopes for power-slides). Tooltip: default 127, 472 acceptable; GI default 172",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x475808",
+     "where": "0x474b00",
+     "ins": "mov ecx, dword ptr [0x6185e8]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "I_DisableCruiseSteerOverWrite",
+   "type": "int",
+   "address": "0x00618038",
+   "class_address": "0x00618038",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1852383346",
+   "redline_ascii": "Error in ~IndexBuffer:  release count!=0",
+   "gi_default": "0",
+   "config_key": "",
+   "group": "Drivetrain",
+   "proposed_property": "Drivetrain.CruiseSteerOverwriteDisabled",
+   "prop_type": "bool",
+   "meaning": "referenced only by the .code cave (0x7c0564, cmp [..],0) next to CruiseBreakWhenOverLimit: cruise-control steering override switch",
+   "confidence": "L",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44e2d0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c0564",
+     "where": "cave->0x44e9de(fn 0x44e2d0)",
+     "ins": "cmp dword ptr [0x618038], 0",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_ClutchOnInAutoShiftDeadTime",
+   "type": "float",
+   "address": "0x00618610",
+   "class_address": "0x00618610",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.18685e+27",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "0.5",
+   "config_key": "",
+   "group": "Drivetrain",
+   "proposed_property": "Drivetrain.AutoShiftClutchDuringShift",
+   "prop_type": "float",
+   "meaning": "clutch amount right after an automatic shift (0 = no rev-limiter hit on shift). Tooltip; GI default 0.5",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 1,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [
+    {
+     "va": "0x4f9bf9",
+     "where": "0x4f9960",
+     "ins": "push 0x618610"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x475933",
+     "where": "0x474b00",
+     "ins": "mov eax, dword ptr [0x618610]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x4f9bf9",
+     "where": "0x4f9960",
+     "ins": "push 0x618610",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_ThrottleOnInAutoShiftDeadTime",
+   "type": "float",
+   "address": "0x00618614",
+   "class_address": "0x00618614",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "7.36966e+28",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "0.15",
+   "config_key": "",
+   "group": "Drivetrain",
+   "proposed_property": "Drivetrain.AutoShiftThrottleDuringShift",
+   "prop_type": "float",
+   "meaning": "same for throttle; GI default 0.15",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x47593e",
+     "where": "0x474b00",
+     "ins": "mov eax, dword ptr [0x618614]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_CarDeformationOnCollisionMult",
+   "type": "float",
+   "address": "0x006185c4",
+   "class_address": "0x006185c4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.7936e+25",
+   "redline_ascii": "Using Dynamic Textures",
+   "gi_default": "0.8",
+   "config_key": "",
+   "group": "Damage",
+   "proposed_property": "Damage.BodyDeformationMult",
+   "prop_type": "float",
+   "meaning": "scale of car body bend on collision (<1 = bends less). Written together with ...Minus = -value",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70",
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x4578d3",
+     "where": "0x44fa70",
+     "ins": "fld dword ptr [0x6185c4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x4751ab",
+     "where": "0x474b00",
+     "ins": "fld dword ptr [0x6185c4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_CarDeformationOnCollisionMultMinus",
+   "type": "float",
+   "address": "0x006185c0",
+   "class_address": "0x006185c0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.36467e+34",
+   "redline_ascii": "Using offscreen surfaces and StretchCopy()",
+   "gi_default": "-0.8",
+   "config_key": "",
+   "group": "Damage",
+   "proposed_property": "(derived: -BodyDeformationMult)",
+   "prop_type": "float",
+   "meaning": "negated copy of the above (source comment: must be set together)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70",
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x4578cb",
+     "where": "0x44fa70",
+     "ins": "fld dword ptr [0x6185c0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x4751a3",
+     "where": "0x474b00",
+     "ins": "fld dword ptr [0x6185c0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_CarPartDetachmentMult",
+   "type": "float",
+   "address": "0x006185c8",
+   "class_address": "0x006185c8",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.26087e+22",
+   "redline_ascii": "Using Dynamic Textures",
+   "gi_default": "0.3",
+   "config_key": "",
+   "group": "Damage",
+   "proposed_property": "Damage.PartDetachmentMult",
+   "prop_type": "float",
+   "meaning": "<1 = parts must be damaged more before detaching",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474600",
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x4748de",
+     "where": "0x474600",
+     "ins": "fmul dword ptr [0x6185c8]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x475782",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x6185c8]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_CarChassisDeformationOnCollisionMult",
+   "type": "float",
+   "address": "0x006185cc",
+   "class_address": "0x006185cc",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "4.86174e+30",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "0.4",
+   "config_key": "",
+   "group": "Damage",
+   "proposed_property": "Damage.ChassisSlotDeformationMult",
+   "prop_type": "float",
+   "meaning": "<1 = the car slots (wheels) bend less; read at 0x48f266",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x48f260"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x48f266",
+     "where": "0x48f260",
+     "ins": "fmul dword ptr ss:[0x6185cc]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_WearMultEngine",
+   "type": "float",
+   "address": "0x006185d4",
+   "class_address": "0x006185d4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.18685e+27",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "5",
+   "config_key": "",
+   "group": "Wear",
+   "proposed_property": "Wear.EngineWearMult",
+   "prop_type": "float",
+   "meaning": "scales part wear from use; tooltip range 0-100; GI default 5",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 1,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [
+    {
+     "va": "0x4f9bc4",
+     "where": "0x4f9960",
+     "ins": "push 0x6185d4"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x454cba",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x6185d4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x4f9bc4",
+     "where": "0x4f9960",
+     "ins": "push 0x6185d4",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WearMultTyre",
+   "type": "float",
+   "address": "0x006185e0",
+   "class_address": "0x006185e0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.96923e+22",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "0.6",
+   "config_key": "",
+   "group": "Wear",
+   "proposed_property": "Wear.TyreWearMult",
+   "prop_type": "float",
+   "meaning": "scales tyre wear (tooltip 0-1); GI default 0.6",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x455170",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x6185e0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x455331",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x6185e0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_TrafficFlatBonus",
+   "type": "float",
+   "address": "0x006185dc",
+   "class_address": "0x006185dc",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.82166e+22",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "-0.13",
+   "config_key": "",
+   "group": "Ai",
+   "proposed_property": "Ai.TrafficHeightOffset",
+   "prop_type": "float",
+   "meaning": "flat value added to the height of every traffic car (tooltip); GI default -0.13",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x4757a3",
+     "where": "0x474b00",
+     "ins": "fadd dword ptr [0x6185dc]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_AIOverSteering",
+   "type": "float",
+   "address": "0x006185ec",
+   "class_address": "0x006185ec",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "7.61896e+31",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Ai",
+   "proposed_property": "Ai.OverSteering",
+   "prop_type": "float",
+   "meaning": "AI steering gain, non-traffic cars",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x475818",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x6185ec]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_AIOverBreaking",
+   "type": "float",
+   "address": "0x006185f0",
+   "class_address": "0x006185f0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.01962e-19",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Ai",
+   "proposed_property": "Ai.OverBraking",
+   "prop_type": "float",
+   "meaning": "AI braking gain, non-traffic cars",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x47582c",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x6185f0]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_AIOverThrotlling",
+   "type": "float",
+   "address": "0x006185f4",
+   "class_address": "0x006185f4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "641.601",
+   "redline_ascii": "Could not get level Description of D3DX texture!",
+   "gi_default": "1.1",
+   "config_key": "",
+   "group": "Ai",
+   "proposed_property": "Ai.OverThrottling",
+   "prop_type": "float",
+   "meaning": "AI throttle gain, non-traffic cars; GI default 1.1",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x474b00"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 1,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x47583f",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x6185f4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_deformation",
+   "type": "float",
+   "address": "0x00611360",
+   "class_address": "0x00611360",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "1.5",
+   "config_key": "deformation",
+   "group": "Damage",
+   "proposed_property": "Damage.OverallDeformation",
+   "prop_type": "float",
+   "meaning": "overall collision deformation; 0 = car invincible (tooltip); config key deformation, vanilla default 1.0",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x44fa70",
+    "0x474b00"
+   ],
+   "redline_refs": 5,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427fb2",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x611360]"
+    },
+    {
+     "va": "0x4579a3",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x611360]"
+    },
+    {
+     "va": "0x4579d9",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x611360]"
+    },
+    {
+     "va": "0x47533b",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x611360]"
+    },
+    {
+     "va": "0x475370",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x611360]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4579a3",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x611360]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4579d9",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x611360]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x47533b",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x611360]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x475370",
+     "where": "0x474b00",
+     "ins": "fmul dword ptr [0x611360]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_engine_inertia_factor",
+   "type": "float",
+   "address": "0x0060e028",
+   "class_address": "0x0060e028",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "4",
+   "redline_ascii": "",
+   "gi_default": "5",
+   "config_key": "engine_inertia_factor",
+   "group": "Drivetrain",
+   "proposed_property": "Drivetrain.EngineInertiaFactor",
+   "prop_type": "float",
+   "meaning": "divisor in the vehicle step (0x4558de); config key engine_inertia_factor; vanilla 4, GI 5",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4280ad",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x60e028]"
+    },
+    {
+     "va": "0x4558de",
+     "where": "0x44fa70",
+     "ins": "fdivr dword ptr [0x60e028]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4558de",
+     "where": "0x44fa70",
+     "ins": "fdivr dword ptr [0x60e028]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_external_damage",
+   "type": "float",
+   "address": "0x00611358",
+   "class_address": "0x00611358",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "0.7",
+   "config_key": "external_damage",
+   "group": "Damage",
+   "proposed_property": "Damage.ExternalDamageScale",
+   "prop_type": "float",
+   "meaning": "config key external_damage (read at 0x442791, 0x46e362)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x46e320",
+    "SfxTable.addItem@0x4423e0"
+   ],
+   "redline_refs": 3,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427f92",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x611358]"
+    },
+    {
+     "va": "0x442791",
+     "where": "SfxTable.addItem@0x4423e0",
+     "ins": "mov ecx, dword ptr [0x611358]"
+    },
+    {
+     "va": "0x46e362",
+     "where": "0x46e320",
+     "ins": "mov edx, dword ptr [0x611358]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x442791",
+     "where": "SfxTable.addItem@0x4423e0",
+     "ins": "mov ecx, dword ptr [0x611358]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x46e362",
+     "where": "0x46e320",
+     "ins": "mov edx, dword ptr [0x611358]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_internal_damage",
+   "type": "float",
+   "address": "0x0061135c",
+   "class_address": "0x0061135c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "0.3",
+   "config_key": "internal_damage",
+   "group": "Damage",
+   "proposed_property": "Damage.InternalDamageScale",
+   "prop_type": "float",
+   "meaning": "config key internal_damage (vehicle step, updateDamage path 0x43c282)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x43c260",
+    "0x44fa70"
+   ],
+   "redline_refs": 10,
+   "gi_refs": 7,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427fa2",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x43c282",
+     "where": "0x43c260",
+     "ins": "fld dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x454bc7",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x454cd7",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x455170",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x455331",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x4559d8",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x455a6b",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x455d67",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]"
+    },
+    {
+     "va": "0x45774a",
+     "where": "0x44fa70",
+     "ins": "fld dword ptr [0x61135c]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x43c282",
+     "where": "0x43c260",
+     "ins": "fld dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x454bc7",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x454cd7",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4559d8",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x455a6b",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x455d67",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x45774a",
+     "where": "0x44fa70",
+     "ins": "fld dword ptr [0x61135c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_particle_density",
+   "type": "float",
+   "address": "0x00618948",
+   "class_address": "0x00618948",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "1",
+   "config_key": "particle_density",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ParticleDensity",
+   "prop_type": "float",
+   "meaning": "multiplies emitter counts in the particle code 0x51bf70; config key particle_density",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x51bf70"
+   ],
+   "redline_refs": 7,
+   "gi_refs": 6,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427f59",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51c0ab",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51c8bb",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51cefb",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51d705",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51dec5",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]"
+    },
+    {
+     "va": "0x51e4a5",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x51c0ab",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51c8bb",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51cefb",
+     "where": "0x51bf70",
+     "ins": "fmul dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51d705",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51dec5",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51e4a5",
+     "where": "0x51bf70",
+     "ins": "fld dword ptr [0x618948]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_bDrawHeadlightRays",
+   "type": "int",
+   "address": "0x006187bc",
+   "class_address": "0x006187bc",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "1",
+   "config_key": "headlight_rays",
+   "group": "Graphics",
+   "proposed_property": "Graphics.DrawHeadlightRays",
+   "prop_type": "bool",
+   "meaning": "config key headlight_rays (read by the lights code 0x50eba0)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x50eba0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427c36",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187bc], esi"
+    },
+    {
+     "va": "0x50ef4d",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187bc]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427c36",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187bc], esi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50ef4d",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187bc]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_bDrawHeadlightFlares",
+   "type": "int",
+   "address": "0x006187c0",
+   "class_address": "0x006187c0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1",
+   "redline_ascii": "",
+   "gi_default": "1",
+   "config_key": "flares",
+   "group": "Graphics",
+   "proposed_property": "Graphics.DrawHeadlightFlares",
+   "prop_type": "bool",
+   "meaning": "config key flares",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x50eba0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427c80",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187c0], esi"
+    },
+    {
+     "va": "0x50f5d6",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187c0]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427c80",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187c0], esi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50f5d6",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187c0]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_ShadowSize",
+   "type": "int",
+   "address": "0x006187b8",
+   "class_address": "0x006187b8",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "256",
+   "redline_ascii": "",
+   "gi_default": "256",
+   "config_key": "shadow_size",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ShadowSize",
+   "prop_type": "int",
+   "meaning": "config key shadow_size (shadow map code 0x4fc1b0, 0x4fc590)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x4fc1b0",
+    "0x4fc590"
+   ],
+   "redline_refs": 6,
+   "gi_refs": 6,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427cca",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187b8], esi"
+    },
+    {
+     "va": "0x4fc1e0",
+     "where": "0x4fc1b0",
+     "ins": "mov eax, dword ptr [0x6187b8]"
+    },
+    {
+     "va": "0x4fc2eb",
+     "where": "0x4fc1b0",
+     "ins": "mov edx, dword ptr [0x6187b8]"
+    },
+    {
+     "va": "0x4fc2fb",
+     "where": "0x4fc1b0",
+     "ins": "mov ecx, dword ptr [0x6187b8]"
+    },
+    {
+     "va": "0x4fc5f0",
+     "where": "0x4fc590",
+     "ins": "mov edx, dword ptr [0x6187b8]"
+    },
+    {
+     "va": "0x4fc601",
+     "where": "0x4fc590",
+     "ins": "mov edx, dword ptr [0x6187b8]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427cca",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187b8], esi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc1e0",
+     "where": "0x4fc1b0",
+     "ins": "mov eax, dword ptr [0x6187b8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc2eb",
+     "where": "0x4fc1b0",
+     "ins": "mov edx, dword ptr [0x6187b8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc2fb",
+     "where": "0x4fc1b0",
+     "ins": "mov ecx, dword ptr [0x6187b8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc5f0",
+     "where": "0x4fc590",
+     "ins": "mov edx, dword ptr [0x6187b8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc601",
+     "where": "0x4fc590",
+     "ins": "mov edx, dword ptr [0x6187b8]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_Shadows",
+   "type": "int",
+   "address": "0x006187b4",
+   "class_address": "0x006187b4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2",
+   "redline_ascii": "",
+   "gi_default": "2",
+   "config_key": "shadows",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ShadowMode",
+   "prop_type": "int",
+   "meaning": "config key shadows (0..2)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x4fc1b0",
+    "0x50eba0",
+    "0x58c700"
+   ],
+   "redline_refs": 5,
+   "gi_refs": 5,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427d27",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187b4], esi"
+    },
+    {
+     "va": "0x4fc1e9",
+     "where": "0x4fc1b0",
+     "ins": "mov dword ptr [0x6187b4], 0"
+    },
+    {
+     "va": "0x4fc23a",
+     "where": "0x4fc1b0",
+     "ins": "mov eax, dword ptr [0x6187b4]"
+    },
+    {
+     "va": "0x50ee46",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187b4]"
+    },
+    {
+     "va": "0x58c882",
+     "where": "0x58c700",
+     "ins": "mov dword ptr [0x6187b4], eax"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427d27",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6187b4], esi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc1e9",
+     "where": "0x4fc1b0",
+     "ins": "mov dword ptr [0x6187b4], 0",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4fc23a",
+     "where": "0x4fc1b0",
+     "ins": "mov eax, dword ptr [0x6187b4]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50ee46",
+     "where": "0x50eba0",
+     "ins": "mov eax, dword ptr [0x6187b4]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x58c882",
+     "where": "0x58c700",
+     "ins": "mov dword ptr [0x6187b4], eax",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "I_TextureSize",
+   "type": "int",
+   "address": "0x006188b4",
+   "class_address": "0x006188b4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "4",
+   "redline_ascii": "",
+   "gi_default": "4",
+   "config_key": "texture_size",
+   "group": "Graphics",
+   "proposed_property": "Graphics.TextureSize",
+   "prop_type": "int",
+   "meaning": "config key texture_size (texture loaders 0x506c70, 0x507530)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x506c70",
+    "0x507530"
+   ],
+   "redline_refs": 3,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427dc5",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6188b4], esi"
+    },
+    {
+     "va": "0x50713b",
+     "where": "0x506c70",
+     "ins": "mov ebp, dword ptr [0x6188b4]"
+    },
+    {
+     "va": "0x5078b2",
+     "where": "0x507530",
+     "ins": "mov edx, dword ptr [0x6188b4]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427dc5",
+     "where": "0x427bf0",
+     "ins": "mov dword ptr [0x6188b4], esi",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50713b",
+     "where": "0x506c70",
+     "ins": "mov ebp, dword ptr [0x6188b4]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5078b2",
+     "where": "0x507530",
+     "ins": "mov edx, dword ptr [0x6188b4]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_ShadowDetail",
+   "type": "float",
+   "address": "0x0065aed0",
+   "class_address": "0x0065aed0",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "shadow_detail",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ShadowDetail",
+   "prop_type": "float",
+   "meaning": "config key shadow_detail (compared at 0x50b5d3)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x50b4d0"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427d6a",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x65aed0]"
+    },
+    {
+     "va": "0x50b5d3",
+     "where": "0x50b4d0",
+     "ins": "fcomp dword ptr [0x65aed0]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427d6a",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x65aed0]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50b5d3",
+     "where": "0x50b4d0",
+     "ins": "fcomp dword ptr [0x65aed0]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_ObjectDetail",
+   "type": "float",
+   "address": "0x0065c424",
+   "class_address": "0x0065c424",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "object_detail",
+   "group": "Graphics",
+   "proposed_property": "Graphics.ObjectDetail",
+   "prop_type": "float",
+   "meaning": "config key object_detail (draw-distance/LOD code 0x5100b0, 0x510fc0)",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x50d600",
+    "0x5100b0",
+    "0x510fc0"
+   ],
+   "redline_refs": 6,
+   "gi_refs": 6,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427e08",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x65c424]"
+    },
+    {
+     "va": "0x50d680",
+     "where": "0x50d600",
+     "ins": "fld dword ptr [0x65c424]"
+    },
+    {
+     "va": "0x51038d",
+     "where": "0x5100b0",
+     "ins": "fld dword ptr [0x65c424]"
+    },
+    {
+     "va": "0x5103ab",
+     "where": "0x5100b0",
+     "ins": "mov ecx, dword ptr [0x65c424]"
+    },
+    {
+     "va": "0x510400",
+     "where": "0x5100b0",
+     "ins": "mov dword ptr [0x65c424], ecx"
+    },
+    {
+     "va": "0x510fc0",
+     "where": "0x510fc0",
+     "ins": "fld dword ptr [0x65c424]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427e08",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x65c424]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x50d680",
+     "where": "0x50d600",
+     "ins": "fld dword ptr [0x65c424]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x51038d",
+     "where": "0x5100b0",
+     "ins": "fld dword ptr [0x65c424]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x5103ab",
+     "where": "0x5100b0",
+     "ins": "mov ecx, dword ptr [0x65c424]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x510400",
+     "where": "0x5100b0",
+     "ins": "mov dword ptr [0x65c424], ecx",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x510fc0",
+     "where": "0x510fc0",
+     "ins": "fld dword ptr [0x65c424]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_cfg_VideoGamma",
+   "type": "float",
+   "address": "0x00617728",
+   "class_address": "0x00617728",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.3",
+   "redline_ascii": "",
+   "gi_default": "1.3",
+   "config_key": "video_gamma",
+   "group": "Graphics",
+   "proposed_property": "Graphics.VideoGamma",
+   "prop_type": "float",
+   "meaning": "config key video_gamma, stored as constant/gamma (loader does fdivr [0x5f08f0]); used in the D3D reset path 0x4ba230",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x4ba230"
+   ],
+   "redline_refs": 4,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x427f49",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x617728]"
+    },
+    {
+     "va": "0x4baa6c",
+     "where": "0x4ba230",
+     "ins": "fcomp dword ptr [0x617728]"
+    },
+    {
+     "va": "0x4baa83",
+     "where": "0x4ba230",
+     "ins": "mov eax, dword ptr [0x617728]"
+    },
+    {
+     "va": "0x4baaa6",
+     "where": "0x4ba230",
+     "ins": "fld dword ptr [0x617728]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x427f49",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x617728]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4baa6c",
+     "where": "0x4ba230",
+     "ins": "fcomp dword ptr [0x617728]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4baa83",
+     "where": "0x4ba230",
+     "ins": "mov eax, dword ptr [0x617728]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4baaa6",
+     "where": "0x4ba230",
+     "ins": "fld dword ptr [0x617728]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelGroundFeedbackFactor",
+   "type": "float",
+   "address": "0x0060e020",
+   "class_address": "0x0060e020",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.8",
+   "redline_ascii": "",
+   "gi_default": "11",
+   "config_key": "wheel_gndfeedback_factor",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelGroundFeedbackFactor",
+   "prop_type": "float",
+   "meaning": "config key wheel_gndfeedback_factor; multiplier in the vehicle step (0x4563cb); vanilla 2.8, GI 11",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x44fa70"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4280d3",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x60e020]"
+    },
+    {
+     "va": "0x4563cb",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x60e020]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4280d3",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x60e020]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4563cb",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x60e020]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelBreakeFactor",
+   "type": "float",
+   "address": "0x0060e024",
+   "class_address": "0x0060e024",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "4",
+   "redline_ascii": "",
+   "gi_default": "2.3",
+   "config_key": "wheel_brake_factor",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelBrakeFactor",
+   "prop_type": "float",
+   "meaning": "config key wheel_brake_factor; multiplier in the vehicle step (0x455c6f); vanilla 4, GI 2.3",
+   "confidence": "H",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x427bf0",
+    "0x44fa70"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4280f9",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x60e024]"
+    },
+    {
+     "va": "0x455c6f",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x60e024]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4280f9",
+     "where": "0x427bf0",
+     "ins": "fstp dword ptr [0x60e024]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x455c6f",
+     "where": "0x44fa70",
+     "ins": "fmul dword ptr [0x60e024]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_LastFrameDrawTime",
+   "type": "float",
+   "address": "0x0063c528",
+   "class_address": "0x0063c528",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "",
+   "group": "Clock",
+   "proposed_property": "Clock.LastFrameSeconds",
+   "prop_type": "float (read-only)",
+   "meaning": "frame-time accumulator updated in the main frame routine 0x428960; used as divisor for FPS display (0x479fb0)",
+   "confidence": "M",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x428960",
+    "0x42cec0",
+    "0x479fb0"
+   ],
+   "redline_refs": 5,
+   "gi_refs": 5,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428ede",
+     "where": "0x428960",
+     "ins": "fsub dword ptr [0x63c528]"
+    },
+    {
+     "va": "0x428ef7",
+     "where": "0x428960",
+     "ins": "fadd dword ptr [0x63c528]"
+    },
+    {
+     "va": "0x428efd",
+     "where": "0x428960",
+     "ins": "fstp dword ptr [0x63c528]"
+    },
+    {
+     "va": "0x42de63",
+     "where": "0x42cec0",
+     "ins": "fdiv dword ptr [0x63c528]"
+    },
+    {
+     "va": "0x47a04d",
+     "where": "0x479fb0",
+     "ins": "fdiv dword ptr [0x63c528]"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x428ede",
+     "where": "0x428960",
+     "ins": "fsub dword ptr [0x63c528]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x428ef7",
+     "where": "0x428960",
+     "ins": "fadd dword ptr [0x63c528]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x428efd",
+     "where": "0x428960",
+     "ins": "fstp dword ptr [0x63c528]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x42de63",
+     "where": "0x42cec0",
+     "ins": "fdiv dword ptr [0x63c528]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x47a04d",
+     "where": "0x479fb0",
+     "ins": "fdiv dword ptr [0x63c528]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_GameTimeSeconds",
+   "type": "float",
+   "address": "0x0063c530",
+   "class_address": "0x0063c530",
+   "section": ".data",
+   "initialised_in_file": false,
+   "redline_value": "",
+   "redline_ascii": "",
+   "gi_default": "",
+   "config_key": "",
+   "group": "Clock",
+   "proposed_property": "Clock.GameSeconds",
+   "prop_type": "float (read-only)",
+   "meaning": "game clock written by the frame routine 0x428960",
+   "confidence": "M",
+   "origin": "vanilla variable",
+   "hooked_functions": [
+    "0x428960"
+   ],
+   "redline_refs": 3,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x428a83",
+     "where": "0x428960",
+     "ins": "fstp dword ptr [0x63c530]"
+    },
+    {
+     "va": "0x428ade",
+     "where": "0x428960",
+     "ins": "fsub dword ptr [0x63c530]"
+    },
+    {
+     "va": "0x428b0c",
+     "where": "0x428960",
+     "ins": "mov dword ptr [0x63c530], edx"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x428a83",
+     "where": "0x428960",
+     "ins": "fstp dword ptr [0x63c530]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x428ade",
+     "where": "0x428960",
+     "ins": "fsub dword ptr [0x63c530]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x428b0c",
+     "where": "0x428960",
+     "ins": "mov dword ptr [0x63c530], edx",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_Gravity",
+   "type": "float",
+   "address": "0x006186e4",
+   "class_address": "0x006186e4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.16263e+27",
+   "redline_ascii": "DX8SDK Samples Path",
+   "gi_default": "-9.8067",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Gravity",
+   "prop_type": "float",
+   "meaning": "gravity acceleration; GI default -9.8067 (physics step 0x4a4091, vehicle 0x45c656)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x457d5b",
+    "0x4a3f90"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 0,
+   "gi_patched_sites": 2,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x45c656",
+     "where": "0x457d5b",
+     "ins": "fld dword ptr [0x6186e4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    },
+    {
+     "va": "0x4a4091",
+     "where": "0x4a3f90",
+     "ins": "fmul dword ptr [0x6186e4]",
+     "vanilla_at_site": "(vanilla code replaced)"
+    }
+   ]
+  },
+  {
+   "name": "F_CollisionForceMultMapObjects_1",
+   "type": "float",
+   "address": "0x006186ec",
+   "class_address": "0x006186ec",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "9.59264e-39",
+   "redline_ascii": "DX8SDK Samples Path",
+   "gi_default": "0.8",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionForceMapObjects[0]",
+   "prop_type": "float",
+   "meaning": "force scale vs map objects (x component); read by the .code cave 0x7c0093",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c00a3",
+     "where": "cave->0x4967bb(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186ec]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c00b5",
+     "where": "cave->0x4967cb(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186ec]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c00c7",
+     "where": "cave->0x4967d9(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186ec]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_CollisionForceMultMapObjects_2",
+   "type": "float",
+   "address": "0x006186f0",
+   "class_address": "0x006186f0",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.69195e+22",
+   "redline_ascii": "DX8SDK Samples Path",
+   "gi_default": "0.8",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionForceMapObjects[1]",
+   "prop_type": "float",
+   "meaning": "second component",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 1,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4fa116",
+     "where": "0x4f9960",
+     "ins": "push 0x6186f0"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4fa116",
+     "where": "0x4f9960",
+     "ins": "push 0x6186f0",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c00d9",
+     "where": "cave->0x496807(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f0]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c00eb",
+     "where": "cave->0x496813(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f0]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c00fd",
+     "where": "cave->0x49681d(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f0]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_CollisionForceMultVehicle_1",
+   "type": "float",
+   "address": "0x006186f4",
+   "class_address": "0x006186f4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "8.48381e-39",
+   "redline_ascii": "DX8SDK Samples Path",
+   "gi_default": "1.2",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionForceVehicles[0]",
+   "prop_type": "float",
+   "meaning": "force scale vs other vehicles",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c010f",
+     "where": "cave->0x496888(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f4]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0121",
+     "where": "cave->0x496898(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f4]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0133",
+     "where": "cave->0x4968a6(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f4]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_CollisionForceMultVehicle_2",
+   "type": "float",
+   "address": "0x006186f8",
+   "class_address": "0x006186f8",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "0",
+   "redline_ascii": "Not an RoQ file.",
+   "gi_default": "1.2",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionForceVehicles[1]",
+   "prop_type": "float",
+   "meaning": "second component",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c0145",
+     "where": "cave->0x4968d4(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0157",
+     "where": "cave->0x4968e0(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0169",
+     "where": "cave->0x4968ea(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186f8]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_FrictionOnCollision_1",
+   "type": "float",
+   "address": "0x006186fc",
+   "class_address": "0x006186fc",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.07044e-19",
+   "redline_ascii": "Not an RoQ file.",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionFriction[0]",
+   "prop_type": "float",
+   "meaning": "friction of non-wheel parts on collision",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 1,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4fa23c",
+     "where": "0x4f9960",
+     "ins": "push 0x6186fc"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4fa23c",
+     "where": "0x4f9960",
+     "ins": "push 0x6186fc",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c017b",
+     "where": "cave->0x496d2b(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186fc]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c018d",
+     "where": "cave->0x496d38(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186fc]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c019f",
+     "where": "cave->0x496d45(fn 0x496050)",
+     "ins": "fmul dword ptr [0x6186fc]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_FrictionOnCollision_2",
+   "type": "float",
+   "address": "0x00618700",
+   "class_address": "0x00618700",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.72262e+11",
+   "redline_ascii": "Not an RoQ file.",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.CollisionFriction[1]",
+   "prop_type": "float",
+   "meaning": "second component",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x496050"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 3,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c01b1",
+     "where": "cave->0x496d70(fn 0x496050)",
+     "ins": "fmul dword ptr [0x618700]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c01c3",
+     "where": "cave->0x496d81(fn 0x496050)",
+     "ins": "fmul dword ptr [0x618700]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c01d5",
+     "where": "cave->0x496d90(fn 0x496050)",
+     "ins": "fmul dword ptr [0x618700]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelFrictionMult",
+   "type": "float",
+   "address": "0x00618710",
+   "class_address": "0x00618710",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "3.53155e-41",
+   "redline_ascii": "Not an RoQ file.",
+   "gi_default": "0.8",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelFrictionMult",
+   "prop_type": "float",
+   "meaning": "wheel friction scale (.code cave 0x7c024a)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 1,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4fa13b",
+     "where": "0x4f9960",
+     "ins": "push 0x618710"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4fa13b",
+     "where": "0x4f9960",
+     "ins": "push 0x618710",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c024a",
+     "where": "cave->0x456298(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x618710]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelFriction_XMult",
+   "type": "float",
+   "address": "0x00617fc4",
+   "class_address": "0x00617fc4",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "7.50335e+28",
+   "redline_ascii": "Error in IndexBufferSlots::Add : release count!=",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelFrictionLateralMult",
+   "prop_type": "float",
+   "meaning": "wheel friction, X axis",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x43ba80"
+   ],
+   "redline_refs": 2,
+   "gi_refs": 3,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4eb51b",
+     "where": "0x4eb470",
+     "ins": "push 0x617fc4"
+    },
+    {
+     "va": "0x4ec02a",
+     "where": "0x4ebf40",
+     "ins": "push 0x617fc4"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4eb51b",
+     "where": "0x4eb470",
+     "ins": "push 0x617fc4",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4ec02a",
+     "where": "0x4ebf40",
+     "ins": "push 0x617fc4",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0263",
+     "where": "cave->0x43ba94(fn 0x43ba80)",
+     "ins": "fmul dword ptr [0x617fc4]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelSilictionMult",
+   "type": "float",
+   "address": "0x00617fc8",
+   "class_address": "0x00617fc8",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.80373e+28",
+   "redline_ascii": "Error in IndexBufferSlots::Add : release count!=",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelSlipMult",
+   "prop_type": "float",
+   "meaning": "name has a typo ('Siliction'); wheel slip-related scale used twice in cave 0x7c025d",
+   "confidence": "L",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x43ba80"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 2,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c026b",
+     "where": "cave->0x43ba94(fn 0x43ba80)",
+     "ins": "fmul dword ptr [0x617fc8]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c027c",
+     "where": "cave->0x43bb18(fn 0x43ba80)",
+     "ins": "fmul dword ptr [0x617fc8]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelStiffnessMult",
+   "type": "float",
+   "address": "0x00618000",
+   "class_address": "0x00618000",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.75824e+22",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "0.7",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelStiffnessMult",
+   "prop_type": "float",
+   "meaning": "wheel stiffness scale",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x43ba80",
+    "0x44fa70"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 2,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c02e9",
+     "where": "cave->0x4562cc(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x618000]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c02fc",
+     "where": "cave->0x43bad3(fn 0x43ba80)",
+     "ins": "fmul dword ptr [0x618000]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelRollResMult",
+   "type": "float",
+   "address": "0x00618004",
+   "class_address": "0x00618004",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.4652e+32",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelRollResistanceMult",
+   "prop_type": "float",
+   "meaning": "rolling resistance scale",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c030e",
+     "where": "cave->0x4562a4(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x618004]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelBearingMult",
+   "type": "float",
+   "address": "0x00618008",
+   "class_address": "0x00618008",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "4.54373e+30",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelBearingMult",
+   "prop_type": "float",
+   "meaning": "bearing friction scale",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 2,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c0327",
+     "where": "cave->0x455c47(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x618008]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c033a",
+     "where": "cave->0x455d0f(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x618008]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelMaxLoadMult",
+   "type": "float",
+   "address": "0x0061800c",
+   "class_address": "0x0061800c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "7.58762e+31",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "0.8",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelMaxLoadMult",
+   "prop_type": "float",
+   "meaning": "wheel max load scale",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44e2d0",
+    "0x44fa70"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 2,
+   "gi_refs_in_cave": 2,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c034d",
+     "where": "cave->0x4562b0(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x61800c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c035a",
+     "where": "cave->0x44ec81(fn 0x44e2d0)",
+     "ins": "fmul dword ptr [0x61800c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_WheelLoadSmoothMult",
+   "type": "float",
+   "address": "0x00618010",
+   "class_address": "0x00618010",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.99961e+11",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.WheelLoadSmoothMult",
+   "prop_type": "float",
+   "meaning": "wheel load smoothing scale",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c0373",
+     "where": "cave->0x4913c5(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x618010]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var1",
+   "type": "float",
+   "address": "0x00618014",
+   "class_address": "0x00618014",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.64507e+20",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.Hardness",
+   "prop_type": "float",
+   "meaning": "source comment: (hardness)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c037e",
+     "where": "cave->0x4913c5(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x618014]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var2",
+   "type": "float",
+   "address": "0x00618018",
+   "class_address": "0x00618018",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "2.35653e+20",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.InverseRebound",
+   "prop_type": "float",
+   "meaning": "source comment: (inverse-rebound)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c038f",
+     "where": "cave->0x4913dc(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x618018]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var3",
+   "type": "float",
+   "address": "0x0061801c",
+   "class_address": "0x0061801c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.57933e-19",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.InboundInverseSoftness",
+   "prop_type": "float",
+   "meaning": "source comment: (inbound inverse-softness)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c03ae",
+     "where": "cave->0x4913dc(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x61801c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var4",
+   "type": "float",
+   "address": "0x00618020",
+   "class_address": "0x00618020",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.97719e+22",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.LengthAndBumpiness",
+   "prop_type": "float",
+   "meaning": "source comment: (length and bumpiness)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c03bc",
+     "where": "cave->0x4913bf(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x618020]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var5",
+   "type": "float",
+   "address": "0x00618024",
+   "class_address": "0x00618024",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.94352e-19",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.MaxInverseContraction",
+   "prop_type": "float",
+   "meaning": "source comment: (max inverse-contraction)",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x490dc0"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c03d2",
+     "where": "cave->0x491427(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x618024]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var6",
+   "type": "float",
+   "address": "0x00618028",
+   "class_address": "0x00618028",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "1.89896e+28",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "3.86",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.CollisionRelated",
+   "prop_type": "float",
+   "meaning": "source comment: (collision related); GI default 3.86",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x491d50"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 1,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c03e9",
+     "where": "cave->0x491e05(fn 0x491d50)",
+     "ins": "fmul dword ptr [0x618028]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_NativeSpring_Var8",
+   "type": "float",
+   "address": "0x0061802c",
+   "class_address": "0x0061802c",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "6.88053e-10",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "1",
+   "config_key": "",
+   "group": "Physics",
+   "proposed_property": "Physics.Spring.Length",
+   "prop_type": "float",
+   "meaning": "source comment: (spring length); 7 refs in cave 0x7c03fe..0x7c0486",
+   "confidence": "M",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44fa70",
+    "0x490dc0",
+    "cave"
+   ],
+   "redline_refs": 0,
+   "gi_refs": 7,
+   "gi_refs_in_cave": 7,
+   "gi_patched_sites": 0,
+   "redline_sites": [],
+   "gi_sites": [
+    {
+     "va": "0x7c0406",
+     "where": "cave",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c041e",
+     "where": "cave",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0437",
+     "where": "cave",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0444",
+     "where": "cave->0x491cd5(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c044d",
+     "where": "cave->0x491cd5(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0466",
+     "where": "cave->0x44fb7c(fn 0x44fa70)",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0486",
+     "where": "cave->0x49120a(fn 0x490dc0)",
+     "ins": "fmul dword ptr [0x61802c]",
+     "vanilla_at_site": ""
+    }
+   ]
+  },
+  {
+   "name": "F_CruiseBreakWhenOverLimit",
+   "type": "float",
+   "address": "0x00618034",
+   "class_address": "0x00618034",
+   "section": ".data",
+   "initialised_in_file": true,
+   "redline_value": "7.50335e+28",
+   "redline_ascii": "Error in IndexBufferSlots::ReleaseLast: release ",
+   "gi_default": "0.5",
+   "config_key": "",
+   "group": "Drivetrain",
+   "proposed_property": "Drivetrain.CruiseBrakeWhenOverLimit",
+   "prop_type": "float",
+   "meaning": "cruise-control: braking when over the speed limit; GI default 0.5",
+   "confidence": "L",
+   "origin": "mod variable over former vanilla string",
+   "hooked_functions": [
+    "0x44e2d0"
+   ],
+   "redline_refs": 3,
+   "gi_refs": 4,
+   "gi_refs_in_cave": 1,
+   "gi_patched_sites": 0,
+   "redline_sites": [
+    {
+     "va": "0x4eb754",
+     "where": "0x4eb730",
+     "ins": "push 0x618034"
+    },
+    {
+     "va": "0x4eba1e",
+     "where": "0x4eb9d0",
+     "ins": "push 0x618034"
+    },
+    {
+     "va": "0x4eba80",
+     "where": "0x4eb9d0",
+     "ins": "push 0x618034"
+    }
+   ],
+   "gi_sites": [
+    {
+     "va": "0x4eb754",
+     "where": "0x4eb730",
+     "ins": "push 0x618034",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4eba1e",
+     "where": "0x4eb9d0",
+     "ins": "push 0x618034",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x4eba80",
+     "where": "0x4eb9d0",
+     "ins": "push 0x618034",
+     "vanilla_at_site": ""
+    },
+    {
+     "va": "0x7c0552",
+     "where": "cave->0x44e9d5(fn 0x44e2d0)",
+     "ins": "fld dword ptr [0x618034]",
+     "vanilla_at_site": ""
+    }
+   ]
+  }
+ ],
+ "class_sites": [
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 134,
+   "line": 559,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:8 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 134,
+   "line": 566,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:8 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 134,
+   "line": 577,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:8 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 134,
+   "line": 584,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:8 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 172,
+   "line": 1245,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:2 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 172,
+   "line": 1252,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:2 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 172,
+   "line": 1263,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:2 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27"
+  },
+  {
+   "file": "parts/scripts/bodypart/Chassis.class",
+   "cls": "java.game.parts.bodypart.Chassis",
+   "body": 172,
+   "line": 1270,
+   "ref": "class-ref + by-name setF",
+   "op": "19",
+   "window": "11:2 01:2 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27"
+  }
+ ],
+ "java_sites": [
+  {
+   "file": "src/Catalog.java",
+   "line": 513,
+   "commented": true,
+   "text": "//RawEdit.engine_help_ForceMinAllMemLimits();"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 514,
+   "commented": true,
+   "text": "//old_mem_vertex_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_vertex_max);"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 515,
+   "commented": true,
+   "text": "//old_mem_texture_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_texture_max);"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 516,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, 0);"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 517,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, 0);"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 531,
+   "commented": true,
+   "text": "//RawEdit.engine_help_UnForceMinAllMemLimits();"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 532,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, old_mem_texture_max);"
+  },
+  {
+   "file": "src/Catalog.java",
+   "line": 533,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, old_mem_vertex_max);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 513,
+   "commented": true,
+   "text": "//RawEdit.engine_help_ForceMinAllMemLimits();"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 514,
+   "commented": true,
+   "text": "//old_mem_vertex_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_vertex_max);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 515,
+   "commented": true,
+   "text": "//old_mem_texture_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_texture_max);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 516,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, 0);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 517,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, 0);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 531,
+   "commented": true,
+   "text": "//RawEdit.engine_help_UnForceMinAllMemLimits();"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 532,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, old_mem_texture_max);"
+  },
+  {
+   "file": "sl/Scripts/game/src/Catalog.java",
+   "line": 533,
+   "commented": true,
+   "text": "//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, old_mem_vertex_max);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 559,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 566,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 577,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 584,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1245,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1252,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1263,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1270,
+   "commented": false,
+   "text": "RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1430,
+   "commented": true,
+   "text": "//calls like: ....car.chassis.getIndexedData(Chassis.IndexedData_ThrottleStrength);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1431,
+   "commented": false,
+   "text": "public native float getIndexedData( int index );"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1432,
+   "commented": false,
+   "text": "public native int getIndexedAddr( int index );"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1433,
+   "commented": true,
+   "text": "public static final int IndexedData_GearNumber = 0x20FC-0x304;//this is an int getIndexedData will return strange but the RawEdit.getI with getIndexedAddr will "
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1434,
+   "commented": true,
+   "text": "//democall in garage: RawEdit.setI(player.car.chassis.getIndexedAddr(Chassis.IndexedData_GearNumber),4);"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/Chassis.java",
+   "line": 1449,
+   "commented": false,
+   "text": "float CurrentRPM = getIndexedData( IndexedData_RPM );"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/HeadlightController.java",
+   "line": 110,
+   "commented": false,
+   "text": "return File.exists(\"system\\\\Scripts\\\\lang\\\\RawEdit.class\");"
+  },
+  {
+   "file": "parts/scripts/bodypart/Src/HeadlightController.java",
+   "line": 239,
+   "commented": false,
+   "text": "if(the_car.getIndexedData(Chassis.IndexedData_RPM) > 200)"
+  },
+  {
+   "file": "parts/scripts/src/SfxTable.java",
+   "line": 17,
+   "commented": true,
+   "text": "//RawEdit.setF(soundBaseOffset+0x10,1.0/*new_pitch*);"
+  },
+  {
+   "file": "parts/scripts/src/SfxTable.java",
+   "line": 18,
+   "commented": true,
+   "text": "//RawEdit.setF(soundBaseOffset+0x14,*unkown*);"
+  },
+  {
+   "file": "parts/scripts/src/SfxTable.java",
+   "line": 19,
+   "commented": true,
+   "text": "//RawEdit.setF(soundBaseOffset+0x18,*unkown*);"
+  },
+  {
+   "file": "parts/scripts/src/SfxTable.java",
+   "line": 20,
+   "commented": true,
+   "text": "//RawEdit.setF(soundBaseOffset+0x1C,*unkown*);"
+  },
+  {
+   "file": "parts/scripts/src/SfxTable.java",
+   "line": 21,
+   "commented": true,
+   "text": "//RawEdit.setF(soundBaseOffset+0x20,*unkown*);"
+  }
+ ]
+}

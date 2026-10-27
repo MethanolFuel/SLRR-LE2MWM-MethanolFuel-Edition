@@ -25,6 +25,8 @@ public static class Commands
           dump-instances <archive.rpk>         map/garage instance trees (see --tree, --chunks, --coverage)
           export-gltf <scx> <out.gltf>         textured glTF export (also --texture, --survey)
           cfg-schema [gameRoot] [--list]       per-keyword cfg argument schema and violations
+          decompile <file.class|dir>           decompile TUFA classes to source (--out, --fidelity, --quiet)
+          run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
         """;
 
     public static int Run(string[] args, TextWriter o, TextWriter e)
@@ -50,6 +52,8 @@ public static class Commands
                 "dump-instances" => CmdInstances.Run(args[1..], o, e),
                 "export-gltf" => CmdGltf.Run(args[1..], o, e),
                 "cfg-schema" => CmdCfgSchema.Run(args[1..], o, e),
+                "decompile" => CmdDecompile.Run(args[1..], o, e),
+                "run-class" => CmdVm.Run(args[1..], o, e),
                 _ => Fail(e, Usage),
             };
         }

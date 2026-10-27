@@ -1,0 +1,23 @@
+name	offset	expression	source_comment
+IndexedData_Mileage	0x20fc	0x20FC	
+IndexedData_RPM	0x1f4c	0x20FC-0x1B0	
+IndexedData_GearStrength	0x1dd8	0x20FC-0x324	
+IndexedData_CarRuntime	0x1e2c	0x20FC-0x2D0	
+IndexedData_ExhaustActivity	0x1e28	0x20FC-0x2D4	related to turbo but returns values even when there is no turbo installed
+IndexedData_CurrentSteering1	0x1dac	0x20FC-0x350	
+IndexedData_CurrentSteering2	0x1db0	0x20FC-0x34C	
+IndexedData_CurrentSteering3	0x1f10	0x20FC-0x1EC	
+IndexedData_Handbreak	0x1dc0	0x20FC-0x33C	
+IndexedData_BreakStrength	0x1db8	0x20FC-0x344	
+IndexedData_ThrottleStrength	0x1db4	0x20FC-0x348	
+IndexedData_ClutchStrength	0x1dbc	0x20FC-0x340	
+IndexedData_NitroStrength	0x1dc4	0x20FC-0x338	
+IndexedData_NOSLevel	0x1ef8	0x20FC-0x204	
+IndexedData_EngineWear	0x1e38	0x20FC-0x2C4	
+IndexedData_HandbreakLED	0x3cc	0x20FC-0x1D30	return 0.0 if it is not lit returns something else if it is
+IndexedData_OverDriveLED	0x3dc	0x20FC-0x1D20	return 0.0 if it is not lit returns something else if it is
+IndexedData_ASRLED	0x3bc	0x20FC-0x1D40	return 0.0 if it is not lit returns something else if it is
+IndexedData_ABSLED	0x3ac	0x20FC-0x1D50	return 0.0 if it is not lit returns something else if it is
+IndexedData_GearNumber	0x1df8	0x20FC-0x304	this is an int getIndexedData will return strange but the RawEdit.getI with getIndexedAddr will suffice
+IndexedData_Flags	0x70	0x70	
+IndexedData_SpeedLimit	0x2104	0x2104	
