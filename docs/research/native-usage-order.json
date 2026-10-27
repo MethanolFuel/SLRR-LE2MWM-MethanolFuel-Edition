@@ -1,0 +1,2300 @@
+[
+ {
+  "rank": 1,
+  "class": "java.game.parts.Part",
+  "method": "setMaxWear",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 2,
+  "class": "java.lang.Float",
+  "method": "toString",
+  "descriptor": "(FLjava.lang.String;)Ljava.lang.String;"
+ },
+ {
+  "rank": 3,
+  "class": "java.lang.System",
+  "method": "arraycopy",
+  "descriptor": "(Ljava.lang.Object;ILjava.lang.Object;II)V"
+ },
+ {
+  "rank": 4,
+  "class": "java.game.parts.Part",
+  "method": "getCarRef",
+  "descriptor": "()Ljava.game.parts.Part;"
+ },
+ {
+  "rank": 5,
+  "class": "java.game.parts.Part",
+  "method": "getWheelID",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 6,
+  "class": "java.game.parts.Part",
+  "method": "setRenderType",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 7,
+  "class": "java.game.parts.WheelRef",
+  "method": "setDamping",
+  "descriptor": "(FF)V"
+ },
+ {
+  "rank": 8,
+  "class": "java.game.parts.Part",
+  "method": "getRenderType",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 9,
+  "class": "java.game.parts.Part",
+  "method": "setSlotPos",
+  "descriptor": "(ILjava.lang.Vector3;Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 10,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getWheel",
+  "descriptor": "(I)Ljava.game.parts.WheelRef;"
+ },
+ {
+  "rank": 11,
+  "class": "java.game.parts.WheelRef",
+  "method": "setArm",
+  "descriptor": "(FFFFFFF)V"
+ },
+ {
+  "rank": 12,
+  "class": "java.game.parts.WheelRef",
+  "method": "setHub",
+  "descriptor": "(FFFFFFFFFF)V"
+ },
+ {
+  "rank": 13,
+  "class": "java.game.parts.WheelRef",
+  "method": "setInstantCenter",
+  "descriptor": "(FFFFFF)V"
+ },
+ {
+  "rank": 14,
+  "class": "java.game.parts.WheelRef",
+  "method": "setYpr",
+  "descriptor": "(Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 15,
+  "class": "java.util.resource.ResourceRef",
+  "method": "newNative",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 16,
+  "class": "java.util.resource.ResourceRef",
+  "method": "set",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 17,
+  "class": "java.util.resource.ResourceRef",
+  "method": "set",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 18,
+  "class": "java.game.parts.Part",
+  "method": "getWear",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 19,
+  "class": "java.game.parts.Part",
+  "method": "partOnSlot",
+  "descriptor": "(I)Ljava.game.parts.Part;"
+ },
+ {
+  "rank": 20,
+  "class": "java.game.parts.WheelRef",
+  "method": "setRadius",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 21,
+  "class": "java.game.parts.WheelRef",
+  "method": "setBrake",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 22,
+  "class": "java.game.parts.WheelRef",
+  "method": "setHBrake",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 23,
+  "class": "java.lang.Math",
+  "method": "sqrt",
+  "descriptor": "(F)F"
+ },
+ {
+  "rank": 24,
+  "class": "java.game.parts.Part",
+  "method": "disableSlot",
+  "descriptor": "(II)V"
+ },
+ {
+  "rank": 25,
+  "class": "java.lang.Object",
+  "method": "notify",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 26,
+  "class": "java.game.parts.DynoData",
+  "method": "newNative",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 27,
+  "class": "java.util.resource.GameRef",
+  "method": "queueEvent",
+  "descriptor": "(Ljava.util.resource.ResourceRef;ILjava.lang.String;)V"
+ },
+ {
+  "rank": 28,
+  "class": "java.lang.String",
+  "method": "token",
+  "descriptor": "(ILjava.lang.String;)Ljava.lang.String;"
+ },
+ {
+  "rank": 29,
+  "class": "java.render.Camera",
+  "method": "destroy",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 30,
+  "class": "java.render.Viewport",
+  "method": "destroy",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 31,
+  "class": "java.util.resource.ResourceRef",
+  "method": "destroy",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 32,
+  "class": "java.util.resource.GameRef",
+  "method": "create",
+  "descriptor": "(Ljava.util.resource.GameRef;Ljava.util.resource.GameRef;Ljava.lang.String;Ljava.lang.String;)Ljava.lang.GameType;"
+ },
+ {
+  "rank": 33,
+  "class": "java.game.parts.Part",
+  "method": "setWear",
+  "descriptor": "(F)F"
+ },
+ {
+  "rank": 34,
+  "class": "java.game.parts.Part",
+  "method": "getCar",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 35,
+  "class": "java.game.parts.Part",
+  "method": "setTear",
+  "descriptor": "(F)F"
+ },
+ {
+  "rank": 36,
+  "class": "java.game.parts.Part",
+  "method": "setTexture",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 37,
+  "class": "java.util.resource.ResourceRef",
+  "method": "getParentID",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 38,
+  "class": "java.util.resource.ResourceRef",
+  "method": "id",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 39,
+  "class": "java.game.parts.WheelRef",
+  "method": "setForce",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 40,
+  "class": "java.game.parts.WheelRef",
+  "method": "setMaxLen",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 41,
+  "class": "java.game.parts.WheelRef",
+  "method": "setMinLen",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 42,
+  "class": "java.game.parts.WheelRef",
+  "method": "setRestLen",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 43,
+  "class": "java.lang.Thread",
+  "method": "sleep",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 44,
+  "class": "java.render.Text",
+  "method": "update",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 45,
+  "class": "java.util.resource.GameRef",
+  "method": "setFlags",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 46,
+  "class": "java.lang.GameType",
+  "method": "createNativeInstance",
+  "descriptor": "(Ljava.util.resource.GameRef;ILjava.lang.String;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 47,
+  "class": "java.util.resource.GameRef",
+  "method": "setParent",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 48,
+  "class": "java.util.resource.GameRef",
+  "method": "setPos",
+  "descriptor": "(Ljava.lang.Vector3;)V"
+ },
+ {
+  "rank": 49,
+  "class": "java.lang.Ypr",
+  "method": "<init>",
+  "descriptor": "(Ljava.lang.Vector3;)"
+ },
+ {
+  "rank": 50,
+  "class": "java.lang.Thread",
+  "method": "init",
+  "descriptor": "(Ljava.lang.String;)V"
+ },
+ {
+  "rank": 51,
+  "class": "java.lang.Vector3",
+  "method": "<init>",
+  "descriptor": "(Ljava.lang.Ypr;)"
+ },
+ {
+  "rank": 52,
+  "class": "java.lang.Math",
+  "method": "random",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 53,
+  "class": "java.util.resource.ResourceRef",
+  "method": "makeTexture",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 54,
+  "class": "java.lang.Integer",
+  "method": "toString",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 55,
+  "class": "java.game.parts.DynoData",
+  "method": "deleteNative",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 56,
+  "class": "java.io.Input",
+  "method": "checkHotkeys",
+  "descriptor": "(Ljava.util.resource.GameRef;Ljava.render.Osd;)V"
+ },
+ {
+  "rank": 57,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "init",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.RenderRef;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 58,
+  "class": "java.util.resource.RenderRef",
+  "method": "create",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.RenderRef;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 59,
+  "class": "java.util.resource.RenderRef",
+  "method": "setMatrix",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 60,
+  "class": "java.lang.System",
+  "method": "exit",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 61,
+  "class": "java.game.parts.Part",
+  "method": "getSlotID",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 62,
+  "class": "java.game.parts.Part",
+  "method": "getSlots",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 63,
+  "class": "java.game.parts.Part",
+  "method": "slotIDOnSlot",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 64,
+  "class": "java.game.parts.WheelRef",
+  "method": "setDrive",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 65,
+  "class": "java.io.Input",
+  "method": "deleteHotkey",
+  "descriptor": "(Ljava.io.Hotkey;)V"
+ },
+ {
+  "rank": 66,
+  "class": "java.io.Input",
+  "method": "createHotkey",
+  "descriptor": "(IILjava.io.Hotkey;Ljava.util.resource.GameRef;Ljava.render.Osd;I)V"
+ },
+ {
+  "rank": 67,
+  "class": "java.render.Text",
+  "method": "changeColor",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 68,
+  "class": "java.lang.GameType",
+  "method": "clearEventMask",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 69,
+  "class": "java.lang.Thread",
+  "method": "stop",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 70,
+  "class": "java.lang.Thread",
+  "method": "start",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 71,
+  "class": "java.util.resource.ResourceRef",
+  "method": "duplicate",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 72,
+  "class": "java.util.resource.RenderRef",
+  "method": "changeResource",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 73,
+  "class": "java.util.resource.ResourceRef",
+  "method": "scaleMesh",
+  "descriptor": "(FFF)V"
+ },
+ {
+  "rank": 74,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 75,
+  "class": "java.lang.GameType",
+  "method": "setEventMask",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 76,
+  "class": "java.lang.String",
+  "method": "length",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 77,
+  "class": "java.util.resource.GameRef",
+  "method": "clearFlags",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 78,
+  "class": "java.lang.String",
+  "method": "append",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 79,
+  "class": "java.util.resource.ResourceRef",
+  "method": "cache",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 80,
+  "class": "java.util.resource.SfxRef",
+  "method": "nplay",
+  "descriptor": "(Ljava.lang.Vector3;FFFII)I"
+ },
+ {
+  "rank": 81,
+  "class": "java.io.FindFile",
+  "method": "close",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 82,
+  "class": "java.io.FindFile",
+  "method": "first",
+  "descriptor": "(Ljava.lang.String;I)Ljava.lang.String;"
+ },
+ {
+  "rank": 83,
+  "class": "java.io.FindFile",
+  "method": "next",
+  "descriptor": "()Ljava.lang.String;"
+ },
+ {
+  "rank": 84,
+  "class": "java.lang.System",
+  "method": "openLib",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 85,
+  "class": "java.io.File",
+  "method": "readInt",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 86,
+  "class": "java.io.File",
+  "method": "close",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 87,
+  "class": "java.io.File",
+  "method": "open",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 88,
+  "class": "java.io.File",
+  "method": "write",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 89,
+  "class": "java.game.parts.Part",
+  "method": "getTear",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 90,
+  "class": "java.io.File",
+  "method": "write",
+  "descriptor": "(F)I"
+ },
+ {
+  "rank": 91,
+  "class": "java.io.File",
+  "method": "readFloat",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 92,
+  "class": "java.io.File",
+  "method": "write",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 93,
+  "class": "java.io.File",
+  "method": "readString",
+  "descriptor": "()Ljava.lang.String;"
+ },
+ {
+  "rank": 94,
+  "class": "java.io.File",
+  "method": "write",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)I"
+ },
+ {
+  "rank": 95,
+  "class": "java.io.Input",
+  "method": "getDeviceName",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 96,
+  "class": "java.io.File",
+  "method": "readResID",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 97,
+  "class": "java.render.Viewport",
+  "method": "getHeight",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 98,
+  "class": "java.render.Text",
+  "method": "create",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.ResourceRef;FF)V"
+ },
+ {
+  "rank": 99,
+  "class": "java.render.Viewport",
+  "method": "getWidth",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 100,
+  "class": "java.render.Text",
+  "method": "getWidthPixels",
+  "descriptor": "(Ljava.lang.String;Ljava.util.resource.ResourceRef;)F"
+ },
+ {
+  "rank": 101,
+  "class": "java.render.Text",
+  "method": "changeAlign",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 102,
+  "class": "java.render.Viewport",
+  "method": "create",
+  "descriptor": "(IFFFF)V"
+ },
+ {
+  "rank": 103,
+  "class": "java.render.Viewport",
+  "method": "getAspect",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 104,
+  "class": "java.render.Viewport",
+  "method": "getLeft",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 105,
+  "class": "java.render.Viewport",
+  "method": "getTop",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 106,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "setMatrix",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 107,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "createBox",
+  "descriptor": "(Ljava.util.resource.ResourceRef;FFFLjava.lang.String;)V"
+ },
+ {
+  "rank": 108,
+  "class": "java.io.MouseCursor",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 109,
+  "class": "java.util.resource.GameRef",
+  "method": "getInfo",
+  "descriptor": "(II)I"
+ },
+ {
+  "rank": 110,
+  "class": "java.util.resource.GameRef",
+  "method": "isScripted",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 111,
+  "class": "java.util.resource.GameRef",
+  "method": "getInfo",
+  "descriptor": "(ILjava.lang.String;)I"
+ },
+ {
+  "rank": 112,
+  "class": "java.lang.System",
+  "method": "syncGameTime",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 113,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "forceUpdate",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 114,
+  "class": "java.util.resource.GameRef",
+  "method": "getScriptInstance",
+  "descriptor": "()Ljava.lang.Object;"
+ },
+ {
+  "rank": 115,
+  "class": "java.render.Camera",
+  "method": "create",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.render.Viewport;IFFFFFII)V"
+ },
+ {
+  "rank": 116,
+  "class": "java.util.resource.GameRef",
+  "method": "setMatrix",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 117,
+  "class": "java.lang.Vector3",
+  "method": "length",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 118,
+  "class": "java.lang.Vector3",
+  "method": "rotate",
+  "descriptor": "(Ljava.lang.Ypr;)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 119,
+  "class": "java.util.resource.RenderRef",
+  "method": "setColor",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 120,
+  "class": "java.game.parts.Part",
+  "method": "install_OK",
+  "descriptor": "(Ljava.util.resource.GameRef;ILjava.util.resource.GameRef;ILjava.lang.Vector3;)[I"
+ },
+ {
+  "rank": 121,
+  "class": "java.game.parts.WheelRef",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 122,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getCM",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 123,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getMass",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 124,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getWheels",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 125,
+  "class": "java.game.parts.WheelRef",
+  "method": "setBearing",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 126,
+  "class": "java.game.parts.WheelRef",
+  "method": "setFriction",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 127,
+  "class": "java.game.parts.WheelRef",
+  "method": "setFrictn_x",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 128,
+  "class": "java.game.parts.WheelRef",
+  "method": "setLoadSmooth",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 129,
+  "class": "java.game.parts.WheelRef",
+  "method": "setMaxLoad",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 130,
+  "class": "java.game.parts.WheelRef",
+  "method": "setPacejka",
+  "descriptor": "(IF)V"
+ },
+ {
+  "rank": 131,
+  "class": "java.game.parts.WheelRef",
+  "method": "setRollRes",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 132,
+  "class": "java.game.parts.WheelRef",
+  "method": "setSliction",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 133,
+  "class": "java.game.parts.WheelRef",
+  "method": "setStiffness",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 134,
+  "class": "java.game.parts.WheelRef",
+  "method": "setWidth",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 135,
+  "class": "java.game.parts.WheelRef",
+  "method": "setCPatch",
+  "descriptor": "(FFF)V"
+ },
+ {
+  "rank": 136,
+  "class": "java.lang.RawEdit",
+  "method": "setF",
+  "descriptor": "(IF)I"
+ },
+ {
+  "rank": 137,
+  "class": "java.game.parts.DynoData",
+  "method": "calcDyno",
+  "descriptor": "(F)F"
+ },
+ {
+  "rank": 138,
+  "class": "java.game.parts.SfxTable",
+  "method": "addItem",
+  "descriptor": "(Ljava.util.resource.ResourceRef;FFFFF)V"
+ },
+ {
+  "rank": 139,
+  "class": "java.game.parts.SfxTable",
+  "method": "clear",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 140,
+  "class": "java.game.parts.WheelRef",
+  "method": "setPos",
+  "descriptor": "(Ljava.lang.Vector3;)V"
+ },
+ {
+  "rank": 141,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getSfxTable",
+  "descriptor": "(I)Ljava.game.parts.SfxTable;"
+ },
+ {
+  "rank": 142,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getWheelPos",
+  "descriptor": "(I)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 143,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setHornSFX",
+  "descriptor": "(Ljava.util.resource.ResourceRef;FI)V"
+ },
+ {
+  "rank": 144,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setSfxExhaustMinVol",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 145,
+  "class": "java.game.parts.Part",
+  "method": "setMesh",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 146,
+  "class": "java.game.parts.Part",
+  "method": "setSlotDamage",
+  "descriptor": "(ILjava.lang.String;)V"
+ },
+ {
+  "rank": 147,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setMileage",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 148,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setWheelDamage",
+  "descriptor": "(ILjava.lang.String;)V"
+ },
+ {
+  "rank": 149,
+  "class": "java.util.resource.ResourceRef",
+  "method": "getParent",
+  "descriptor": "()Ljava.util.resource.ResourceRef;"
+ },
+ {
+  "rank": 150,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getMileage",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 151,
+  "class": "java.game.parts.Part",
+  "method": "getMesh",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 152,
+  "class": "java.game.parts.Part",
+  "method": "getSlotDamage",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 153,
+  "class": "java.game.parts.Part",
+  "method": "getTexture",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 154,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getWheelDamage",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 155,
+  "class": "java.lang.System",
+  "method": "currentTime",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 156,
+  "class": "java.game.parts.DynoData",
+  "method": "getTorque",
+  "descriptor": "(FF)F"
+ },
+ {
+  "rank": 157,
+  "class": "java.game.parts.Part",
+  "method": "flap",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 158,
+  "class": "java.lang.System",
+  "method": "timeWarp",
+  "descriptor": "(F)F"
+ },
+ {
+  "rank": 159,
+  "class": "java.util.resource.GameRef",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 160,
+  "class": "java.io.Input",
+  "method": "flushHotkeys",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 161,
+  "class": "java.io.Input",
+  "method": "lastKey",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 162,
+  "class": "java.render.Viewport",
+  "method": "activate",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 163,
+  "class": "java.render.Viewport",
+  "method": "deactivate",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 164,
+  "class": "java.lang.GameType",
+  "method": "unregisterCallback",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 165,
+  "class": "java.lang.GameType",
+  "method": "registerCallback",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 166,
+  "class": "java.util.resource.RenderRef",
+  "method": "getTypeID",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 167,
+  "class": "java.lang.GameType",
+  "method": "addTimer",
+  "descriptor": "(FI)V"
+ },
+ {
+  "rank": 168,
+  "class": "java.lang.GameType",
+  "method": "remNotification",
+  "descriptor": "(Ljava.util.resource.GameRef;I)V"
+ },
+ {
+  "rank": 169,
+  "class": "java.lang.GameType",
+  "method": "addNotification",
+  "descriptor": "(Ljava.util.resource.GameRef;IILjava.lang.String;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 170,
+  "class": "java.lang.System",
+  "method": "exit",
+  "descriptor": "(Ljava.lang.String;)V"
+ },
+ {
+  "rank": 171,
+  "class": "java.io.File",
+  "method": "delete",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 172,
+  "class": "java.sound.Sound",
+  "method": "getVolume",
+  "descriptor": "(I)F"
+ },
+ {
+  "rank": 173,
+  "class": "java.lang.GameType",
+  "method": "removeAllTimers",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 174,
+  "class": "java.lang.GameType",
+  "method": "unregisterCallbacks",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 175,
+  "class": "java.util.resource.ResourceRef",
+  "method": "deleteNative",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 176,
+  "class": "java.lang.GameType",
+  "method": "addNotification",
+  "descriptor": "(Ljava.util.resource.GameRef;IILjava.lang.String;)V"
+ },
+ {
+  "rank": 177,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getIndexedData",
+  "descriptor": "(I)F"
+ },
+ {
+  "rank": 178,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "create",
+  "descriptor": "(Ljava.util.resource.ResourceRef;ILjava.lang.String;)V"
+ },
+ {
+  "rank": 179,
+  "class": "java.sound.Sound",
+  "method": "setVolume",
+  "descriptor": "(IF)V"
+ },
+ {
+  "rank": 180,
+  "class": "java.lang.System",
+  "method": "setMeasure",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 181,
+  "class": "java.sound.Sound",
+  "method": "enableDebugDump",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)I"
+ },
+ {
+  "rank": 182,
+  "class": "java.lang.Object",
+  "method": "notifyAll",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 183,
+  "class": "java.lang.Object",
+  "method": "wait",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 184,
+  "class": "java.io.File",
+  "method": "copy",
+  "descriptor": "(Ljava.lang.String;Ljava.lang.String;)I"
+ },
+ {
+  "rank": 185,
+  "class": "java.io.File",
+  "method": "move",
+  "descriptor": "(Ljava.lang.String;Ljava.lang.String;)I"
+ },
+ {
+  "rank": 186,
+  "class": "java.util.resource.ResourceRef",
+  "method": "getFirstChild",
+  "descriptor": "()Ljava.util.resource.ResourceRef;"
+ },
+ {
+  "rank": 187,
+  "class": "java.util.resource.ResourceRef",
+  "method": "getNextChild",
+  "descriptor": "()Ljava.util.resource.ResourceRef;"
+ },
+ {
+  "rank": 188,
+  "class": "java.game.Navigator",
+  "method": "updateNavigator",
+  "descriptor": "(Ljava.util.resource.GameRef;I)V"
+ },
+ {
+  "rank": 189,
+  "class": "java.render.Viewport",
+  "method": "resize",
+  "descriptor": "(FFFF)V"
+ },
+ {
+  "rank": 190,
+  "class": "java.util.resource.GroundRef",
+  "method": "getNearestCross",
+  "descriptor": "(Ljava.lang.Vector3;F)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 191,
+  "class": "java.util.resource.GroundRef",
+  "method": "setPedestrianDensityN",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 192,
+  "class": "java.util.resource.GroundRef",
+  "method": "addTrafficN",
+  "descriptor": "(Ljava.util.resource.GameRef;IFFF)I"
+ },
+ {
+  "rank": 193,
+  "class": "java.io.Controller",
+  "method": "user_Add",
+  "descriptor": "(IIIFFFF)I"
+ },
+ {
+  "rank": 194,
+  "class": "java.io.Controller",
+  "method": "user_Del",
+  "descriptor": "(III)I"
+ },
+ {
+  "rank": 195,
+  "class": "java.io.Controller",
+  "method": "user_Reset",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 196,
+  "class": "java.io.Controller",
+  "method": "user_SetAxisSmooth",
+  "descriptor": "(IFFFFF)I"
+ },
+ {
+  "rank": 197,
+  "class": "java.render.GfxEngine",
+  "method": "closeVideo",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 198,
+  "class": "java.io.File",
+  "method": "exists",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 199,
+  "class": "java.render.GfxEngine",
+  "method": "openVideo",
+  "descriptor": "(Ljava.lang.String;II)I"
+ },
+ {
+  "rank": 200,
+  "class": "java.render.GfxEngine",
+  "method": "printScreen",
+  "descriptor": "(Ljava.lang.String;)V"
+ },
+ {
+  "rank": 201,
+  "class": "java.render.GfxEngine",
+  "method": "isPlayingVideo",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 202,
+  "class": "java.render.GfxEngine",
+  "method": "setGlobalEnvmap",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 203,
+  "class": "java.util.resource.RenderRef",
+  "method": "setLight",
+  "descriptor": "(III)V"
+ },
+ {
+  "rank": 204,
+  "class": "java.util.resource.GroundRef",
+  "method": "setFog",
+  "descriptor": "(IFF)V"
+ },
+ {
+  "rank": 205,
+  "class": "java.util.resource.RenderRef",
+  "method": "setFlare",
+  "descriptor": "(Ljava.util.resource.ResourceRef;IFFII)V"
+ },
+ {
+  "rank": 206,
+  "class": "java.lang.System",
+  "method": "setLdPriority",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 207,
+  "class": "java.util.resource.ResourceRef",
+  "method": "unload",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 208,
+  "class": "java.io.Input",
+  "method": "axisName",
+  "descriptor": "(II)Ljava.lang.String;"
+ },
+ {
+  "rank": 209,
+  "class": "java.io.Input",
+  "method": "getAxis",
+  "descriptor": "(II)F"
+ },
+ {
+  "rank": 210,
+  "class": "java.lang.System",
+  "method": "buildNumber",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 211,
+  "class": "java.lang.System",
+  "method": "compileAll",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 212,
+  "class": "java.lang.System",
+  "method": "getConfigOptions",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 213,
+  "class": "java.lang.System",
+  "method": "simTime",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 214,
+  "class": "java.lang.Vector3",
+  "method": "distance",
+  "descriptor": "(Ljava.lang.Vector3;)F"
+ },
+ {
+  "rank": 215,
+  "class": "java.lang.Vector3",
+  "method": "normalize",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 216,
+  "class": "java.render.GfxEngine",
+  "method": "changeVideoMode",
+  "descriptor": "(III)V"
+ },
+ {
+  "rank": 217,
+  "class": "java.render.GfxEngine",
+  "method": "forceRendering",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 218,
+  "class": "java.sound.Sound",
+  "method": "changeMusicSet",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 219,
+  "class": "java.util.resource.GameRef",
+  "method": "getVel",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 220,
+  "class": "java.lang.System",
+  "method": "isLoadingReset",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 221,
+  "class": "java.io.Input",
+  "method": "activeAxis",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 222,
+  "class": "java.lang.Math",
+  "method": "randomize",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 223,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getMin",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 224,
+  "class": "java.lang.System",
+  "method": "isLoading",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 225,
+  "class": "java.lang.System",
+  "method": "log",
+  "descriptor": "(Ljava.lang.String;)V"
+ },
+ {
+  "rank": 226,
+  "class": "java.lang.Object",
+  "method": "toString",
+  "descriptor": "()Ljava.lang.String;"
+ },
+ {
+  "rank": 227,
+  "class": "java.lang.Thread",
+  "method": "setPriority",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 228,
+  "class": "java.util.resource.GameRef",
+  "method": "getOri",
+  "descriptor": "()Ljava.lang.Ypr;"
+ },
+ {
+  "rank": 229,
+  "class": "java.util.resource.Animation",
+  "method": "<init>",
+  "descriptor": "(Ljava.util.resource.RenderRef;Ljava.util.resource.ResourceRef;)"
+ },
+ {
+  "rank": 230,
+  "class": "java.util.resource.GroundRef",
+  "method": "alignToRoad",
+  "descriptor": "(Ljava.lang.Vector3;)[Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 231,
+  "class": "java.sound.Sound",
+  "method": "nextTrack",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 232,
+  "class": "java.sound.Sound",
+  "method": "prevTrack",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 233,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getMax",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 234,
+  "class": "java.util.resource.SfxRef",
+  "method": "stop",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 235,
+  "class": "java.game.GameLogic",
+  "method": "kismajomCheck",
+  "descriptor": "([Ljava.lang.String;)I"
+ },
+ {
+  "rank": 236,
+  "class": "java.game.parts.DynoData",
+  "method": "getHP",
+  "descriptor": "(FF)F"
+ },
+ {
+  "rank": 237,
+  "class": "java.game.parts.WheelRef",
+  "method": "getRadius",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 238,
+  "class": "java.render.GfxEngine",
+  "method": "flush",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 239,
+  "class": "java.util.resource.GroundRef",
+  "method": "delTraffic",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 240,
+  "class": "java.util.resource.GroundRef",
+  "method": "setWater",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;FF)V"
+ },
+ {
+  "rank": 241,
+  "class": "java.game.Vehicle",
+  "method": "getSpeedSquare",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 242,
+  "class": "java.util.resource.GroundRef",
+  "method": "getStartDirection",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 243,
+  "class": "java.util.resource.GroundRef",
+  "method": "haltTrafficCross",
+  "descriptor": "(Ljava.lang.Vector3;F)V"
+ },
+ {
+  "rank": 244,
+  "class": "java.util.resource.GroundRef",
+  "method": "remTrafficCar",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 245,
+  "class": "java.util.resource.GameRef",
+  "method": "create_native",
+  "descriptor": "(Ljava.util.resource.GameRef;Ljava.util.resource.GameRef;Ljava.lang.String;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 246,
+  "class": "java.util.resource.GroundRef",
+  "method": "addPedestrianType",
+  "descriptor": "(Ljava.util.resource.GameRef;)V"
+ },
+ {
+  "rank": 247,
+  "class": "java.util.resource.GroundRef",
+  "method": "addTrafficCar",
+  "descriptor": "(Ljava.util.resource.GameRef;Ljava.lang.Vector3;)I"
+ },
+ {
+  "rank": 248,
+  "class": "java.util.resource.GroundRef",
+  "method": "addWaterLimit",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;)V"
+ },
+ {
+  "rank": 249,
+  "class": "java.util.resource.GroundRef",
+  "method": "haltTrafficPath",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;)V"
+ },
+ {
+  "rank": 250,
+  "class": "java.util.resource.GroundRef",
+  "method": "notifyTrafficCar",
+  "descriptor": "(II)I"
+ },
+ {
+  "rank": 251,
+  "class": "java.util.resource.GroundRef",
+  "method": "getRouteLength",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;)F"
+ },
+ {
+  "rank": 252,
+  "class": "java.io.MouseCursor",
+  "method": "getPickedPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 253,
+  "class": "java.util.resource.RenderRef",
+  "method": "plotRoute",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.ResourceRef;IFLjava.lang.Vector3;)I"
+ },
+ {
+  "rank": 254,
+  "class": "java.game.Vehicle",
+  "method": "getHorn",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 255,
+  "class": "java.game.Vehicle",
+  "method": "hasCrime",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 256,
+  "class": "java.lang.Integer",
+  "method": "toHexString",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 257,
+  "class": "java.util.resource.Animation",
+  "method": "play",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 258,
+  "class": "java.util.resource.Animation",
+  "method": "setSpeed",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 259,
+  "class": "java.util.resource.GroundRef",
+  "method": "addTrafficP",
+  "descriptor": "(Ljava.util.resource.GameRef;Ljava.lang.Vector3;IFFF)I"
+ },
+ {
+  "rank": 260,
+  "class": "java.game.Painter",
+  "method": "doPaint",
+  "descriptor": "(Ljava.util.resource.GameRef;IIIFFI)V"
+ },
+ {
+  "rank": 261,
+  "class": "java.game.Painter",
+  "method": "paintPart",
+  "descriptor": "(Ljava.util.resource.GameRef;I)V"
+ },
+ {
+  "rank": 262,
+  "class": "java.game.Painter",
+  "method": "xPaint",
+  "descriptor": "(Ljava.util.resource.GameRef;)V"
+ },
+ {
+  "rank": 263,
+  "class": "java.lang.RawEdit",
+  "method": "getF",
+  "descriptor": "(I)F"
+ },
+ {
+  "rank": 264,
+  "class": "java.lang.RawEdit",
+  "method": "getI",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 265,
+  "class": "java.lang.RawEdit",
+  "method": "setI",
+  "descriptor": "(II)I"
+ },
+ {
+  "rank": 266,
+  "class": "java.game.parts.Part",
+  "method": "getLogo",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 267,
+  "class": "java.game.parts.Part",
+  "method": "getMass",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 268,
+  "class": "java.game.parts.Part",
+  "method": "getSlotIndex",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 269,
+  "class": "java.game.parts.Part",
+  "method": "isSlotDisabled",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 270,
+  "class": "java.game.parts.Part",
+  "method": "setSfxLoopParams",
+  "descriptor": "(FF)I"
+ },
+ {
+  "rank": 271,
+  "class": "java.game.parts.SfxTable",
+  "method": "AddItemPtr",
+  "descriptor": "(Ljava.util.resource.ResourceRef;FFFFF)I"
+ },
+ {
+  "rank": 272,
+  "class": "java.game.parts.SfxTable",
+  "method": "getItems",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 273,
+  "class": "java.game.parts.WheelRef",
+  "method": "getBrake",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 274,
+  "class": "java.game.parts.WheelRef",
+  "method": "getDrive",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 275,
+  "class": "java.game.parts.WheelRef",
+  "method": "getHBrake",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 276,
+  "class": "java.game.parts.WheelRef",
+  "method": "getSteer",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 277,
+  "class": "java.game.parts.WheelRef",
+  "method": "getYpr",
+  "descriptor": "()Ljava.lang.Ypr;"
+ },
+ {
+  "rank": 278,
+  "class": "java.game.parts.WheelRef",
+  "method": "setDamping",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 279,
+  "class": "java.game.parts.WheelRef",
+  "method": "setOppWheel",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 280,
+  "class": "java.game.parts.WheelRef",
+  "method": "setSteer",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 281,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getIndexedAddr",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 282,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "getTorque",
+  "descriptor": "(FF)F"
+ },
+ {
+  "rank": 283,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setAckermann",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 284,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setBuck",
+  "descriptor": "(IIFFFF)I"
+ },
+ {
+  "rank": 285,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setBuck",
+  "descriptor": "(IIFFFF)V"
+ },
+ {
+  "rank": 286,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setCooling",
+  "descriptor": "(FFF)V"
+ },
+ {
+  "rank": 287,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setNitroSFX",
+  "descriptor": "(Ljava.util.resource.ResourceRef;F)V"
+ },
+ {
+  "rank": 288,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setSteerWheel",
+  "descriptor": "(FF)V"
+ },
+ {
+  "rank": 289,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setSteerWheelRadius",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 290,
+  "class": "java.game.parts.bodypart.Chassis",
+  "method": "setTorque",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 291,
+  "class": "java.io.Controller",
+  "method": "user_GetAxisVal",
+  "descriptor": "(I)F"
+ },
+ {
+  "rank": 292,
+  "class": "java.io.Controller",
+  "method": "user_SetAxisForce",
+  "descriptor": "(IFF)V"
+ },
+ {
+  "rank": 293,
+  "class": "java.io.Controller",
+  "method": "user_SetAxisSpeed",
+  "descriptor": "(IF)V"
+ },
+ {
+  "rank": 294,
+  "class": "java.io.File",
+  "method": "TimeHigh",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 295,
+  "class": "java.io.File",
+  "method": "TimeLow",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 296,
+  "class": "java.io.Input",
+  "method": "mapAxis",
+  "descriptor": "(Ljava.util.resource.GameRef;IIIFFFF)V"
+ },
+ {
+  "rank": 297,
+  "class": "java.io.Input",
+  "method": "setAxisSmooth",
+  "descriptor": "(Ljava.util.resource.GameRef;IFFFF)V"
+ },
+ {
+  "rank": 298,
+  "class": "java.lang.Math",
+  "method": "setrandseed",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 299,
+  "class": "java.lang.Object",
+  "method": "disableGC",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 300,
+  "class": "java.lang.Object",
+  "method": "enableGC",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 301,
+  "class": "java.lang.Object",
+  "method": "hashCode",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 302,
+  "class": "java.lang.RawEdit",
+  "method": "CentCur",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 303,
+  "class": "java.lang.String",
+  "method": "finalize",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 304,
+  "class": "java.lang.String",
+  "method": "floatValue",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 305,
+  "class": "java.lang.String",
+  "method": "intValue",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 306,
+  "class": "java.lang.System",
+  "method": "analyze",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 307,
+  "class": "java.lang.System",
+  "method": "analyze",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 308,
+  "class": "java.lang.System",
+  "method": "analyze",
+  "descriptor": "(Ljava.lang.Object;)V"
+ },
+ {
+  "rank": 309,
+  "class": "java.lang.System",
+  "method": "gc",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 310,
+  "class": "java.lang.System",
+  "method": "info",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 311,
+  "class": "java.lang.System",
+  "method": "netHost",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 312,
+  "class": "java.lang.System",
+  "method": "netJoin",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 313,
+  "class": "java.lang.System",
+  "method": "netLeave",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 314,
+  "class": "java.lang.System",
+  "method": "runFinalization",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 315,
+  "class": "java.lang.Thread",
+  "method": "getCurrentThread",
+  "descriptor": "()Ljava.lang.Thread;"
+ },
+ {
+  "rank": 316,
+  "class": "java.lang.Thread",
+  "method": "getPriority",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 317,
+  "class": "java.lang.Thread",
+  "method": "isAlive",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 318,
+  "class": "java.lang.Thread",
+  "method": "resume",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 319,
+  "class": "java.lang.Thread",
+  "method": "setDaemon",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 320,
+  "class": "java.lang.Thread",
+  "method": "suspend",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 321,
+  "class": "java.lang.Vector3",
+  "method": "rotate",
+  "descriptor": "(Ljava.lang.Vector3;F)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 322,
+  "class": "java.lang.Ypr",
+  "method": "mul",
+  "descriptor": "(Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 323,
+  "class": "java.render.Camera",
+  "method": "activate",
+  "descriptor": "(Ljava.render.Viewport;I)V"
+ },
+ {
+  "rank": 324,
+  "class": "java.render.Camera",
+  "method": "deactivate",
+  "descriptor": "(Ljava.render.Viewport;)V"
+ },
+ {
+  "rank": 325,
+  "class": "java.render.Camera",
+  "method": "setFog",
+  "descriptor": "(IFF)V"
+ },
+ {
+  "rank": 326,
+  "class": "java.render.GfxEngine",
+  "method": "currDisplayMode",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 327,
+  "class": "java.render.GfxEngine",
+  "method": "displayModeName",
+  "descriptor": "(I)Ljava.lang.String;"
+ },
+ {
+  "rank": 328,
+  "class": "java.render.GfxEngine",
+  "method": "numDisplayModes",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 329,
+  "class": "java.render.Text",
+  "method": "getDefaultColor",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 330,
+  "class": "java.render.Text",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 331,
+  "class": "java.render.Text",
+  "method": "setDefaultColor",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 332,
+  "class": "java.render.Text",
+  "method": "setPos",
+  "descriptor": "(FF)V"
+ },
+ {
+  "rank": 333,
+  "class": "java.render.Viewport",
+  "method": "unproject",
+  "descriptor": "(Ljava.lang.Vector3;I)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 334,
+  "class": "java.sound.Sound",
+  "method": "getMode",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 335,
+  "class": "java.sound.Sound",
+  "method": "has3DHardware",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 336,
+  "class": "java.sound.Sound",
+  "method": "hasMixHardware",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 337,
+  "class": "java.sound.Sound",
+  "method": "setMode",
+  "descriptor": "(I)I"
+ },
+ {
+  "rank": 338,
+  "class": "java.util.resource.Animation",
+  "method": "finalize",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 339,
+  "class": "java.util.resource.Animation",
+  "method": "getPos",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 340,
+  "class": "java.util.resource.Animation",
+  "method": "loopPlay",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 341,
+  "class": "java.util.resource.Animation",
+  "method": "pause",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 342,
+  "class": "java.util.resource.Animation",
+  "method": "seek",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 343,
+  "class": "java.util.resource.Animation",
+  "method": "setFade",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 344,
+  "class": "java.util.resource.GameRef",
+  "method": "getDetail",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 345,
+  "class": "java.util.resource.GameRef",
+  "method": "getFlags",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 346,
+  "class": "java.util.resource.GameRef",
+  "method": "isEmpty",
+  "descriptor": "()I"
+ },
+ {
+  "rank": 347,
+  "class": "java.util.resource.GameRef",
+  "method": "setActiveCollision",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 348,
+  "class": "java.util.resource.GameRef",
+  "method": "setState",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Ypr;Ljava.lang.Vector3;Ljava.lang.Vector3;)V"
+ },
+ {
+  "rank": 349,
+  "class": "java.util.resource.GroundRef",
+  "method": "findRoute",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;)F"
+ },
+ {
+  "rank": 350,
+  "class": "java.util.resource.GroundRef",
+  "method": "getRouteDist",
+  "descriptor": "(Ljava.lang.Vector3;)F"
+ },
+ {
+  "rank": 351,
+  "class": "java.util.resource.GroundRef",
+  "method": "getRouteLength",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 352,
+  "class": "java.util.resource.GroundRef",
+  "method": "getRoutePos",
+  "descriptor": "(F)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 353,
+  "class": "java.util.resource.GroundRef",
+  "method": "pedestrianDistance",
+  "descriptor": "(Ljava.lang.Vector3;I)F"
+ },
+ {
+  "rank": 354,
+  "class": "java.util.resource.GroundRef",
+  "method": "remPedestrianType",
+  "descriptor": "(Ljava.util.resource.GameRef;)V"
+ },
+ {
+  "rank": 355,
+  "class": "java.util.resource.GroundRef",
+  "method": "removePedestrianType",
+  "descriptor": "(Ljava.util.resource.GameRef;)V"
+ },
+ {
+  "rank": 356,
+  "class": "java.util.resource.GroundRef",
+  "method": "setTrafficCarBehaviour",
+  "descriptor": "(II)V"
+ },
+ {
+  "rank": 357,
+  "class": "java.util.resource.GroundRef",
+  "method": "setWater",
+  "descriptor": "(FFF)V"
+ },
+ {
+  "rank": 358,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "delAction",
+  "descriptor": "(Ljava.lang.String;)V"
+ },
+ {
+  "rank": 359,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "getCounter",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 360,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "modePermanent",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 361,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "setCounter",
+  "descriptor": "(Ljava.lang.String;Ljava.lang.Vector3;F)V"
+ },
+ {
+  "rank": 362,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "setDirectSource",
+  "descriptor": "(Ljava.lang.String;Ljava.lang.Vector3;FFLjava.lang.Vector3;FFFLjava.lang.String;)V"
+ },
+ {
+  "rank": 363,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "setFreq",
+  "descriptor": "(F)V"
+ },
+ {
+  "rank": 364,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "setSource",
+  "descriptor": "(Ljava.lang.String;Ljava.lang.Vector3;FFLjava.lang.Vector3;FFFLjava.lang.String;)V"
+ },
+ {
+  "rank": 365,
+  "class": "java.util.resource.ParticleSystem",
+  "method": "stop",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 366,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "createSphere",
+  "descriptor": "(Ljava.util.resource.ResourceRef;FLjava.lang.String;)V"
+ },
+ {
+  "rank": 367,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "getAngVel",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 368,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "getOri",
+  "descriptor": "()Ljava.lang.Ypr;"
+ },
+ {
+  "rank": 369,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "getVel",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 370,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "getVel",
+  "descriptor": "(Ljava.lang.Vector3;)Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 371,
+  "class": "java.util.resource.PhysicsRef",
+  "method": "setStatic",
+  "descriptor": "(I)V"
+ },
+ {
+  "rank": 372,
+  "class": "java.util.resource.RenderRef",
+  "method": "getBoneId",
+  "descriptor": "(Ljava.lang.String;)I"
+ },
+ {
+  "rank": 373,
+  "class": "java.util.resource.RenderRef",
+  "method": "getDetail",
+  "descriptor": "()F"
+ },
+ {
+  "rank": 374,
+  "class": "java.util.resource.RenderRef",
+  "method": "getPos",
+  "descriptor": "()Ljava.lang.Vector3;"
+ },
+ {
+  "rank": 375,
+  "class": "java.util.resource.RenderRef",
+  "method": "lineAdd",
+  "descriptor": "(Ljava.lang.Vector3;Ljava.lang.Vector3;IF)V"
+ },
+ {
+  "rank": 376,
+  "class": "java.util.resource.RenderRef",
+  "method": "lineCreate",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.util.resource.ResourceRef;)I"
+ },
+ {
+  "rank": 377,
+  "class": "java.util.resource.RenderRef",
+  "method": "setMatrix",
+  "descriptor": "(ILjava.util.resource.ResourceRef;Ljava.lang.Vector3;Ljava.lang.Ypr;)V"
+ },
+ {
+  "rank": 378,
+  "class": "java.util.resource.RenderRef",
+  "method": "setType",
+  "descriptor": "(Ljava.util.resource.ResourceRef;)V"
+ },
+ {
+  "rank": 379,
+  "class": "java.util.resource.ResourceRef",
+  "method": "getWTRoot",
+  "descriptor": "()Ljava.util.resource.ResourceRef;"
+ },
+ {
+  "rank": 380,
+  "class": "java.util.resource.ResourceRef",
+  "method": "load",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 381,
+  "class": "java.util.resource.ResourceRef",
+  "method": "makeSound",
+  "descriptor": "(Ljava.util.resource.ResourceRef;Ljava.lang.String;)V"
+ },
+ {
+  "rank": 382,
+  "class": "java.util.resource.ResourceRef",
+  "method": "precache",
+  "descriptor": "()V"
+ },
+ {
+  "rank": 383,
+  "class": "java.util.resource.ResourceRef",
+  "method": "type",
+  "descriptor": "()I"
+ }
+]
