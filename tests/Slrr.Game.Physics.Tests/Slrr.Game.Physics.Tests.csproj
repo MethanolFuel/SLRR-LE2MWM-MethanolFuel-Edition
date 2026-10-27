@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- tools/Slrr.Cli/CmdCarSim.cs is wrapped in #if SLRR_GAME_PHYSICS so Slrr.Cli keeps building until it references Slrr.Game.Physics. -->
+    <DefineConstants>$(DefineConstants);SLRR_GAME_PHYSICS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Slrr.Game.Physics\Slrr.Game.Physics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The `carsim` CLI command lives in tools/Slrr.Cli (the lead wires it into Commands.cs); compiled here so it is built and tested in isolation. -->
+    <Compile Include="..\..\tools\Slrr.Cli\CmdCarSim.cs" Link="Cli\CmdCarSim.cs" />
+  </ItemGroup>
+</Project>
