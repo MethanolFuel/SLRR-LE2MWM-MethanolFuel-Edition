@@ -26,6 +26,10 @@ public static class Commands
           export-gltf <scx> <out.gltf>         textured glTF export (also --texture, --survey)
           cfg-schema [gameRoot] [--list]       per-keyword cfg argument schema and violations
           decompile <file.class|dir>           decompile TUFA classes to source (--out, --fidelity, --quiet)
+          boot [--stub]                        headless boot: Config -> Init -> GameLogic, reports missing natives
+          engine-boot [--stub]                 boot with the System, Parts and Ui native modules plugged in
+          parts [--survey|--natives]           part/chassis data-model natives and survey
+          ui [--survey|--natives]              headless UI/render/input natives and survey
           run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
         """;
 
@@ -54,6 +58,10 @@ public static class Commands
                 "cfg-schema" => CmdCfgSchema.Run(args[1..], o, e),
                 "decompile" => CmdDecompile.Run(args[1..], o, e),
                 "run-class" => CmdVm.Run(args[1..], o, e),
+                "boot" => CmdBoot.Run(args[1..], o, e),
+                "engine-boot" => CmdEngine.Run(args[1..], o, e),
+                "parts" => CmdParts.Run(args[1..], o, e),
+                "ui" => CmdUi.Run(args[1..], o, e),
                 _ => Fail(e, Usage),
             };
         }

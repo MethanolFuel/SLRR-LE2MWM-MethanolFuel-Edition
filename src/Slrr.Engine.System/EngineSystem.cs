@@ -33,6 +33,12 @@ public sealed class EngineSystem : INativeModule
     /// <summary>Replace Slrr.Vm's Thread.sleep (which treats its argument as seconds) by the measured millisecond version.</summary>
     public bool FixThreadSleep { get; set; } = true;
 
+    /// <summary>
+    /// Registers a hook-based <c>System.openLib</c>. Turn off when the Resources area registers the archive-aware one
+    /// (it returns the archive index, which <c>Catalog</c> relies on).
+    /// </summary>
+    public bool RegisterOpenLib { get; set; } = true;
+
     // ---- System state ------------------------------------------------------------------------------------------
 
     /// <summary><c>System.buildNumber()</c>; MainMenuDialog compares it with Config.acceptBuild (601). The shipped PE is build 606.</summary>
@@ -214,7 +220,10 @@ public sealed class EngineSystem : INativeModule
         r.Register(Sys, "netHost", "()I", _ => Value.Zero); // declared, not registered by the exe: network play removed
         r.Register(Sys, "netJoin", "()I", _ => Value.Zero);
         r.Register(Sys, "netLeave", "()I", _ => Value.Zero);
-        r.Register(Sys, "openLib", "(Ljava.lang.String;)I", c => Guard(c.String(0), () => OpenLib(c.String(0)!), Value.Zero));
+        if (RegisterOpenLib)
+        {
+            r.Register(Sys, "openLib", "(Ljava.lang.String;)I", c => Guard(c.String(0), () => OpenLib(c.String(0)!), Value.Zero));
+        }
         r.Register(Sys, "isLoadingReset", "()V", _ =>
         {
             LoadingReset?.Invoke();

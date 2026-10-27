@@ -10,5 +10,7 @@
     <ProjectReference Include="..\..\src\Slrr.Vm\Slrr.Vm.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Engine.Parts\Slrr.Engine.Parts.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.System\Slrr.Engine.System.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Ui\Slrr.Engine.Ui.csproj" />
   </ItemGroup>
 </Project>
