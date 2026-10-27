@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>slrr-game-render</AssemblyName>
+    <RootNamespace>Slrr.Game.Render.Host</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Game.Render.csproj" />
+    <Compile Include="..\..\..\tools\Slrr.Cli\CmdGameRender.cs" Link="CmdGameRender.cs" />
+  </ItemGroup>
+</Project>
