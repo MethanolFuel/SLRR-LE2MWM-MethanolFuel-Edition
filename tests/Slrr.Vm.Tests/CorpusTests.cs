@@ -135,7 +135,7 @@ public class CorpusTests
 
         var worker = new ClassBuilder("test.Worker", "java.lang.Thread").Method("run", "()V", a =>
         {
-            a.Float(0.5f).CallStatic(1, "java.lang.Thread", "sleep", "(F)V").D(Operator.Expr);
+            a.Float(500f).CallStatic(1, "java.lang.Thread", "sleep", "(F)V").D(Operator.Expr);
             a.Str("done at ").CallStatic(0, "java.lang.System", "currentTime", "()F").O(Operator.Add)
                 .CallStatic(1, "java.lang.System", "log", "(Ljava.lang.String;)V").D(Operator.Expr);
             a.ReturnVoid();

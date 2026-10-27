@@ -119,7 +119,8 @@ public sealed class LangNatives : INativeModule
         });
         r.Register(Thr, "sleep", "(F)V", c =>
         {
-            c.Thread.SleepFor(c.Float(0));
+            // The argument is in milliseconds (SoftTimer: sleep(waitTime * 1000), HotkeyWatcher: sleep(50)).
+            c.Thread.SleepFor(c.Float(0) / 1000f);
             return Value.Void;
         });
         r.Register(Thr, "suspend", "()V", c =>

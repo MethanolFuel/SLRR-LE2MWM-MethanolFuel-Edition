@@ -225,6 +225,9 @@ public sealed partial class VmThread
         Operator.Neg when v.Kind == VmKind.Float => Value.Float(-v.AsFloat),
         Operator.Not when v.Kind == VmKind.Int => Value.Bool(v.AsInt == 0),
 
+        // `!f` on a float is `f == 0` (OptionsDialog.osdCommand(CMD_REFRESH_TEXT): `if (!aspectX)`).
+        Operator.Not when v.Kind == VmKind.Float => Value.Bool(v.AsFloat == 0f),
+
         // `!obj` is a null test in shipped code (InventoryItem_Part.getPart: `if (!partXXX)`).
         Operator.Not when v.Kind == VmKind.Object => Value.Bool(v.Ref is null),
         Operator.BitNot when v.Kind == VmKind.Int => Value.Int(~v.AsInt),

@@ -36,6 +36,7 @@ public sealed class VmClassPath
     private readonly Dictionary<string, VmClassSource> _explicit = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<TufaClass>> _fileCache = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, VmClassSource>? _scan;
+    private readonly object _gate = new();
 
     public VmClassPath(GameFileSystem? game = null)
     {
@@ -205,16 +206,27 @@ public sealed class VmClassPath
     private IReadOnlyList<TufaClass> ReadFile(string path)
     {
         var full = Path.GetFullPath(path);
-        if (!_fileCache.TryGetValue(full, out var classes))
+        lock (_gate)
         {
-            classes = TufaFile.Read(full);
-            _fileCache[full] = classes;
-        }
+            if (!_fileCache.TryGetValue(full, out var classes))
+            {
+                classes = TufaFile.Read(full);
+                _fileCache[full] = classes;
+            }
 
-        return classes;
+            return classes;
+        }
     }
 
     private void EnsureScan()
+    {
+        lock (_gate)
+        {
+            EnsureScanLocked();
+        }
+    }
+
+    private void EnsureScanLocked()
     {
         if (_scan is not null || Game is null)
         {

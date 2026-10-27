@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Engine.SystemLib</RootNamespace>
+    <AssemblyName>Slrr.Engine.System</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
+    <ProjectReference Include="..\Slrr.Formats\Slrr.Formats.csproj" />
+    <ProjectReference Include="..\Slrr.Vm\Slrr.Vm.csproj" />
+  </ItemGroup>
+</Project>
