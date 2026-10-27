@@ -264,8 +264,8 @@ public class Catalog extends GameType implements GameState
 	int				actGroup;
 
 	Text			moneytxt, pgNumberL, pgNumberR;
-	Text[]			pageNumberL = new Text[7];
-	Text[]			pageNumberR = new Text[7];
+	Text[]			pageNumberL = new Text[13];
+	Text[]			pageNumberR = new Text[13];
 
 	CatalogInventory	inventory;
 	Vector			collector;
@@ -857,15 +857,15 @@ public class Catalog extends GameType implements GameState
 
 		m= osd.createMenu( Menu_Left, -0.98, -0.60, 0 );
 		if( CurrentName + 0 <= VehAmount ) VehButton0 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+0].vehicleName, CMD_VEH0 ); else { VehButton0 = m.addItem( "", CMD_VEH0 ); VehButton0.disable(); }
-		if( CurrentName + 1 <= VehAmount ) VehButton1 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+1].vehicleName, CMD_VEH1 ); else { VehButton1 = m.addItem( "", CMD_VEH1 ); VehButton0.disable(); }
-		if( CurrentName + 2 <= VehAmount ) VehButton2 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+2].vehicleName, CMD_VEH2 ); else { VehButton2 = m.addItem( "", CMD_VEH2 ); VehButton0.disable(); }
-		if( CurrentName + 3 <= VehAmount ) VehButton3 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+3].vehicleName, CMD_VEH3 ); else { VehButton3 = m.addItem( "", CMD_VEH3 ); VehButton0.disable(); }
-		if( CurrentName + 4 <= VehAmount ) VehButton4 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+4].vehicleName, CMD_VEH4 ); else { VehButton4 = m.addItem( "", CMD_VEH4 ); VehButton0.disable(); }
-		if( CurrentName + 5 <= VehAmount ) VehButton5 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+5].vehicleName, CMD_VEH5 ); else { VehButton5 = m.addItem( "", CMD_VEH5 ); VehButton0.disable(); }
-		if( CurrentName + 6 <= VehAmount ) VehButton6 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+6].vehicleName, CMD_VEH6 ); else { VehButton6 = m.addItem( "", CMD_VEH6 ); VehButton0.disable(); }
-		if( CurrentName + 7 <= VehAmount ) VehButton7 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+7].vehicleName, CMD_VEH7 ); else { VehButton7 = m.addItem( "", CMD_VEH7 ); VehButton0.disable(); }
-		if( CurrentName + 8 <= VehAmount ) VehButton8 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+8].vehicleName, CMD_VEH8 ); else { VehButton8 = m.addItem( "", CMD_VEH8 ); VehButton0.disable(); }
-		if( CurrentName + 9 <= VehAmount ) VehButton9 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+9].vehicleName, CMD_VEH9 ); else { VehButton9 = m.addItem( "", CMD_VEH9 ); VehButton0.disable(); }
+		if( CurrentName + 1 <= VehAmount ) VehButton1 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+1].vehicleName, CMD_VEH1 ); else { VehButton1 = m.addItem( "", CMD_VEH1 ); VehButton1.disable(); }
+		if( CurrentName + 2 <= VehAmount ) VehButton2 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+2].vehicleName, CMD_VEH2 ); else { VehButton2 = m.addItem( "", CMD_VEH2 ); VehButton2.disable(); }
+		if( CurrentName + 3 <= VehAmount ) VehButton3 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+3].vehicleName, CMD_VEH3 ); else { VehButton3 = m.addItem( "", CMD_VEH3 ); VehButton3.disable(); }
+		if( CurrentName + 4 <= VehAmount ) VehButton4 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+4].vehicleName, CMD_VEH4 ); else { VehButton4 = m.addItem( "", CMD_VEH4 ); VehButton4.disable(); }
+		if( CurrentName + 5 <= VehAmount ) VehButton5 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+5].vehicleName, CMD_VEH5 ); else { VehButton5 = m.addItem( "", CMD_VEH5 ); VehButton5.disable(); }
+		if( CurrentName + 6 <= VehAmount ) VehButton6 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+6].vehicleName, CMD_VEH6 ); else { VehButton6 = m.addItem( "", CMD_VEH6 ); VehButton6.disable(); }
+		if( CurrentName + 7 <= VehAmount ) VehButton7 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+7].vehicleName, CMD_VEH7 ); else { VehButton7 = m.addItem( "", CMD_VEH7 ); VehButton7.disable(); }
+		if( CurrentName + 8 <= VehAmount ) VehButton8 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+8].vehicleName, CMD_VEH8 ); else { VehButton8 = m.addItem( "", CMD_VEH8 ); VehButton8.disable(); }
+		if( CurrentName + 9 <= VehAmount ) VehButton9 = m.addItem(GameLogic.ChassisBox.elementData[CurrentName+9].vehicleName, CMD_VEH9 ); else { VehButton9 = m.addItem( "", CMD_VEH9 ); VehButton9.disable(); }
 
 		m = osd.createMenu( Menu_Button, -0.90,  -0.82, Osd.MD_VERTICAL ); 
 		UpButton = m.addItem( new ResourceRef( frontend:0x00AFr ), CMD_UP, "Prev Page" );
@@ -1021,8 +1021,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[6] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[6] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1037,8 +1037,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[7] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[7] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1054,8 +1054,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[8] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[8] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1070,8 +1070,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[9] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[9] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1086,8 +1086,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[10] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[10] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1102,8 +1102,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[11] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[11] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1118,8 +1118,8 @@ public class Catalog extends GameType implements GameState
 
 		osd.createBG( new ResourceRef(misc.catalog:0x0009r) );
 
-		pageNumberL[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
-		pageNumberR[0] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
+		pageNumberL[12] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_LEFT,	-0.96,  0.82);
+		pageNumberR[12] = osd.createText( null, Frontend.mediumFont, Text.ALIGN_RIGHT,	0.96,  0.82);
 
 		osd.createButton( bbsl, -0.96, 0.92, CMD_PREVPARTPAGE, null );
 		osd.createButton( bbsr, 0.96, 0.92, CMD_NEXTPARTPAGE, null );
@@ -1388,7 +1388,6 @@ public class Catalog extends GameType implements GameState
 				if(CurrentChassis) CurrentChassis.destroy();
 
 				CurrentCar = new Vehicle();
-				CurrentCar.chassis = new Chassis();
 				CurrentCar.chassis = create(CarScene, new GameRef(GameLogic.ChassisRoot[GameLogic.ChassisResNoumber[CurrentName+ButtonNum]]), "0,0,0,0,0,0,", "chassis");
 				CurrentCar = new Vehicle(CurrentCar.chassis);
 
@@ -1449,7 +1448,6 @@ public class Catalog extends GameType implements GameState
 			if(CurrentChassis) CurrentChassis.destroy();
 
 			CurrentCar = new Vehicle();
-			CurrentCar.chassis = new Chassis();
 			CurrentCar.chassis = create(CarScene, new GameRef(GameLogic.ChassisRoot[GameLogic.ChassisResNoumber[CurrentName+ButtonNum]]), "0,0,0,0,0,0,", "chassis");
 			CurrentCar = new Vehicle(CurrentCar.chassis);
 
@@ -1492,8 +1490,11 @@ public class Catalog extends GameType implements GameState
 
 			VehAmount = GameLogic.ChassisBox.size()-1;
 
-			DownButton.changeTexture( new ResourceRef( frontend:0x0084r ) ); // Arrow down
-			DownButton.enable();
+			if (VehAmount >= CurrentName+10)
+			{
+				DownButton.changeTexture( new ResourceRef( frontend:0x0084r ) ); // Arrow down
+				DownButton.enable();
+			}
 			
 			if (CurrentPage == 0)
 			{
@@ -1515,7 +1516,7 @@ public class Catalog extends GameType implements GameState
 		else
 		if( cmd == CMD_DOWN )
 		{
-			if (GameLogic.ChassisRoot.length >= CurrentName+10)
+			if (GameLogic.ChassisBox.size() > CurrentName+10)
 				CurrentPage += 1;
 
 			CurrentName = CurrentPage*10;
@@ -1579,50 +1580,50 @@ public class Catalog extends GameType implements GameState
 		else
 		if( cmd==CMD_MAIN1_1 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[6];
+			pgNumberR=pageNumberR[6];
 			changeGroup( main1_1Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_2 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[7];
+			pgNumberR=pageNumberR[7];
 			changeGroup( main1_2Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_3 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[8];
+			pgNumberR=pageNumberR[8];
 			changeGroup( main1_3Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_4 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[9];
+			pgNumberR=pageNumberR[9];
 			changeGroup( main1_4Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_5 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[10];
+			pgNumberR=pageNumberR[10];
 			changeGroup( main1_5Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_6 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[11];
+			pgNumberR=pageNumberR[11];
 			changeGroup( main1_6Group );
 		}
 		else
 		if( cmd==CMD_MAIN1_7 )
 		{
-			pgNumberL=pageNumberL[0];
-			pgNumberR=pageNumberR[0];
+			pgNumberL=pageNumberL[12];
+			pgNumberR=pageNumberR[12];
 			changeGroup( main1_7Group );
 		}
 		else
@@ -1776,8 +1777,7 @@ public class Catalog extends GameType implements GameState
 		else
 		if( cmd == RIMS_FILTER )
 		{
-			Part rim = new Part();
-			rim = create( null, new GameRef(parts), "0,0,0,0,0,0,", "temp rim");
+			Part rim = create( null, new GameRef(parts), "0,0,0,0,0,0,", "temp rim");
 			
 			//System.log(rim.name);
 			
@@ -1817,8 +1817,7 @@ public class Catalog extends GameType implements GameState
 		else
 		if( cmd == TIRES_FILTER )
 		{
-			Part tire = new Part();
-			tire = create( null, new GameRef(parts), "0,0,0,0,0,0,", "temp tire");
+			Part tire = create( null, new GameRef(parts), "0,0,0,0,0,0,", "temp tire");
 			
 			if (tire && tire instanceof Tyre)
 			{
@@ -1850,7 +1849,7 @@ public class Catalog extends GameType implements GameState
 			}
 			else
 			{
-				step--; // Skips objects in the rims catalog that are not wheels
+				step--; // Skips objects in the tires catalog that are not tires
 			}
 		}
 		else

@@ -11,7 +11,8 @@ public class Disc extends DiscBrake
 {
 	float c_angle, default_angle, old_angle, c_angle1, d_angle;
 	float x, y, cosinus, cosinus1, sinus, sinus1, alpha, a1;
-	int a2, p, p1, s;
+	int a2, s;
+	float p, p1;
 	
 	public Disc( int id )
 	{

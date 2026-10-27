@@ -11,8 +11,8 @@ public class swaybar_Street_front extends Swaybar
 		force = 25000.0;
 		damping = 2500.0;
 		adjustable = 1;
-		min_force = 30000.0;
-		max_force = 20000.0;
+		min_force = 20000.0;
+		max_force = 30000.0;
 
 		name_prefix = "Street front";
 		brand_prestige_factor = 1.20;
