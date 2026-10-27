@@ -1,6 +1,6 @@
 # Plan: full C# (.NET 8, x64) rewrite of the SLRR engine
 
-Status: proposal. Nothing here has been started.
+Status: proposal (licensing decided, see section 1). Nothing else has been started.
 
 ## 0. Ground truth
 
@@ -31,16 +31,22 @@ Status: proposal. Nothing here has been started.
   `Supers.ini`, `StreetLegalDevKit.exe`, `MW_Mod/ForModders.rar`. These are
   the best specification we have for the formats and the keyword set.
 
-## 1. Legal and scope gate (week 0, blocking)
+## 1. Licensing and scope (decided)
 
-1. Written decision on IP: clean-room approach vs. permission from the rights
-   holders. Do not copy engine code or decompile the exe into the new codebase.
-2. Decide the compatibility target: **must** load unmodified `.rpk`/`.cfg`/
-   `.scx`/`.class` content from this build (recommended), or a new content format.
-3. Third-party mods (Miran Wichur Mod, RevPhysics, ExhaustiveBits, ENB,
-   SweetFX) have their own terms. The ENB / SweetFX / `*.asi` hooks are
-   32-bit D3D injectors; they are replaced by native post-processing in the
-   new renderer, not ported.
+- Decision (project owner): the game is 20+ years old and the codebase is
+  open-sourced, so reworking it is fine. Reverse engineering the original
+  exe (disassembly, tracing, bytecode analysis) is therefore **allowed** and
+  replaces the earlier clean-room constraint. A clean-room split is no longer needed.
+- Housekeeping (days, not weeks):
+  - The repo has no `LICENSE` file. Add one stating the terms the owner
+    is releasing under, so contributors and forks have the same basis.
+  - Keep per-component credits (Miran Wichur Mod, RevPhysics, ExhaustiveBits,
+    CMS Brakes, etc.; see README) and confirm each author's terms before
+    redistributing their content in a new release.
+  - ENB / SweetFX / `*.asi` hooks are 32-bit D3D injectors; they are replaced
+    by native post-processing in the new renderer, not ported.
+- Compatibility target: load unmodified `.rpk`/`.cfg`/`.scx`/`.class` content
+  from this build (recommended).
 
 ## 2. Architecture
 
@@ -102,8 +108,9 @@ previous one is accepted.
 ### Phase 3: Script VM (8-12 weeks, highest risk)
 - Disassembler for TUFA (constant pool `CONS`, method tables, opcodes). Use
   the 138 `.java` sources against their compiled `.class` twins to infer the
-  opcode set empirically; use `StreetLegalDevKit.exe` and `ForModders.rar`
-  as references.
+  opcode set empirically; disassemble `StreetLegal_Redline.exe` (i386) to
+  confirm opcode and `Native` semantics; use `StreetLegalDevKit.exe` and
+  `ForModders.rar` as references.
 - Interpreter first, then a JIT/AOT-to-IL backend if profiling needs it.
 - Reimplement `java.lang`, `java.util`, `java.io`, `java.game`, `java.render`,
   `java.sound` and `Native`, driven by the API surface used by shipped scripts
@@ -156,8 +163,8 @@ gameplay, QA, content). One engineer alone: 3+ years.
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| IP / licensing of engine and third-party mods | stop-ship | Legal gate before Phase 1; clean-room rules |
-| Unknown TUFA opcodes / `Native` semantics | VM blocked | Source/bytecode pairs, trace capture from the original exe in a VM |
+| Licensing of bundled third-party mods | redistribution | Add LICENSE, confirm each mod author's terms |
+| Unknown TUFA opcodes / `Native` semantics | VM blocked | Source/bytecode pairs, exe disassembly, trace capture of the original |
 | Physics feel differs from original | players reject | Parity suite and tolerance gates |
 | Undocumented `.scx` chunk types | assets fail to render | Chunk-coverage report in Phase 1; fall back to skip + warn |
 | Scope creep (new features) | schedule | Parity first, features after Phase 7 |
@@ -165,7 +172,7 @@ gameplay, QA, content). One engineer alone: 3+ years.
 
 ## 6. Immediate next steps (first 2 weeks)
 
-1. Legal sign-off on clean-room approach.
+1. Add a LICENSE file.
 2. Create the .NET solution and CI; commit this plan.
 3. Implement the RPAK reader and `validate` command; report coverage.
 4. Parse all 1,182 `.cfg` files; publish the grammar.
