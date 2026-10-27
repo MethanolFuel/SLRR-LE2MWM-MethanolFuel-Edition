@@ -264,12 +264,24 @@ public sealed partial class VmThread
         for (var i = 0; i < args.Length; i++)
         {
             var a = args.Length - 1 - i;
-            f.Locals[slot + i] = VmTypes.Coerce(args[a], m.Params[a]);
+            f.Locals[slot + i] = VmTypes.Coerce(NumberToStringParam(args[a], m.Params[a]), m.Params[a]);
             f.LocalTypes[slot + i] = m.Params[a];
         }
 
         _frames.Add(f);
     }
+
+    /// <summary>A number passed for a String parameter becomes its text (`dayTxt.changeText(day)` in GameLogic.run).</summary>
+    private Value NumberToStringParam(Value v, string paramDescriptor) =>
+        v.Kind is VmKind.Int or VmKind.Float && paramDescriptor == "Ljava.lang.String;"
+            ? Value.Obj(Vm.NewString(Vm.ToScriptString(v)))
+            : v;
+
+    /// <summary>A number stored into a String variable becomes its text (the engine converts on assignment).</summary>
+    private Value ToStringStorage(VmVariable target, Value v) =>
+        v.Kind is VmKind.Int or VmKind.Float && target.Descriptor == "Ljava.lang.String;"
+            ? Value.Obj(Vm.NewString(Vm.ToScriptString(v)))
+            : v;
 
     private void ReturnFrom(VmFrame f, Value v)
     {
@@ -277,6 +289,17 @@ public sealed partial class VmThread
         _frames.RemoveAt(_frames.Count - 1);
         if (f.PushResult)
         {
+            // A non-void method that ends without `return` yields the type's default (0, 0.0, null), not void.
+            if (v.Kind == VmKind.Void && f.Method?.Return is { } ret && VmTypes.KindOf(ret) != VmKind.Void)
+            {
+                v = VmTypes.KindOf(ret) switch
+                {
+                    VmKind.Float => Value.Float(0f),
+                    VmKind.Object => Value.Null,
+                    _ => Value.Int(0),
+                };
+            }
+
             Push(v);
         }
     }
@@ -485,7 +508,8 @@ public sealed partial class VmThread
             case Op.AssignInit:
             {
                 var v = PopValue();
-                PopVar("ASSIGNINIT").Set(v);
+                var target = PopVar("ASSIGNINIT");
+                target.Set(ToStringStorage(target, v));
                 break;
             }
 
@@ -618,7 +642,7 @@ public sealed partial class VmThread
         switch (ins.Op)
         {
             case Op.Str:
-                return Value.Obj(Vm.NewString(f.Class.Utf8((uint)ins.Arg, "string literal")));
+                return Value.Obj(Vm.InternLiteral(f.Class.Utf8((uint)ins.Arg, "string literal")));
             case Op.Float:
                 return Value.Float(BitConverter.Int32BitsToSingle(ins.Arg));
             case Op.Int:

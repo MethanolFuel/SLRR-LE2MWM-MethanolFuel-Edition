@@ -1,0 +1,56 @@
+# Smoke path: main menu -> new career -> garage -> used car dealer -> catalog -> buy part -> install -> leave garage.
+# Runs on the shipped game data (MWM MethanolFuel edition). Every `expect` is checked through the VM.
+until section MainMenu 30
+expect text "NEW CAREER"
+click "NEW CAREER"
+until screen StringRequesterDialog 5
+type "Bob"
+click "OK"
+until screen PlayerSetupDialog 5
+click "OK"
+until section Garage 30
+expect GameLogic.player.name == Bob
+expect money == 20000
+expect car.class == null
+click "OK"                                  # WELCOME! hint dialog
+# --- dealer: buy the first used car
+click "Buy used cars or sell your car"
+until section CarMarket 10
+until text "PRESS ENTER" 20
+wait 5                                      # the loading dialog takes Enter only after the cars are built
+key Enter
+until text "Car Dealer" 10
+clickcmd SELECT                             # buy button (Input.AXIS_SELECT)
+until screen NoYesDialog 5
+click "YES"
+until section Garage 30
+expect car.class == java.game.Vehicle
+expect money < 20000
+print money
+print parts
+# --- catalog: buy an anti-roll bar (fits the free chassis slots 701/702 of the stock cars)
+click "Browse the Catalog"
+until section Catalog 10
+click "RUNNING GEAR"
+click "OTHERS"
+until text "anti-roll bar" 10
+click~ "Street front 25000"
+until screen BuyCatalogItemDialog 5
+expect text "installable right away"
+click "YES"
+wait 0.5
+expect bin == 1
+clickcmd 0                                  # Catalog CMD_EXIT
+until section Garage 15
+wait 3                                      # Garage.enter: loading screen, Mechanic and inventory panels
+# --- install: mechanic mode, drag the inventory item onto the car
+click "Install/Remove parts"
+drop "Street front" car
+wait 1
+expect installed "swaybar_Street_front"
+expect bin == 0
+print parts
+# --- leave the garage (autosaves the career)
+click "Go back to Main Menu"
+until section MainMenu 15
+print screen

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.Render</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The host exe has its own project file in Host/. -->
+    <Compile Remove="Host/**" />
+    <None Remove="Host/**" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Pinned 2.x (Silk.NET 3 breaks APIs); same versions as the Phase 2 viewer spike. -->
+    <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
+    <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
+    <ProjectReference Include="..\Slrr.Formats\Slrr.Formats.csproj" />
+    <ProjectReference Include="..\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Ui\Slrr.Engine.Ui.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Resources\Slrr.Engine.Resources.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Slrr.Render.Tests" />
+  </ItemGroup>
+</Project>

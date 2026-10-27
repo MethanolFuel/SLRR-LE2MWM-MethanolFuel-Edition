@@ -30,6 +30,11 @@ public static class Commands
           engine-boot [--stub]                 boot with the System, Parts and Ui native modules plugged in
           parts [--survey|--natives]           part/chassis data-model natives and survey
           ui [--survey|--natives]              headless UI/render/input natives and survey
+          audio <list|inspect|engines|rev|demo>  sound inspection and offline rendering to WAV
+          world <stats|surfaces|height|ray|map|bench|verify|angles>  collision world of a map archive
+          render <car|map|ui> ...              offscreen renders to PNG (software GL is fine)
+          drive <car> [--scenario ...]         vehicle physics scenarios (0-100, top speed, braking, skidpad)
+          play [script | --smoke]              headless game host driven by scripted input
           run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
         """;
 
@@ -58,6 +63,11 @@ public static class Commands
                 "cfg-schema" => CmdCfgSchema.Run(args[1..], o, e),
                 "decompile" => CmdDecompile.Run(args[1..], o, e),
                 "run-class" => CmdVm.Run(args[1..], o, e),
+                "audio" => CmdAudio.Run(args[1..], o, e),
+                "world" => CmdWorld.Run(args[1..], o, e),
+                "render" => CmdRender.Run(args[1..], o, e),
+                "drive" => CmdDrive.Run(args[1..], o, e),
+                "play" => CmdPlay.Run(args[1..], o, e),
                 "boot" => CmdBoot.Run(args[1..], o, e),
                 "engine-boot" => CmdEngine.Run(args[1..], o, e),
                 "parts" => CmdParts.Run(args[1..], o, e),
