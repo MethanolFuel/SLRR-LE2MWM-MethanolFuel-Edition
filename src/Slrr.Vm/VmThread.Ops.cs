@@ -68,7 +68,9 @@ public sealed partial class VmThread
             case Operator.InstanceOf:
             {
                 var desc = TypeAt(f, ip + 1, "instanceof");
-                res = Value.Bool(IsInstance(PopValue().AsObject, desc));
+                // `x instanceof T` on a number is false rather than an error (TrackSelect.exit).
+                var subject = PopValue();
+                res = Value.Bool(subject.Kind == VmKind.Object && IsInstance(subject.AsObject, desc));
                 break;
             }
 
@@ -120,7 +122,7 @@ public sealed partial class VmThread
                     v = Binary(CompoundOperator(code), target.Get(), v);
                 }
 
-                target.Set(v);
+                target.Set(ToStringStorage(target, v));
                 res = target.Get();
                 break;
             }
@@ -167,9 +169,10 @@ public sealed partial class VmThread
             case Operator.OrOr:
             case Operator.AndAnd:
                 // Objects count as "non-null" (String.timeToAlphaString evaluates `(flags & X) && s` with a String s).
-                if (l.Kind is not (VmKind.Int or VmKind.Object) || r.Kind is not (VmKind.Int or VmKind.Object))
+                // Floats are conditions too (`f1 && f2`: Block_Inline.updatevariables); only void is rejected.
+                if (l.Kind is VmKind.Void || r.Kind is VmKind.Void)
                 {
-                    throw new VmException($"non-integral operands ({Operator.Name(code)})");
+                    throw new VmException($"void operand ({Operator.Name(code)})");
                 }
 
                 return Value.Bool(code == Operator.OrOr ? l.IsTrue || r.IsTrue : l.IsTrue && r.IsTrue);

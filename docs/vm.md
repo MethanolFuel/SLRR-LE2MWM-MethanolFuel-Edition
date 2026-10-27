@@ -92,3 +92,17 @@ plus `--verify`, `--survey [--deep] [--stub] [--list]` and `--natives [root] [ts
   engine's mapping to runtime ids (0x406660) is not reconstructed.
 * Scheduler: round-robin slices of 20,000 instructions; blocking natives (`sleep`, `wait`, `suspend`) are only allowed
   on scheduled threads, not inside synchronous calls (field initializers, `Vm.Invoke`, native callbacks).
+
+## Behaviours added after the first headless play-through (inferred, not read from the exe)
+
+Found by the game host (`docs/phase4/game.md`) while walking main menu -> garage -> dealer. Each is covered by a test in
+`tests/Slrr.Vm.Tests/InterpreterTests.cs`. All are **guessed** from how shipped scripts use the operation; none was
+confirmed in the engine's interpreter.
+
+| Behaviour | Evidence |
+|---|---|
+| `&&` / `||` accept float operands (non-zero is true); only `void` is rejected | `Block_Inline.updatevariables` line 137 |
+| `x instanceof T` on a number is `false`, not an error | `TrackSelect.exit` |
+| A number assigned to a `String` variable becomes its text (`%d` / `%.3f`, as for `+`) | garage clock thread |
+| A non-void method that ends without `return` yields the default of its type (0, 0.0, null) | garage loading screen waits on such a method |
+| String literals are interned: equal literals are the same object | `==` against literals; tyre names showed `<unnamed>` |

@@ -306,4 +306,56 @@ public class InterpreterTests
         Assert.Equal(2.5f, LangNatives.Atof("2.5 bar"));
         Assert.Equal(0f, LangNatives.Atof("bar"));
     }
+
+    // The following behaviours are inferred from shipped scripts (not read from the exe); see docs/vm.md.
+
+    [Fact]
+    public void LogicalOperatorsAcceptFloatOperands()
+    {
+        // static int f(float a, float b) { return a && b; }   (Block_Inline.updatevariables)
+        var b = new ClassBuilder(T).Method("f", "(FF)I", a => a.Local(1).Local(0).O(Operator.AndAnd).ReturnValue(), isStatic: true);
+        var vm = NewVm(b);
+        Assert.Equal(1, CallStatic(vm, T, "f", Value.Float(0.5f), Value.Float(2f)).AsInt);
+        Assert.Equal(0, CallStatic(vm, T, "f", Value.Float(0f), Value.Float(2f)).AsInt);
+    }
+
+    [Fact]
+    public void InstanceofOnANumberIsFalse()
+    {
+        var b = new ClassBuilder(T).Method("f", "()I", a => a.Int(5).O(Operator.InstanceOf).Type("Ljava.lang.String;").ReturnValue(), isStatic: true);
+        Assert.Equal(0, CallStatic(NewVm(b), T, "f").AsInt);
+    }
+
+    [Fact]
+    public void NumberAssignedToAStringVariableBecomesItsText()
+    {
+        // String s = 42;  return s;   -> "42"
+        var b = new ClassBuilder(T).Method("f", "()Ljava.lang.String;", a =>
+        {
+            a.DeclLocal(0, "Ljava.lang.String;", use: true).Int(42).Ins(Op.AssignInit);
+            a.Local(0).ReturnValue();
+        }, isStatic: true);
+        var vm = NewVm(b);
+        Assert.Equal("42", vm.GetString(CallStatic(vm, T, "f").AsObject));
+    }
+
+    [Fact]
+    public void FallingOffTheEndOfANonVoidMethodReturnsTheDefault()
+    {
+        var b = new ClassBuilder(T)
+            .Method("i", "()I", a => { }, isStatic: true)
+            .Method("f", "()F", a => { }, isStatic: true)
+            .Method("o", "()Ljava.lang.String;", a => { }, isStatic: true);
+        var vm = NewVm(b);
+        Assert.Equal(0, CallStatic(vm, T, "i").AsInt);
+        Assert.Equal(0f, CallStatic(vm, T, "f").AsFloat);
+        Assert.True(CallStatic(vm, T, "o").IsNull);
+    }
+
+    [Fact]
+    public void EqualStringLiteralsAreTheSameObject()
+    {
+        var b = new ClassBuilder(T).Method("f", "()I", a => a.Str("abc").Str("abc").O(Operator.Eq).ReturnValue(), isStatic: true);
+        Assert.Equal(1, CallStatic(NewVm(b), T, "f").AsInt);
+    }
 }

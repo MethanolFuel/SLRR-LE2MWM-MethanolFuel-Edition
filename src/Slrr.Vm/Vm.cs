@@ -195,6 +195,26 @@ public sealed class Vm
 
     public VmObject NewString(string s) => new(StringClass) { Native = s };
 
+    private readonly Dictionary<string, VmObject> _literals = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// String literals are interned, so equal literals compare equal with <c>==</c> (a script compares file strings
+    /// against literals and against other interned names; this matches how Java and, most likely, the engine behave).
+    /// </summary>
+    public VmObject InternLiteral(string s)
+    {
+        lock (_literals)
+        {
+            if (!_literals.TryGetValue(s, out var o))
+            {
+                o = NewString(s);
+                _literals[s] = o;
+            }
+
+            return o;
+        }
+    }
+
     /// <summary>Text of a String object (null for null). Throws for objects that are not strings.</summary>
     public string? GetString(VmObject? o) => o is null ? null : o.Native as string ?? throw new VmException($"{o.Describe()} is not a String");
 
