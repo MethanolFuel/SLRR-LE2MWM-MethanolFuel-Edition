@@ -44,6 +44,7 @@ internal static class TestCars
                 MaxSteer = 0.6,
                 Drive = front ? 0 : 0.5,
                 BrakeTorque = brakeTorque * (front ? 1.2 : 0.8),
+                HandBrakeTorque = front ? 0 : 1500,
                 SpringRate = 40000,
                 RestLength = 0.35,
                 MinLength = 0.15,

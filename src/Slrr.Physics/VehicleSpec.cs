@@ -59,6 +59,22 @@ public sealed class DrivetrainSpec
     /// <summary>Fraction of power lost in gearbox/diff (GUESSED; the exe value is unknown).</summary>
     public double Efficiency { get; set; } = 0.9;
 
+    /// <summary>
+    /// Differential lock coefficient L (Chassis command <c>difflock f</c>, MEASURED 0x4597ea: f &lt;= 0 stores 0.1; the
+    /// car's initial value is 0.1, 0x44717d; stock Chassis.java sends <c>difflock 0.0</c>). The vehicle step (0x4554a0..
+    /// 0x455602) pulls every driven wheel's spin toward the drive-weighted mean spin by the fraction
+    /// <c>k = min(|delta| * 0.1 * dt * 50 * L, 1)</c> each step: a speed-squared viscous coupling on top of the equal-torque
+    /// (open) split.
+    /// </summary>
+    public double DiffLock { get; set; } = 0.1;
+
+    /// <summary>
+    /// True: the driven wheels take equal spin increments from the drivetrain (the exe's form, MEASURED 0x455af2..
+    /// 0x455b55: <c>w_i += delta * d_i / c_i</c> after the engine/shaft coupling); false: an open differential (equal
+    /// torque split, this area's earlier GUESS).
+    /// </summary>
+    public bool EqualSpinDrive { get; set; } = true;
+
     /// <summary>Upshift time with the clutch open (GUESSED; Slrr_GI has AutoShiftDeadTime settings, addresses unknown).</summary>
     public double ShiftTime { get; set; } = 0.25;
 }
@@ -129,6 +145,20 @@ public sealed class VehicleSpec
     public List<WheelSpec> Wheels { get; } = [];
 
     public List<RollbarSpec> Rollbars { get; } = [];
+
+    /// <summary>
+    /// Where the tyres' lateral forces act on the body. True (default): at the wheel centre. GUESSED from the exe's
+    /// structure (MEASURED): every wheel has its own physics object (wheel +0x30) joined to the chassis by the spring
+    /// constraint that setForce/setDamping/setMin/MaxLen configure (0x491f80 calls in 0x441270..0x441540), and the tyre
+    /// force is computed on that wheel object (0x456187..0x4563e5), so the chassis receives side forces through the
+    /// constraint at the hub rather than at the ground. The inner wheels then unload at t / (2 (h - r)) instead of
+    /// t / 2h (DevilSport: 2.3 g instead of 1.09 g). False: at the contact patch (the earlier model). Longitudinal
+    /// forces stay at the contact patch either way.
+    /// </summary>
+    public bool LateralForceAtHub { get; set; } = true;
+
+    /// <summary>Chassis collision boxes in the car frame (<see cref="ChassisShape"/>); empty = callers use their own guess.</summary>
+    public List<CollisionBox> Body { get; } = [];
 
     public EngineSpec Engine { get; set; } = new();
 

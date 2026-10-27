@@ -72,12 +72,14 @@ public sealed class CollisionSolver
     /// <summary>Box-triangle tests run (statistics).</summary>
     public long Tests { get; private set; }
 
+    /// <summary>Turns impact energy into damage (null = no damage).</summary>
+    public DamageModel? Damage { get; set; } = new();
+
     public void Static(SimCar car, IStaticCollision world, double time, List<ImpactEvent> impacts)
     {
-        var box = car.Box;
-        var center = car.BoxCenterWorld;
+        var bound = car.Box;
         _tris.Clear();
-        world.Candidates(center.ToVector3(), (float)(box.BoundingRadius + 0.05), _tris);
+        world.Candidates(car.BoxCenterWorld.ToVector3(), (float)(bound.BoundingRadius + 0.05), _tris);
         if (_tris.Count == 0)
         {
             return;
@@ -86,23 +88,37 @@ public sealed class CollisionSolver
         var q = car.Orientation;
         Span<Vec3> axes = [q.Rotate(Vec3.UnitX), q.Rotate(Vec3.UnitY), q.Rotate(Vec3.UnitZ)];
         Span<Vec3> corners = stackalloc Vec3[8];
-        car.BoxCorners(corners);
         _contacts.Clear();
         _tris.Sort();
-        var last = -1;
-        foreach (var t in _tris)
+        var origin = car.Origin;
+        foreach (var box in car.Boxes)
         {
-            if (t == last)
+            var center = origin + q.Rotate(box.Center);
+            car.BoxCorners(box, corners);
+            var r2 = (box.BoundingRadius + 0.05) * (box.BoundingRadius + 0.05);
+            var last = -1;
+            foreach (var t in _tris)
             {
-                continue;
-            }
+                if (t == last)
+                {
+                    continue;
+                }
 
-            last = t;
-            Tests++;
-            world.Triangle(t, out var a, out var b, out var c);
-            if (BoxTriangle(center, axes, box.HalfExtents, a.ToVec3(), b.ToVec3(), c.ToVec3(), out var n, out var depth))
-            {
-                _contacts.Add((DeepestPoint(corners, n), n, depth, t));
+                last = t;
+                world.Triangle(t, out var a, out var b, out var c);
+                var av = a.ToVec3();
+                var bv = b.ToVec3();
+                var cv = c.ToVec3();
+                if (car.Boxes.Count > 1 && !NearTriangle(center, r2, av, bv, cv))
+                {
+                    continue;
+                }
+
+                Tests++;
+                if (BoxTriangle(center, axes, box.HalfExtents, av, bv, cv, out var n, out var depth))
+                {
+                    _contacts.Add((DeepestPoint(corners, n), n, depth, t));
+                }
             }
         }
 
@@ -135,15 +151,23 @@ public sealed class CollisionSolver
         // Velocity: two passes of sequential impulses.
         var maxDv = 0.0;
         var at = 0;
+        double impulse = 0, closing = 0, energy = 0;
         for (var pass = 0; pass < 2; pass++)
         {
             for (var i = 0; i < count; i++)
             {
                 var (p, n, _, _) = _contacts[i];
-                var dv = Resolve(car, null, p, n);
-                if (dv > maxDv)
+                var r = Resolve(car, null, p, n);
+                impulse += r.Impulse;
+                if (pass == 0)
                 {
-                    maxDv = dv;
+                    closing = Math.Max(closing, r.Closing);
+                    energy = Math.Max(energy, r.Energy);
+                }
+
+                if (r.DeltaV > maxDv)
+                {
+                    maxDv = r.DeltaV;
                     at = i;
                 }
             }
@@ -153,8 +177,20 @@ public sealed class CollisionSolver
         if (maxDv >= ImpactThreshold)
         {
             var (p, n, _, tri) = _contacts[at];
-            impacts.Add(new ImpactEvent(car.Id, time, p.ToVector3(), n.ToVector3(), (float)maxDv, 0, world.SurfaceOf(tri), world.SourceOf(tri)));
+            var damage = Damage?.Apply(car, p, energy) ?? 0;
+            impacts.Add(new ImpactEvent(car.Id, time, p.ToVector3(), n.ToVector3(), (float)maxDv, 0, world.SurfaceOf(tri), world.SourceOf(tri),
+                (float)impulse, (float)closing, (float)energy, (float)damage));
         }
+    }
+
+    private static bool NearTriangle(Vec3 center, double r2, Vec3 a, Vec3 b, Vec3 c)
+    {
+        var min = new Vec3(Math.Min(a.X, Math.Min(b.X, c.X)), Math.Min(a.Y, Math.Min(b.Y, c.Y)), Math.Min(a.Z, Math.Min(b.Z, c.Z)));
+        var max = new Vec3(Math.Max(a.X, Math.Max(b.X, c.X)), Math.Max(a.Y, Math.Max(b.Y, c.Y)), Math.Max(a.Z, Math.Max(b.Z, c.Z)));
+        var dx = Math.Max(0, Math.Max(min.X - center.X, center.X - max.X));
+        var dy = Math.Max(0, Math.Max(min.Y - center.Y, center.Y - max.Y));
+        var dz = Math.Max(0, Math.Max(min.Z - center.Z, center.Z - max.Z));
+        return dx * dx + dy * dy + dz * dz <= r2;
     }
 
     /// <summary>Car vs car: two spheres per car (centres at ±(half length − half width) along the body), radius = half width.</summary>
@@ -212,13 +248,19 @@ public sealed class CollisionSolver
                 var corr = Math.Max(0, best - Slop) / (wa + wb);
                 a.Position += bn * (corr * wa);
                 b.Position -= bn * (corr * wb);
-                var dv = Resolve(a, b, bp, bn);
+                var r = Resolve(a, b, bp, bn);
+                var dv = r.DeltaV;
+                var dvb = b.Simulated ? r.Impulse / b.Mass : 0;
                 a.ImpactTotal += dv;
-                b.ImpactTotal += dv * a.Mass / b.Mass;
-                if (dv >= ImpactThreshold)
+                b.ImpactTotal += dvb;
+                if (Math.Max(dv, dvb) >= ImpactThreshold)
                 {
-                    impacts.Add(new ImpactEvent(a.Id, time, bp.ToVector3(), bn.ToVector3(), (float)dv, b.Id, -1, 0));
-                    impacts.Add(new ImpactEvent(b.Id, time, bp.ToVector3(), (-bn).ToVector3(), (float)(dv * a.Mass / b.Mass), a.Id, -1, 0));
+                    var da = a.Simulated ? Damage?.Apply(a, bp, r.Energy) ?? 0 : 0;
+                    var db = b.Simulated ? Damage?.Apply(b, bp, r.Energy) ?? 0 : 0;
+                    impacts.Add(new ImpactEvent(a.Id, time, bp.ToVector3(), bn.ToVector3(), (float)dv, b.Id, -1, 0,
+                        (float)r.Impulse, (float)r.Closing, (float)r.Energy, (float)da));
+                    impacts.Add(new ImpactEvent(b.Id, time, bp.ToVector3(), (-bn).ToVector3(), (float)dvb, a.Id, -1, 0,
+                        (float)r.Impulse, (float)r.Closing, (float)r.Energy, (float)db));
                 }
             }
         }
@@ -236,14 +278,21 @@ public sealed class CollisionSolver
         return r;
     }
 
-    /// <summary>Impulse between a (moving along +n) and b (or the static world); returns a's normal speed change.</summary>
-    private double Resolve(SimCar a, SimCar? b, Vec3 p, Vec3 n)
+    /// <summary>Result of one contact impulse.</summary>
+    /// <param name="DeltaV">a's normal speed change [m/s] (0 when a is not simulated).</param>
+    /// <param name="Impulse">Normal impulse magnitude [N s].</param>
+    /// <param name="Closing">Closing speed along the normal before the impulse [m/s].</param>
+    /// <param name="Energy">0.5 * m_eff * closing^2 [J], m_eff = 1 / (inverse effective mass along the normal).</param>
+    private readonly record struct ContactResult(double DeltaV, double Impulse, double Closing, double Energy);
+
+    /// <summary>Impulse between a (moving along +n) and b (or the static world).</summary>
+    private ContactResult Resolve(SimCar a, SimCar? b, Vec3 p, Vec3 n)
     {
         var aw = a.Simulated;
         var bw = b is { Simulated: true };
         if (!aw && !bw)
         {
-            return 0;
+            return default;
         }
 
         var raP = p - a.Position;
@@ -257,10 +306,11 @@ public sealed class CollisionSolver
         var vn = vrel.Dot(n);
         if (vn >= 0)
         {
-            return 0;
+            return default;
         }
 
-        var j = -(1 + Restitution) * vn / K(n);
+        var kn = K(n);
+        var j = -(1 + Restitution) * vn / kn;
         var impulse = n * j;
         var vt = vrel - n * vn;
         var vtl = vt.Length;
@@ -281,7 +331,7 @@ public sealed class CollisionSolver
             b!.ApplyImpulse(p, -impulse);
         }
 
-        return aw ? j / a.Mass : 0;
+        return new ContactResult(aw ? j / a.Mass : 0, j, -vn, 0.5 * vn * vn / kn);
     }
 
     private static Vec3 DeepestPoint(ReadOnlySpan<Vec3> corners, Vec3 n)

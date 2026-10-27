@@ -111,14 +111,41 @@ public sealed record CarTelemetry
     /// <summary>Sum of collision impulses / mass since the binding [m/s] (a damage measure for scripts; GUESSED role).</summary>
     public required double ImpactTotal { get; init; }
 
+    /// <summary>Accumulated chassis/engine damage d (0 = intact, <see cref="DamageModel"/>; GUESSED accumulation).</summary>
+    public double Damage { get; init; }
+
+    /// <summary>True while the car lies on its side or roof (body up axis below <see cref="SimCar.OverturnedUpY"/>).</summary>
+    public bool Overturned { get; init; }
+
     public required IReadOnlyList<WheelTelemetry> Wheels { get; init; }
 }
 
-/// <summary>A collision of a car's chassis box with the static world or another car.</summary>
+/// <summary>A collision of a car's chassis with the static world or another car (one event per car and step).</summary>
+/// <param name="CarId">The car that was hit (chassis instance id).</param>
 /// <param name="DeltaV">Normal impulse / car mass [m/s] (the speed change the hit caused).</param>
 /// <param name="Other">Other car id, or 0 for the static world.</param>
+/// <param name="Surface">Surface index of the world triangle (map material), -1 for cars.</param>
 /// <param name="Source">Owner of the world triangle (spatial node record id / placed object id), 0 for cars.</param>
-public readonly record struct ImpactEvent(int CarId, double Time, Vector3 Point, Vector3 Normal, float DeltaV, int Other, int Surface, int Source);
+/// <param name="Impulse">Normal impulse on this car [N s] (sum over the contacts and solver passes).</param>
+/// <param name="RelativeSpeed">Closing speed along the normal before the response [m/s].</param>
+/// <param name="Energy">Kinetic energy of the closing motion, 0.5 * m_eff * v^2 [J] (the damage model's input).</param>
+/// <param name="Damage">Damage this impact added to the car (<see cref="DamageModel"/>; 0 below the threshold).</param>
+public readonly record struct ImpactEvent(int CarId, double Time, Vector3 Point, Vector3 Normal, float DeltaV, int Other, int Surface, int Source,
+    float Impulse = 0, float RelativeSpeed = 0, float Energy = 0, float Damage = 0);
+
+/// <summary>
+/// Impacts for whoever turns them into script events or damage bookkeeping (cross-area interface for the career/game
+/// logic owner: EVENT_COLLISION payload and wiring are theirs; nothing here is known from the exe).
+/// <see cref="PhysicsScene"/> and <see cref="GamePhysicsWorld"/> implement it.
+/// </summary>
+public interface IImpactSource
+{
+    /// <summary>Raised once per impacted car after every fixed step that produced a hit above the threshold.</summary>
+    event Action<ImpactEvent>? Impact;
+
+    /// <summary>Impacts raised during the last host frame (cleared at the start of the next <c>Advance</c>).</summary>
+    IReadOnlyList<ImpactEvent> Impacts { get; }
+}
 
 /// <summary>What the render and audio adapters read (cross-area interface, docs/race/game-physics.md).</summary>
 public interface ICarTelemetrySource

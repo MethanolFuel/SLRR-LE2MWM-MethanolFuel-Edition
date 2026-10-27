@@ -8,7 +8,8 @@ with the original game.** Labels: **M** = measured (shipped scripts/cfgs/data, o
 it, cited), **G** = guessed.
 
 Build/test in isolation: `dotnet build src/Slrr.Game.Physics/Slrr.Game.Physics.sln -warnaserror` and
-`dotnet test src/Slrr.Game.Physics/Slrr.Game.Physics.sln` (17 tests; corpus/host tests pass vacuously without game data).
+`dotnet test tests/Slrr.Game.Physics.Tests` (25 tests; corpus/host tests pass vacuously without game data). The gaps-wave
+changes (chassis boxes, damage, impact source, rollover, surfaces, wheelspin guard, difflock) are in **Gaps wave** below.
 
 ## Files
 
@@ -20,7 +21,8 @@ Build/test in isolation: `dotnet build src/Slrr.Game.Physics/Slrr.Game.Physics.s
 | `Controls.cs` | `CarControls`, `IVehicleInputSource`, `VirtualAxisInput` (Input.AXIS_*), `ScriptedInput`, `Drivetrain` (gearbox, clutch, steering rate) |
 | `Collision.cs` | `IStaticCollision` + `CollisionWorldShapes`, `CollisionSolver` (box/triangle SAT, car/car spheres, impulses) |
 | `Interop.cs` | Vec3/Quat <-> System.Numerics, Ypr conversion, `SurfaceMapping`, `WorldGround` (Slrr.Physics ground over Slrr.World) |
-| `Telemetry.cs` | `CarTelemetry`, `WheelTelemetry`, `ImpactEvent`, `ICarTelemetrySource` |
+| `Telemetry.cs` | `CarTelemetry`, `WheelTelemetry`, `ImpactEvent`, `ICarTelemetrySource`, `IImpactSource` |
+| `Damage.cs` | `DamageModel`: impact energy → damage d (accumulation GUESSED, effect MEASURED in Slrr.Physics) |
 | `PhysicsNatives.cs` | `Vehicle.getSpeedSquare/getHorn/hasCrime` (the three Vehicle natives nobody registers) |
 | `HeadlessDrive.cs` | Shipped car on a shipped map with a scripted input segment (no host, no game scripts) |
 | `tools/Slrr.Cli/CmdCarSim.cs` | `carsim` CLI (inside `#if SLRR_GAME_PHYSICS`) |
@@ -56,6 +58,11 @@ Vehicle natives are no longer missing (test `SmokePathStillPassesWithThePhysicsA
   load, slip ratio/angle, skid measure, grounded.
 * `IVehicleInputSource.Read(time, CarControls)` - player/AI/replay -> physics.
 * `IStaticCollision` - any triangle source for chassis collisions (`CollisionWorldShapes` wraps Slrr.World).
+* `IImpactSource { event Action<ImpactEvent> Impact; Impacts }` - physics -> career/game logic (EVENT_COLLISION wiring
+  and payload are the consumer's). Implemented by `PhysicsScene` and `GamePhysicsWorld`. `ImpactEvent`: `CarId`, `Other`
+  (other car id, 0 = static world), `Surface` (map material, -1 for cars), `Source` (world triangle owner), `Point`,
+  `Normal`, `Impulse` [N s], `RelativeSpeed` (closing speed along the normal) [m/s], `Energy` (0.5·m_eff·v²) [J], `Damage`
+  (added by this hit), `DeltaV`, `Time`. One event per hit car per step above the 1 m/s threshold.
 
 ## Behaviour
 
@@ -78,14 +85,17 @@ Vehicle natives are no longer missing (test `SmokePathStillPassesWithThePhysicsA
 | Input axes: steer AXIS_TURN_LEFTRIGHT (1) +1 = left, throttle 28, brake 29, nitro 31, handbrake 48, clutch 49 (+1 = pedal pressed), gear AXIS_GEAR_UPDOWN 50 (+1 up = A, -1 down = Z), horn 54 | M (ControlSet.class `define(...)`) |
 | Human controller = the `controllable <car>` target is a registered `Controller` in `UiEngine.Controllers` | G |
 | Fixed step 1/120 s, accumulator, max 12 steps per frame (rest dropped and counted in `DroppedTime`) | G (exe rate not measured) |
-| Automatic box: shift on the rpm the driven wheels imply (up > 95 % of RPM_limit, down < 45 %), 0.6 s between shifts, 0.25 s shift with the clutch open, launch slip keeping the engine > 1.5x idle, brake-to-reverse at standstill; steering rate 4/s; `steerhelp` divides steer by 1 + k·v/20 | G |
+| Automatic box: shift on the rpm the driven wheels imply (up > 95 % of RPM_limit and, gaps wave, the rpm the ground speed implies > 80 %: no up-shifts on wheelspin; down < 45 %), 0.6 s between shifts, 0.25 s shift with the clutch open, launch slip keeping the engine > 1.5x idle, brake-to-reverse at standstill; steering rate 4/s; `steerhelp` divides steer by 1 + k·v/20 | G |
 | Engine off: clutch open and engine speed held at 0 (Slrr.Physics' idle governor would restart it) | G |
-| Surface: friction = `.scm` `friction` (neutral 1.0), rolling resistance added = (rollres - 1) x 0.01 for materials with explicit properties | role M (physics.md 0x456292/0x45629b), mapping G |
+| Surface: friction = `.scm` `friction` x ground_friction (1.0), rollres raw, collcoeff raw; absent keys = the exe's defaults (friction = ground_friction, rollres 0.001, collcoeff 0.2); Slrr.World's neutral 1.0 is read as "absent" | M (physics.md Gaps wave §4); the "1.0 = absent" reading G |
 | Suspension rays: downward rays use Slrr.World's ground grid (triangle under the ray, plane intersection, re-query); others its BVH | G (performance choice) |
-| Chassis box: width track + 0.25 m, length 1.65 x wheelbase, from 5 cm to 1.0 m above the axle line | G (the exe's body collision shapes were not decoded) |
+| Chassis shape: the boxes of the chassis cfg `body` lines' `_phys_*.scx` meshes (`VehicleSpec.Body`, cm → m, 8..14 per racer); fallback box: width track + 0.25 m, length 1.65 x wheelbase, 5 cm to 1.0 m above the axle line | meshes/positions M, AABB use G |
 | Box vs map: SAT on the triangles inside the box's bounding sphere, minimum-penetration axis (face axes preferred), up to 4 deepest contacts, position correction minus 5 mm slop, 2 impulse passes, restitution 0.2, friction 0.5 | G |
 | Car vs car: two spheres per car, mass-weighted correction, same impulse | G |
-| Impact event when the normal impulse / mass >= 1 m/s; `ImpactTotal` accumulates it (damage hook) | G |
+| Impact event when the normal impulse / mass >= 1 m/s; `ImpactTotal` accumulates it; `DamageModel`: d += (E/m − 2 J/kg) / 400 J/kg x internal_damage (1.0) x `damage_multiplier` verb, the wheel nearest the hit (x/z plane, ≤ 1.2 m) takes 2x on its tyre friction and brake; engine torque, tyre friction and brake x (1 − 0.6 d²) | effect M (physics.md), accumulation G |
+| Rollover: `SimCar.Overturned` (body up Y < 0.3), `CarTelemetry.Overturned`; optional `PhysicsScene.RecoverOverturnedAfter` puts a car overturned and nearly at rest back upright at its place and heading (off by default) | G |
+| `difflock f` sets `DrivetrainSpec.DiffLock` (f, or 0.1 when f ≤ 0); `damage_multiplier f` scales the damage increments | difflock M (0x4597ea), damage_multiplier role G |
+| Placement (`Place` with snap): `Vehicle.PlaceOnGround`, body on the plane through the wheels' ground points (yaw kept) | G |
 | Cars below the map's lowest point - 50 m are held (`Settings["fell"]`) | G |
 | `SimpleCar`: bicycle model, 3.5 m/s² full throttle, 8 m/s² brake, 45 m/s max, 8 m/s² lateral grip, two ground probes for height/pitch | G |
 
@@ -116,7 +126,20 @@ Vehicle natives are no longer missing (test `SmokePathStillPassesWithThePhysicsA
 2. Semantics of `stop`, `idle`, `start`, `brake`, `suspend`, `wakeup`, `filter`, `corpse`, `reload` (traced only by usage).
 3. GearNumber encoding and the units of the other telemetry cells; whether `Mileage` is metres.
 4. Is the scripts' `getPos/setMatrix` of a car the chassis origin (assumed) or the centre of mass?
-5. Chassis collision shape (mesh/bodies of the car) and the exe's response/damage model; the EVENT_COLLISION payload.
-6. The surface `rollres` scale and defaults (shared with world.md open question 1).
-7. DevilSport lifts two wheels at ~1 g lateral in Slrr.Physics (seen with steer 0.06 at 96 km/h): roll stiffness/CoM height
-   of SpecBuilder are worth a look by the physics owner.
+5. The exe's collision response and damage accumulation (the shape is now the chassis' physics meshes, the damage effect
+   curve is measured); the EVENT_COLLISION payload; the role of `collcoeff`. Installed parts' own `_phys_*` bodies
+   (doors, bumpers) are not in the shape (their placement is not understood).
+6. (Answered in the gaps wave: surface defaults and the 0.01 rolling-resistance scale are measured, physics.md §4.)
+7. (Gaps wave, physics.md §5: the lift at ~1 g follows from statics with the high chassis-body CoM; side forces now act at
+   the wheel centre, a guess from the exe's wheel-constraint structure.)
+
+## Gaps wave (measured on this adapter; nothing compared with the original game)
+
+* Caynon (`race-play --survey --seconds 5`, dealer SunStrip 1.5): 0.1 m / 1.9 km/h → 20.1 m / 31.2 km/h; root cause and
+  fixes in docs/phase4/physics.md §1. 11 of 12 maps drive (Valo City: no ground, map area).
+* test_track segment (`carsim`, DevilSport, same input): 89.2 km/h at 6.5 s / 99.6 m → 85.6 km/h / 90.3 m, 0 impacts,
+  all wheels grounded 99.4 %; physics 0.06-0.23 ms per step (shared machine).
+* Wall test (`WallImpactCarriesImpulseEnergyAndDamage`, synthetic 1200 kg car into a wall at ~63 km/h): impulse
+  24 978 N s, closing 17.6 m/s, energy 182.7 kJ, damage +0.376 (car 0.391), the nearest front corner damaged.
+* Rollover recovery (`OverturnedCarIsRecoveredWhenEnabled`): a car dropped on its roof is upright again after 1 s at rest.
+* Wheelspin guard (`AutomaticBoxDoesNotUpshiftOnWheelspinAtAStandstill`): almost grip-less tyres stay in 1st.
