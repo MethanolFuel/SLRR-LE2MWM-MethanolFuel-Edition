@@ -14,6 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Slrr.Engine.Commands\Slrr.Engine.Commands.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Game\Slrr.Game.csproj" />
+    <!-- CommandsPhysicsWorld moved to the race composition root (src/Slrr.Race) by the integration. -->
+    <ProjectReference Include="..\..\src\Slrr.Race\Slrr.Race.csproj" />
   </ItemGroup>
   <ItemGroup>
     <!-- Compiles the CLI wrapper here so it is checked before the lead wires it into tools/Slrr.Cli. -->

@@ -3,39 +3,10 @@ using System.Numerics;
 using Slrr.Engine.Commands;
 using Slrr.Engine.Resources;
 using Slrr.Game;
+using Slrr.Race;
 using Slrr.Vm;
 
 namespace Slrr.Cli;
-
-/// <summary>
-/// <see cref="IPhysicsWorld"/> decorator that puts the command engine (src/Slrr.Engine.Commands) in front of a physics
-/// world: every command the host routes to physics is offered to both (the command engine records car verbs even when the
-/// physics adapter consumes them); each frame the inner physics steps first, then the command engine (AI, triggers,
-/// traffic, cameras; plus the kinematic stand-in cars when <paramref name="inner"/> provides no vehicle state).
-/// </summary>
-public sealed class CommandsPhysicsWorld(IPhysicsWorld? inner = null, Func<ResourceEngine, CommandEngine>? factory = null) : IPhysicsWorld
-{
-    public CommandEngine? Engine { get; private set; }
-
-    public void Attach(IGameWorld world)
-    {
-        inner?.Attach(world);
-        Engine = factory?.Invoke(world.Resources) ?? CommandEngine.ForResources(world.Resources);
-    }
-
-    public bool Command(int targetId, string command)
-    {
-        var mine = Engine?.Execute(targetId, command).Consumed ?? false;
-        var other = inner?.Command(targetId, command) ?? false;
-        return mine || other;
-    }
-
-    public void Step(float dt)
-    {
-        inner?.Step(dt);
-        Engine?.Step(dt);
-    }
-}
 
 /// <summary>A headless race session: game host + command engine, menu path to a track, optional scripted driving.</summary>
 public sealed class RaceSession : IDisposable

@@ -38,6 +38,7 @@ public static class Commands
           maps [...]                           load every shipped map through the real track scripts
           carsim [...]                         drive a car through the game physics adapter on a map
           race [...]                           headless race scripts with the engine command verbs
+          race-play [...]                      all race adapters together: career, used car, track, drive (PNG/WAV)
           gameaudio <drive|formula>            in-game audio: scripted drive rendered to WAV, engine-sound formula
           game-render <demo|play|cull|stream>  in-game renderer: scripted sequences to PNGs
           run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
@@ -76,6 +77,7 @@ public static class Commands
                 "maps" => CmdMaps.Run(args[1..], o, e),
                 "carsim" => CmdCarSim.Run(args[1..], o, e),
                 "race" => CmdRace.Run(args[1..], o, e),
+                "race-play" => CmdRacePlay.Run(args[1..], o, e),
                 "gameaudio" => CmdGameAudio.Run(args[1..], o, e),
                 "game-render" => CmdGameRender.Run(args[1..], o, e),
                 "boot" => CmdBoot.Run(args[1..], o, e),

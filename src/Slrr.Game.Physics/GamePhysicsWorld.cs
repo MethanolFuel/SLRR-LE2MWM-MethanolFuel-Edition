@@ -157,8 +157,11 @@ public sealed class GamePhysicsWorld : IPhysicsWorld, ICarTelemetrySource
                 car.EngineRunning = true;
                 break;
             case "reset":
+                // Keeps the run state (integration fix, GUESSED from the scripts): Track.lockCar ends with "reset; reload"
+                // and nothing sends "start" afterwards although the player is meant to drive; scripts hold a car with
+                // "stop" (City grids: reset; setMatrix; stop; idle ... start). Reset = upright, at rest, on the ground.
                 car.BrakeOverride = false;
-                car.State = CarRunState.Held;
+                ZeroMotion(car);
                 car.Place(car.Origin, Conv.FromYpr(Conv.ToYpr(car.Orientation).Yaw, 0, 0));
                 break;
             case "brake":

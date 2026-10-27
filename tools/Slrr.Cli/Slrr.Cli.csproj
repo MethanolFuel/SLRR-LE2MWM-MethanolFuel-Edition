@@ -23,5 +23,6 @@
     <ProjectReference Include="..\..\src\Slrr.Game.Physics\Slrr.Game.Physics.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Game.Audio\Slrr.Game.Audio.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Game.Render\Slrr.Game.Render.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Race\Slrr.Race.csproj" />
   </ItemGroup>
 </Project>

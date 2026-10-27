@@ -436,6 +436,15 @@ public sealed class PartsNatives : INativeModule
                 ScriptObjects.Set(c.Self, "maxTorque", Value.Float(curve.MaxTorque));
                 ScriptObjects.Set(c.Self, "RPM_maxTorque", Value.Float(curve.RpmMaxTorque));
                 ScriptObjects.Set(c.Self, "RPM_maxHP", Value.Float(curve.RpmMaxHp));
+                if (curve.Displacement is { } displacement)
+                {
+                    ScriptObjects.Set(c.Self, "Displacement", Value.Float(displacement));
+                }
+
+                if (curve.Compression is { } compression)
+                {
+                    ScriptObjects.Set(c.Self, "Compression", Value.Float(compression));
+                }
             }
 
             if (World.FindDyno(c.Self) is { } d)

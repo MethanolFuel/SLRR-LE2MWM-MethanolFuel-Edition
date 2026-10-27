@@ -62,7 +62,16 @@ public class DefaultPartHost : IPartHost
 }
 
 /// <summary>Output of the dyno computation (the fields calcDyno writes back into the DynoData object).</summary>
-public sealed record DynoCurve(float Torque, float Torque2, float MaxRpm, float MaxHp, float MaxTorque, float RpmMaxTorque, float RpmMaxHp);
+public sealed record DynoCurve(float Torque, float Torque2, float MaxRpm, float MaxHp, float MaxTorque, float RpmMaxTorque, float RpmMaxHp)
+{
+    /// <summary>Swept volume of all cylinders [m^3]; calcDyno writes the field <c>Displacement</c> (exe 0x46aefd). Null = leave the field.</summary>
+    public float? Displacement { get; init; }
+
+    /// <summary>Static compression ratio (swept + clearance) / clearance; calcDyno writes <c>Compression</c> (exe 0x46af10), which
+    /// <c>Block.isDynoable</c> compares with <c>minCompression</c>/<c>maxCompression</c> (a 0 makes every engine "not in working condition").
+    /// Null = leave the field.</summary>
+    public float? Compression { get; init; }
+}
 
 /// <summary>
 /// Engine model behind <c>DynoData.calcDyno/getTorque/getHP</c> and <c>Chassis.getTorque</c>. This is physics

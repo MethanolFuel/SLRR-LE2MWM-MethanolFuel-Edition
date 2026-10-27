@@ -38,6 +38,13 @@ public sealed class GameHostOptions
     /// <summary>Extra native modules registered after the host's own (replace semantics apply only if they say so).</summary>
     public IReadOnlyList<INativeModule> ExtraModules { get; init; } = [];
 
+    /// <summary>
+    /// Native modules that need the host's own objects (e.g. <see cref="GameHost.Resources"/>, <see cref="GameHost.Natives"/>):
+    /// each factory runs inside the constructor once those exist, and its module is registered after
+    /// <see cref="ExtraModules"/>, in list order (so the last factory's module wraps everything before it).
+    /// </summary>
+    public IReadOnlyList<Func<GameHost, INativeModule>> ModuleFactories { get; init; } = [];
+
     /// <summary>Gap-closing host natives (<see cref="HostNatives"/>); off only to measure what the engine areas alone do.</summary>
     public bool HostNatives { get; init; } = true;
 
@@ -114,6 +121,11 @@ public sealed class GameHost : IGameWorld, IDisposable
         foreach (var m in options.ExtraModules)
         {
             registry.Add(m);
+        }
+
+        foreach (var factory in options.ModuleFactories)
+        {
+            registry.Add(factory(this));
         }
 
         Registry = registry;
