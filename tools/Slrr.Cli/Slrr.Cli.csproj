@@ -8,5 +8,6 @@
     <ProjectReference Include="..\..\src\Slrr.Formats\Slrr.Formats.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Decompiler\Slrr.Decompiler.csproj" />
     <ProjectReference Include="..\..\src\Slrr.Vm\Slrr.Vm.csproj" />
+    <ProjectReference Include="..\..\src\Slrr.Engine.Parts\Slrr.Engine.Parts.csproj" />
   </ItemGroup>
 </Project>
