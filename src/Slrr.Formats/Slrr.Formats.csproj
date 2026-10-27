@@ -3,6 +3,9 @@
     <RootNamespace>Slrr.Formats</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CfgSchema\cfg-schema.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Slrr.Core\Slrr.Core.csproj" />
   </ItemGroup>
 </Project>
