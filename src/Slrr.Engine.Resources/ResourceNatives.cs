@@ -220,7 +220,9 @@ public sealed class ResourceNatives : INativeModule
             _e.CreateNativeInstance(c.Self, ResourceEngine.IdOf(c.Object(0)), c.Int(1), c.String(2), c.String(3));
             return Value.Void;
         });
-        r.Register(GT, "setEventMask", "(I)V", c => Touch(c, n => n.EventMask = c.Int(0)));
+        // MEASURED (exe 0x4819f0 → 0x48d3d0): setEventMask ORs into the object's mask (+0x70); clearEventMask (0x48d420)
+        // clears bits. City.enter relies on it: Track.enter sets EVENT_TIME | ..., then City adds EVENT_COLLISION.
+        r.Register(GT, "setEventMask", "(I)V", c => Touch(c, n => n.EventMask |= c.Int(0)));
         r.Register(GT, "clearEventMask", "(I)V", c => Touch(c, n => n.EventMask &= ~c.Int(0)));
         r.Register(GT, "addTimer", "(FI)V", c =>
         {

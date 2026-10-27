@@ -51,7 +51,10 @@ public sealed class LangNatives : INativeModule
             var delims = (c.String(1) ?? " \t\n").ToCharArray();
             var tokens = Text(c).Split(delims, StringSplitOptions.RemoveEmptyEntries);
             var i = c.Int(0);
-            return i >= 0 && i < tokens.Length ? c.Str(tokens[i]) : Value.Null; // strtok-like; null past the end: hypothesis
+            // strtok-like; null past the end: hypothesis. The token is the canonical (interned) String of its text:
+            // the scripts compare tokens with literals by reference (City.handleEvent `token(0) == "car_add"`,
+            // Bot.handleEvent "ai_info_*"), which only works in the shipped game if equal texts are one object (GUESSED).
+            return i >= 0 && i < tokens.Length ? Value.Obj(c.Vm.InternLiteral(tokens[i])) : Value.Null;
         });
 
         // java.lang.Integer / Float

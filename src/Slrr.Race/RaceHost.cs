@@ -50,6 +50,12 @@ public sealed class RaceHostOptions
 
     /// <summary>Build the map's render scene in MapWorlds (only the renderer would use it; off saves load time headless).</summary>
     public bool MapRenderScene { get; init; }
+
+    /// <summary>
+    /// Further native modules, registered after the command natives and before the renderer's hooks (which must stay
+    /// last). Added for the career area (Slrr.Career: <c>GameLogic.kismajomCheck</c>).
+    /// </summary>
+    public IReadOnlyList<Func<GameHost, INativeModule>> ExtraModuleFactories { get; init; } = [];
 }
 
 /// <summary>
@@ -152,6 +158,7 @@ public sealed class RaceHost : IDisposable
 
         factories.Add(_ => new PhysicsNatives(physics));
         factories.Add(_ => new CommandNatives(() => commands.Engine));
+        factories.AddRange(options.ExtraModuleFactories);
         if (renderer is not null)
         {
             factories.Add(_ => renderer.Hooks);
