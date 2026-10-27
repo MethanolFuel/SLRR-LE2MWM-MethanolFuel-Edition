@@ -22,10 +22,10 @@ public class MrSir_ShockAbsorber extends ShockAbsorber{
 		max_length	= 0.45; //m
 		min_length	= 0.15; //m
 		rebound_factor	= 0.5;*/
-		int	adjustable_damping		= 1;
+		adjustable_damping		= 1;
 		name = "Adjustable Shock absorber";
 		prestige_calc_weight = 20.0;
-		float	rebound_factor_mul 	= 0.75;
+		rebound_factor_mul 	= 0.75;
 	}
 
 	public void setParentType(int i){

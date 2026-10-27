@@ -149,7 +149,7 @@ public class Swaybar extends RGearPart
 		
 		if(adjustable!=0 && min_force>0 && max_force>0)
 		{
-			s = m.addItem( "Force", 7, new_force, max_force, min_force, (max_force-min_force)*100+1, null );
+			s = m.addItem( "Force", 7, new_force, min_force, max_force, (max_force-min_force)/100+1, null );
 			s.changeVLabelText( Float.toString(new_force, "%1.0f N/m") );
 			
 			s = m.addItem( "Reset Force", 8);

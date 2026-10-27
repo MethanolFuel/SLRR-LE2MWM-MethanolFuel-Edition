@@ -172,12 +172,12 @@ public class ShockAbsorber extends RGearPart
 	//---------tuning
 	public int isTuneable()
 	{
-		return (adjustable_damping && adjustable_rebound_factor);
+		return (adjustable_damping || adjustable_rebound_factor);
 	}
 
 	// backup values //
-	int	old_damping;
-	int	old_rebound_factor;
+	float	old_damping;
+	float	old_rebound_factor;
 
 	public void buildTuningMenu( Menu m )
 	{
@@ -217,8 +217,10 @@ public class ShockAbsorber extends RGearPart
 			damping = default_damping;
 			rebound_factor = default_rebound_factor;
 
-			m.gadget.osd.findGadget( this, 1 ).setValue( damping );
-			m.gadget.osd.findGadget( this, 2 ).setValue( rebound_factor );
+			if (adjustable_damping)
+				m.gadget.osd.findGadget( this, 1 ).setValue( damping );
+			if (adjustable_rebound_factor)
+				m.gadget.osd.findGadget( this, 2 ).setValue( rebound_factor );
 		}
 		else
 		if( m.cmd == 1 )

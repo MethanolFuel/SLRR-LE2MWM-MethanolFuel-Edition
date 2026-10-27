@@ -11,8 +11,8 @@ public class swaybar_Racing_rear extends Swaybar
 		force = 40000.0;
 		damping = 4000.0;
 		adjustable = 1;
-		min_force = 50000.0;
-		max_force = 35000.0;
+		min_force = 35000.0;
+		max_force = 50000.0;
 		
 		name_prefix = "Racing rear";
 		brand_prestige_factor = 2.00;

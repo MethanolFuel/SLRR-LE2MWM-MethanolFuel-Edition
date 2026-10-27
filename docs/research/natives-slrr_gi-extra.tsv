@@ -1,0 +1,11 @@
+site	class	method	descriptor	function
+0x007c02d8	java.game.parts.SfxTable	AddItemPtr	(Ljava.util.resource.ResourceRef;FFFFF)I	0x004423e0
+0x007c02b9	java.game.parts.SfxTable	addItem	(Ljava.util.resource.ResourceRef;FFFFF)V	0x004423e0
+0x00475928	java.game.parts.bodypart.Chassis	getIndexedData	(I)F	0x00475887
+0x007c05be	java.io.File	TimeHigh	(Ljava.lang.String;)I	0x007c0612
+0x007c059f	java.io.File	TimeLow	(Ljava.lang.String;)I	0x007c05c5
+0x00475a4e	java.lang.RawEdit	CentCur	(I)I	0x00457e1a
+0x004759f0	java.lang.RawEdit	getF	(I)F	0x0047596f
+0x004759d1	java.lang.RawEdit	getI	(I)I	0x00475953
+0x00475a0f	java.lang.RawEdit	setF	(IF)I	0x0047598b
+0x00475a2e	java.lang.RawEdit	setI	(II)I	0x0047598b
