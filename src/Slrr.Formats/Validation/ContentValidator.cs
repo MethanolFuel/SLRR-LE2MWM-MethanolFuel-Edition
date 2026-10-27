@@ -1,6 +1,7 @@
 using System.Text;
 using Slrr.Core;
 using Slrr.Formats.Cfg;
+using Slrr.Formats.CfgSchema;
 using Slrr.Formats.Rpak;
 
 namespace Slrr.Formats.Validation;
@@ -63,6 +64,8 @@ public sealed class ContentValidator(GameFileSystem fs)
             {
                 continue;
             }
+
+            Diagnostics.AddRange(CfgArgSchemas.Default.Check(line, rel));
 
             foreach (var arg in line.Args.Where(CfgKeywords.LooksLikeFileRef))
             {

@@ -1,0 +1,1865 @@
+{
+ "corpusFiles": 1182,
+ "keywords": {
+  "anim": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 6,
+   "lines": 6,
+   "max": 2,
+   "min": 2
+  },
+  "attach": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 719,
+   "lines": 2753,
+   "max": 2,
+   "min": 2
+  },
+  "body": {
+   "args": [
+    [
+     "float",
+     "hex",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "path",
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 914,
+   "lines": 1522,
+   "max": 11,
+   "min": 1
+  },
+  "bone": {
+   "args": [],
+   "enforce": true,
+   "files": 43,
+   "lines": 43,
+   "max": 0,
+   "min": 0
+  },
+  "bonepos": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 24,
+   "lines": 192,
+   "max": 3,
+   "min": 3
+  },
+  "bounce": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": false,
+   "files": 1,
+   "lines": 1,
+   "max": 11,
+   "min": 11
+  },
+  "bounds": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 3,
+   "lines": 3,
+   "max": 6,
+   "min": 6
+  },
+  "brakepower": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 2,
+   "min": 2
+  },
+  "buoy": {
+   "args": [],
+   "enforce": true,
+   "files": 24,
+   "lines": 24,
+   "max": 0,
+   "min": 0
+  },
+  "camera": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "word"
+    ],
+    [
+     "word"
+    ],
+    [
+     "word"
+    ],
+    [
+     "word"
+    ],
+    [
+     "word"
+    ]
+   ],
+   "enforce": true,
+   "files": 26,
+   "lines": 172,
+   "max": 12,
+   "min": 7
+  },
+  "category": {
+   "args": [
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 1131,
+   "lines": 1131,
+   "max": 1,
+   "min": 1
+  },
+  "chassis": {
+   "args": [],
+   "enforce": true,
+   "files": 42,
+   "lines": 42,
+   "max": 0,
+   "min": 0
+  },
+  "click": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "float",
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 1085,
+   "lines": 1085,
+   "max": 7,
+   "min": 1
+  },
+  "cockpit_rpm": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 24,
+   "lines": 24,
+   "max": 11,
+   "min": 11
+  },
+  "cockpit_speed": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 24,
+   "lines": 24,
+   "max": 11,
+   "min": 11
+  },
+  "colors": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ]
+   ],
+   "enforce": true,
+   "files": 21,
+   "lines": 197,
+   "max": 17,
+   "min": 2
+  },
+  "compatible": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 383,
+   "lines": 1265,
+   "max": 2,
+   "min": 2
+  },
+  "compound": {
+   "args": [],
+   "enforce": true,
+   "files": 42,
+   "lines": 84,
+   "max": 0,
+   "min": 0
+  },
+  "controller": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 41,
+   "lines": 41,
+   "max": 7,
+   "min": 1
+  },
+  "damage": {
+   "args": [
+    [
+     "float",
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 475,
+   "lines": 475,
+   "max": 1,
+   "min": 1
+  },
+  "damagedef": {
+   "args": [
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 1,
+   "min": 1
+  },
+  "damping": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 4,
+   "min": 4
+  },
+  "deformable": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 4,
+   "min": 1
+  },
+  "dest_alpha": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 4,
+   "min": 4
+  },
+  "dest_angle": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": false,
+   "files": 1,
+   "lines": 1,
+   "max": 7,
+   "min": 7
+  },
+  "dest_color": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "dest_size": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "endcompound": {
+   "args": [
+    [
+     "word"
+    ]
+   ],
+   "enforce": true,
+   "files": 42,
+   "lines": 84,
+   "max": 1,
+   "min": 1
+  },
+  "enginepower": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 6,
+   "min": 4
+  },
+  "ext_camera": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "vector"
+    ],
+    [
+     "vector"
+    ],
+    [
+     "vector"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 5,
+   "min": 5
+  },
+  "fade": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 1,
+   "min": 1
+  },
+  "flags": {
+   "args": [
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 130,
+   "lines": 581,
+   "max": 1,
+   "min": 1
+  },
+  "flap": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 29,
+   "lines": 153,
+   "max": 12,
+   "min": 11
+  },
+  "gravity": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 9,
+   "lines": 9,
+   "max": 4,
+   "min": 4
+  },
+  "height": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 1,
+   "min": 1
+  },
+  "intdamage": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 360,
+   "lines": 360,
+   "max": 1,
+   "min": 1
+  },
+  "lifetime": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "linked": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 98,
+   "lines": 104,
+   "max": 2,
+   "min": 1
+  },
+  "lod": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 439,
+   "lines": 1040,
+   "max": 2,
+   "min": 2
+  },
+  "lods": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 439,
+   "lines": 439,
+   "max": 4,
+   "min": 3
+  },
+  "material": {
+   "args": [
+    [
+     "hex",
+     "int"
+    ],
+    [
+     "hex",
+     "int"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 44,
+   "lines": 44,
+   "max": 4,
+   "min": 3
+  },
+  "maxcount": {
+   "args": [
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 1,
+   "min": 1
+  },
+  "maxsteer": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 2,
+   "min": 1
+  },
+  "mesh": {
+   "args": [
+    [
+     "hex"
+    ]
+   ],
+   "enforce": true,
+   "files": 810,
+   "lines": 810,
+   "max": 1,
+   "min": 1
+  },
+  "move": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 3,
+   "min": 3
+  },
+  "name": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "word"
+    ]
+   ],
+   "enforce": true,
+   "files": 30,
+   "lines": 30,
+   "max": 2,
+   "min": 1
+  },
+  "noclick": {
+   "args": [],
+   "enforce": true,
+   "files": 528,
+   "lines": 866,
+   "max": 0,
+   "min": 0
+  },
+  "nocollision": {
+   "args": [],
+   "enforce": true,
+   "files": 305,
+   "lines": 329,
+   "max": 0,
+   "min": 0
+  },
+  "notify": {
+   "args": [],
+   "enforce": false,
+   "files": 2,
+   "lines": 2,
+   "max": 0,
+   "min": 0
+  },
+  "pedals": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 26,
+   "lines": 26,
+   "max": 3,
+   "min": 3
+  },
+  "ratios": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 8,
+   "min": 6
+  },
+  "rearendratio": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 40,
+   "lines": 40,
+   "max": 1,
+   "min": 1
+  },
+  "render": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 1137,
+   "lines": 2231,
+   "max": 7,
+   "min": 1
+  },
+  "rendertypes": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ],
+    [
+     "hex"
+    ]
+   ],
+   "enforce": false,
+   "files": 2,
+   "lines": 2,
+   "max": 7,
+   "min": 7
+  },
+  "rollbar": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 16,
+   "lines": 32,
+   "max": 4,
+   "min": 4
+  },
+  "seat": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 26,
+   "lines": 26,
+   "max": 6,
+   "min": 6
+  },
+  "sfx_horn": {
+   "args": [
+    [
+     "hex"
+    ],
+    [
+     "float"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 2,
+   "lines": 8,
+   "max": 3,
+   "min": 3
+  },
+  "sfx_loop": {
+   "args": [
+    [
+     "hex"
+    ]
+   ],
+   "enforce": false,
+   "files": 2,
+   "lines": 2,
+   "max": 1,
+   "min": 1
+  },
+  "shifter": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": false,
+   "files": 1,
+   "lines": 1,
+   "max": 3,
+   "min": 3
+  },
+  "slot": {
+   "args": [
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "float",
+     "int"
+    ],
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 1132,
+   "lines": 3753,
+   "max": 7,
+   "min": 7
+  },
+  "slotdeform": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 24,
+   "lines": 54,
+   "max": 1,
+   "min": 1
+  },
+  "slotdmgmode": {
+   "args": [
+    [
+     "hex"
+    ]
+   ],
+   "enforce": true,
+   "files": 200,
+   "lines": 680,
+   "max": 1,
+   "min": 1
+  },
+  "slottype": {
+   "args": [
+    [
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 25,
+   "lines": 813,
+   "max": 1,
+   "min": 1
+  },
+  "source": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "int"
+    ],
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float",
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float",
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 16,
+   "min": 10
+  },
+  "source_alpha": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "source_angle": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": false,
+   "files": 1,
+   "lines": 1,
+   "max": 4,
+   "min": 4
+  },
+  "source_color": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "source_size": {
+   "args": [
+    [
+     "word"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 10,
+   "lines": 10,
+   "max": 7,
+   "min": 4
+  },
+  "spring": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 41,
+   "lines": 166,
+   "max": 3,
+   "min": 3
+  },
+  "steerhelp": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 35,
+   "lines": 35,
+   "max": 6,
+   "min": 5
+  },
+  "steering": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "word"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 26,
+   "lines": 26,
+   "max": 9,
+   "min": 9
+  },
+  "stockpart": {
+   "args": [
+    [
+     "hex"
+    ]
+   ],
+   "enforce": true,
+   "files": 59,
+   "lines": 675,
+   "max": 1,
+   "min": 1
+  },
+  "texture": {
+   "args": [
+    [
+     "hex",
+     "int"
+    ]
+   ],
+   "enforce": true,
+   "files": 300,
+   "lines": 300,
+   "max": 1,
+   "min": 1
+  },
+  "trigger": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "int"
+    ],
+    [
+     "word"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": false,
+   "files": 1,
+   "lines": 1,
+   "max": 8,
+   "min": 8
+  },
+  "type": {
+   "args": [
+    [
+     "float",
+     "int"
+    ],
+    [
+     "word"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 48,
+   "lines": 173,
+   "max": 3,
+   "min": 1
+  },
+  "uv_end": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 4,
+   "min": 4
+  },
+  "uv_normal": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 4,
+   "min": 4
+  },
+  "velscale": {
+   "args": [
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 4,
+   "lines": 4,
+   "max": 1,
+   "min": 1
+  },
+  "wheel": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 41,
+   "lines": 166,
+   "max": 10,
+   "min": 10
+  },
+  "wheelbones": {
+   "args": [],
+   "enforce": true,
+   "files": 24,
+   "lines": 96,
+   "max": 0,
+   "min": 0
+  },
+  "wheelpars": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 16,
+   "lines": 16,
+   "max": 7,
+   "min": 7
+  },
+  "width": {
+   "args": [
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 5,
+   "lines": 5,
+   "max": 2,
+   "min": 2
+  },
+  "wing": {
+   "args": [
+    [
+     "int"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ],
+    [
+     "float"
+    ]
+   ],
+   "enforce": true,
+   "files": 359,
+   "lines": 529,
+   "max": 10,
+   "min": 10
+  }
+ },
+ "outlier": 0.002
+}
