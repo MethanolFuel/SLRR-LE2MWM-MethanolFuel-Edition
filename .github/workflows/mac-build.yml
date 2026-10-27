@@ -74,6 +74,16 @@ jobs:
           pkg/slrr engine-boot . | tail -4
           pkg/slrr play --smoke --root . | grep -E "result|thread errors|natives missing"
           pkg/slrr race-play --root . --track "Drag Track" --seconds 5 | tail -6
+      - name: Diagnose the render crash (informational)
+        continue-on-error: true
+        run: |
+          uname -a; sw_vers
+          system_profiler SPDisplaysDataType | head -30 || true
+          mkdir -p frames
+          echo "=== render only"; pkg/slrr race-play --root . --track "Drag Track" --seconds 2 --render --out frames --capture-every 30 --size 640x480 2>&1 | tail -15 || echo "render-only exit $?"
+          echo "=== audio only"; pkg/slrr race-play --root . --track "Drag Track" --seconds 2 --audio --wav frames/run.wav 2>&1 | tail -15 || echo "audio-only exit $?"
+          echo "=== gl probe"; pkg/slrr render ui menu --root . --out frames/menu.png 2>&1 | tail -15 || echo "render ui exit $?"
+          ls -la frames | head
       - name: Render and audio smoke test (needs an OpenGL context; informational)
         continue-on-error: true
         run: |
@@ -89,6 +99,7 @@ jobs:
 
   release:
     needs: build
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
