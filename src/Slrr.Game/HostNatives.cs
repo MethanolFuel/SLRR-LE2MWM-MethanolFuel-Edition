@@ -108,6 +108,7 @@ public sealed class HostNatives(GameHost host) : INativeModule
         RegisterIsScripted(r);
         RegisterForceUpdate(r);
         RegisterMissing(r);
+        RegisterDeviceNames(r);
         host.Parts.DefinitionOf = DefinitionOf;
     }
 
@@ -235,6 +236,29 @@ public sealed class HostNatives(GameHost host) : INativeModule
             + "Resources answer made every folder a part: no tyres/rims listed, one '<unnamed>' item. Now an entry that only INHERITS its "
             + "script and has no `native` line answers 0 (the 13 inherited `native part` entries stay scripted).",
             "behaviour MEASURED from Catalog.collectObjectsStep; rule GUESSED");
+    }
+
+    private void RegisterDeviceNames(NativeRegistry r)
+    {
+        const string input = "java.io.Input";
+        const string desc = "(I)Ljava.lang.String;";
+        var original = r.Find(input, "getDeviceName", desc);
+        if (original is null)
+        {
+            return;
+        }
+
+        r.Register(input, "getDeviceName", desc, c =>
+        {
+            var v = original(c);
+            return v.Ref?.Native is string s ? Value.Obj(host.SystemArea.Intern(c.Vm, s)) : v;
+        }, replace: true);
+        Gap($"{input}.getDeviceName{desc}", "replace",
+            "ControlSet.load matches the device names read from save/controls/active_control_set (File.readString, interned by the "
+            + "System area) with `==` against Input.getDeviceName, which returned a fresh String: no name ever matched, every device "
+            + "of the file became an unknown negative id and the keyboard throttle/brake/steering never reached the car. The name is "
+            + "now returned from the same intern pool.",
+            "call site MEASURED (ControlSet.load); string identity in the exe GUESSED (docs/engine/system.md string pool hypothesis)");
     }
 
     private void Gap(string key, string kind, string reason, string label) => Gaps.Add(new HostGap(key, kind, reason, label));

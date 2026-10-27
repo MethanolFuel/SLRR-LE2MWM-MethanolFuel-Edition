@@ -161,7 +161,7 @@ public class UiNativesTests
         Assert.Equal(-1, Script.CallStatic(d.Vm, UiNatives.InputClass, "activeAxis", null, Value.Int(0)).AsInt);
         Script.Call(d.Vm, ctl, "user_Reset");
         Assert.Empty(d.Engine.Controller(ctl).Mappings);
-        Assert.Equal("Keyboard", Script.CallStatic(d.Vm, UiNatives.InputClass, "getDeviceName", null, Value.Int(0)).Ref!.Native);
+        Assert.Equal("SysKeyboard", Script.CallStatic(d.Vm, UiNatives.InputClass, "getDeviceName", null, Value.Int(0)).Ref!.Native);
         Assert.True(Script.CallStatic(d.Vm, UiNatives.InputClass, "getDeviceName", null, Value.Int(5)).IsNull);
     }
 

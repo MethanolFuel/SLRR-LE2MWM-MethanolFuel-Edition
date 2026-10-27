@@ -22,7 +22,15 @@ public sealed class PlaceholderDynoCalculator : IDynoCalculator
         var tMax = PeakTorque(dyno);
         var rpmP = 0.85f * limit;
         var hp = Torque(dyno, rpmP, 0f) * rpmP / 7121f;
-        return new DynoCurve(tMax, tMax, limit, hp, tMax, rpmT, rpmP);
+        // Displacement / Compression: the geometric definitions the exe model uses (Slrr.Physics EngineCycleModel.UpdateGeometry);
+        // without them Block.isDynoable sees Compression 0 < minCompression and the car is "not in working condition".
+        var swept = MathF.PI / 4f * dyno["bore"] * dyno["bore"] * dyno["stroke"];
+        var vmin = dyno["Vmin"];
+        return new DynoCurve(tMax, tMax, limit, hp, tMax, rpmT, rpmP)
+        {
+            Displacement = swept * dyno["cylinders"],
+            Compression = vmin > 0f ? (swept + vmin) / vmin : null,
+        };
     }
 
     public float Torque(DynoParams dyno, float rpm, float boost)

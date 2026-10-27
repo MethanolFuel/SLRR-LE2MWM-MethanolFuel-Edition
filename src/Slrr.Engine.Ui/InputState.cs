@@ -20,7 +20,13 @@ public sealed class InputState
     private readonly Dictionary<(int Device, int Axis), float> _physical = [];
     private readonly Dictionary<int, float> _virtualOverride = [];
 
-    public List<string> Devices { get; } = ["Keyboard", "SysMouse"];
+    /// <summary>
+    /// <c>Input.getDeviceName</c> by index. The names are the DirectInput system device names the shipped control file
+    /// stores (MEASURED: <c>save/controls/active_control_set</c> lists "SysKeyboard", "SysMouse", then the pads).
+    /// <c>ControlSet.load</c> matches the file's names against these; an unmatched name becomes an unknown negative device,
+    /// so with "Keyboard" here no keyboard mapping (throttle, brake, steering) ever reached a car.
+    /// </summary>
+    public List<string> Devices { get; } = ["SysKeyboard", "SysMouse"];
 
     /// <summary>Keys for <c>Input.lastKey</c>: scan code in the low 16 bits, character in the high 16 (Osd.animate uses <c>key &gt;&gt; 16</c>).</summary>
     public Queue<int> KeyQueue { get; } = new();

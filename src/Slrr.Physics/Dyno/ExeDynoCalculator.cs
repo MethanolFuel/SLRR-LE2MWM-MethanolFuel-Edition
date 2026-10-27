@@ -26,7 +26,12 @@ public sealed class ExeDynoCalculator : IDynoCalculator
 
         // With a native twin the exe does not touch `torque`/`torque2` (it writes 1.0 only for a temporary native,
         // 0x46ae11/0x46b033); they stay the script's multipliers.
-        return new DynoCurve(dyno["torque"], dyno["torque2"], maxRpm, m.MaxHp, m.MaxTorque, m.RpmMaxTorque, m.RpmMaxHp);
+        // calcDyno also writes Displacement and Compression (0x46aefd / 0x46af10, docs/phase4/physics.md finding 2).
+        return new DynoCurve(dyno["torque"], dyno["torque2"], maxRpm, m.MaxHp, m.MaxTorque, m.RpmMaxTorque, m.RpmMaxHp)
+        {
+            Displacement = m.Displacement,
+            Compression = m.Compression,
+        };
     }
 
     public float Torque(DynoParams dyno, float rpm, float boost)
