@@ -39,7 +39,7 @@ public class CorpusTests
         }
 
         var path = Path.Combine(root, rel);
-        return File.Exists(path) ? WorldLoader.Load(path, new WorldLoadOptions { GameRoot = root, BuildRenderScene = render }) : null;
+        return File.Exists(path) ? WorldLoader.Load(path, new WorldLoadOptions { GameRoot = root, BuildRenderScene = render, FollowExtensions = false }) : null;
     }
 
     [Theory]
@@ -119,7 +119,7 @@ public class CorpusTests
         }
 
         var sw = Stopwatch.StartNew();
-        var w = WorldLoader.Load(path, new WorldLoadOptions { GameRoot = root, IncludeObjectCollision = false });
+        var w = WorldLoader.Load(path, new WorldLoadOptions { GameRoot = root, IncludeObjectCollision = false, FollowExtensions = false }); // city.rpk alone (EXTP merge: Slrr.Roads tests)
         sw.Stop();
         Assert.True(sw.Elapsed.TotalSeconds < 30, $"build took {sw.Elapsed.TotalSeconds:0.0} s"); // measured ~1-3 s; generous for loaded CI
         Assert.Equal(108, w.Surfaces.Count);
