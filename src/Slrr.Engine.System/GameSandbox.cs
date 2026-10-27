@@ -308,10 +308,15 @@ public sealed class GameSandbox
 
     private static string? FindEntry(string dir, string name)
     {
-        var exact = Path.Combine(dir, name);
-        if (File.Exists(exact) || Directory.Exists(exact))
+        // On a case-sensitive file system an exact hit already has the real on-disk name. On a case-insensitive one
+        // (Windows, macOS) it would echo the caller's casing, so resolve through the directory listing instead.
+        if (OperatingSystem.IsLinux())
         {
-            return exact;
+            var exact = Path.Combine(dir, name);
+            if (File.Exists(exact) || Directory.Exists(exact))
+            {
+                return exact;
+            }
         }
 
         foreach (var e in Directory.EnumerateFileSystemEntries(dir))
