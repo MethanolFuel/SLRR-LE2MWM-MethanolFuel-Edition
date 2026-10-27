@@ -14,7 +14,7 @@ public sealed class GameFileSystem
         foreach (var file in Directory.EnumerateFiles(Root, "*", SearchOption.AllDirectories))
         {
             var rel = Path.GetRelativePath(Root, file);
-            if (rel.StartsWith(".git", StringComparison.Ordinal))
+            if (rel.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Any(seg => seg.StartsWith('.')))
             {
                 continue;
             }
