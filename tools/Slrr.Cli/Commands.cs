@@ -22,6 +22,9 @@ public static class Commands
           dump-class <file.class> [--no-code]  TUFA constant pool, fields, methods, code
           dump-scx <file.scx> [--gltf out]     SCX meshes/chunks, optional glTF export
           coverage [gameRoot]                  parse every rpk/cfg/scx/ptx/bon/skl/class, report counts
+          dump-instances <archive.rpk>         map/garage instance trees (see --tree, --chunks, --coverage)
+          export-gltf <scx> <out.gltf>         textured glTF export (also --texture, --survey)
+          cfg-schema [gameRoot] [--list]       per-keyword cfg argument schema and violations
         """;
 
     public static int Run(string[] args, TextWriter o, TextWriter e)
@@ -44,6 +47,9 @@ public static class Commands
                 "dump-class" when args.Length >= 2 => DumpClass(args[1], !args.Contains("--no-code"), o),
                 "dump-scx" when args.Length >= 2 => DumpScx(args[1], Option(args, "--gltf"), o),
                 "coverage" => Coverage(Root(args), o),
+                "dump-instances" => CmdInstances.Run(args[1..], o, e),
+                "export-gltf" => CmdGltf.Run(args[1..], o, e),
+                "cfg-schema" => CmdCfgSchema.Run(args[1..], o, e),
                 _ => Fail(e, Usage),
             };
         }
