@@ -1,0 +1,46 @@
+kind	file	line_or_body	commented	text
+class	parts/scripts/bodypart/Chassis.class	body134/L559	0	class-ref + by-name setF :: 11:2 01:8 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body134/L566	0	class-ref + by-name setF :: 11:2 01:8 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body134/L577	0	class-ref + by-name setF :: 11:2 01:8 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body134/L584	0	class-ref + by-name setF :: 11:2 01:8 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body172/L1245	0	class-ref + by-name setF :: 11:2 01:2 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body172/L1252	0	class-ref + by-name setF :: 11:2 01:2 1B:487 07:28 0B:200 07:16 1B:394 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body172/L1263	0	class-ref + by-name setF :: 11:2 01:2 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27
+class	parts/scripts/bodypart/Chassis.class	body172/L1270	0	class-ref + by-name setF :: 11:2 01:2 1B:487 07:28 0B:200 07:16 1B:396 27:2 24 11:2 19:489 12:setF 08:27
+java	src/Catalog.java	513	1	//RawEdit.engine_help_ForceMinAllMemLimits();
+java	src/Catalog.java	514	1	//old_mem_vertex_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_vertex_max);
+java	src/Catalog.java	515	1	//old_mem_texture_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_texture_max);
+java	src/Catalog.java	516	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, 0);
+java	src/Catalog.java	517	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, 0);
+java	src/Catalog.java	531	1	//RawEdit.engine_help_UnForceMinAllMemLimits();
+java	src/Catalog.java	532	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, old_mem_texture_max);
+java	src/Catalog.java	533	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, old_mem_vertex_max);
+java	sl/Scripts/game/src/Catalog.java	513	1	//RawEdit.engine_help_ForceMinAllMemLimits();
+java	sl/Scripts/game/src/Catalog.java	514	1	//old_mem_vertex_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_vertex_max);
+java	sl/Scripts/game/src/Catalog.java	515	1	//old_mem_texture_max = RawEdit.GetIntFromRawAddress(RawEdit.Address_I_cfg_mem_texture_max);
+java	sl/Scripts/game/src/Catalog.java	516	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, 0);
+java	sl/Scripts/game/src/Catalog.java	517	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, 0);
+java	sl/Scripts/game/src/Catalog.java	531	1	//RawEdit.engine_help_UnForceMinAllMemLimits();
+java	sl/Scripts/game/src/Catalog.java	532	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_texture_max, old_mem_texture_max);
+java	sl/Scripts/game/src/Catalog.java	533	1	//RawEdit.SetIntOnRawAddress(RawEdit.Address_I_cfg_mem_vertex_max, old_mem_vertex_max);
+java	parts/scripts/bodypart/Src/Chassis.java	559	0	RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	566	0	RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	577	0	RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	584	0	RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	1245	0	RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	1252	0	RawEdit.setF(whl.ptr+0xc8,FrontMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	1263	0	RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	1270	0	RawEdit.setF(whl.ptr+0xc8,RearMaxSteer);
+java	parts/scripts/bodypart/Src/Chassis.java	1430	1	//calls like: ....car.chassis.getIndexedData(Chassis.IndexedData_ThrottleStrength);
+java	parts/scripts/bodypart/Src/Chassis.java	1431	0	public native float getIndexedData( int index );
+java	parts/scripts/bodypart/Src/Chassis.java	1432	0	public native int getIndexedAddr( int index );
+java	parts/scripts/bodypart/Src/Chassis.java	1433	1	public static final int IndexedData_GearNumber = 0x20FC-0x304;//this is an int getIndexedData will return strange but the RawEdit.getI with getIndexedAddr will 
+java	parts/scripts/bodypart/Src/Chassis.java	1434	1	//democall in garage: RawEdit.setI(player.car.chassis.getIndexedAddr(Chassis.IndexedData_GearNumber),4);
+java	parts/scripts/bodypart/Src/Chassis.java	1449	0	float CurrentRPM = getIndexedData( IndexedData_RPM );
+java	parts/scripts/bodypart/Src/HeadlightController.java	110	0	return File.exists("system\\Scripts\\lang\\RawEdit.class");
+java	parts/scripts/bodypart/Src/HeadlightController.java	239	0	if(the_car.getIndexedData(Chassis.IndexedData_RPM) > 200)
+java	parts/scripts/src/SfxTable.java	17	1	//RawEdit.setF(soundBaseOffset+0x10,1.0/*new_pitch*);
+java	parts/scripts/src/SfxTable.java	18	1	//RawEdit.setF(soundBaseOffset+0x14,*unkown*);
+java	parts/scripts/src/SfxTable.java	19	1	//RawEdit.setF(soundBaseOffset+0x18,*unkown*);
+java	parts/scripts/src/SfxTable.java	20	1	//RawEdit.setF(soundBaseOffset+0x1C,*unkown*);
+java	parts/scripts/src/SfxTable.java	21	1	//RawEdit.setF(soundBaseOffset+0x20,*unkown*);
