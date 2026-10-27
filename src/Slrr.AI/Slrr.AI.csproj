@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Slrr.AI</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slrr.Game.Physics\Slrr.Game.Physics.csproj" />
+    <ProjectReference Include="..\Slrr.Engine.Commands\Slrr.Engine.Commands.csproj" />
+  </ItemGroup>
+</Project>
