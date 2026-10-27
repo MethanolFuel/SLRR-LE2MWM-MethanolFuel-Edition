@@ -102,6 +102,11 @@ public sealed class GameHost : IGameWorld, IDisposable
             RegisterTimerNatives = false,
             FixThreadSleep = false,
         };
+
+        // Resource references in SDAT files with the exe's archive-name trailer (MEASURED, see SdatTrailer), so that the
+        // shipped saved cars (cars/racers/ROC_cars) load and this engine's saves carry the same table.
+        SystemArea.ArchiveNameOf = i => Resources.Archives[i]?.Name;
+        SystemArea.ArchiveIndexOf = name => Resources.Archives.Register(name);
         PartsNatives = new PartsNatives(new PartsWorld(new HostPartHost(this)));
         PartsNatives.World.Dyno = options.Dyno ?? (options.PlaceholderDyno ? new PlaceholderDynoCalculator() : NullDynoCalculator.Instance);
         UiEngine = new UiEngine();

@@ -418,7 +418,15 @@ public sealed class Vm
             return v.Ref.Class.IsSubclassOf(cls) ? 3 : -10;
         }
 
-        return k is VmKind.Int or VmKind.Float && v.Kind is VmKind.Int or VmKind.Float ? 1 : -100;
+        if (k is VmKind.Int or VmKind.Float && v.Kind is VmKind.Int or VmKind.Float)
+        {
+            return 1;
+        }
+
+        // A number for a String parameter is converted at frame entry (NumberToStringParam), as for calls resolved by
+        // descriptor; by-name calls must not reject it: ROCTrack's countdown calls setMessage(testCountDown--) on
+        // Track.setMessage(String) (GUESSED: the exe accepts it, the HUD shows "3", "2", "1").
+        return v.Kind is VmKind.Int or VmKind.Float && desc == "Ljava.lang.String;" ? -50 : -100;
     }
 
     // ---------------------------------------------------------------- internals

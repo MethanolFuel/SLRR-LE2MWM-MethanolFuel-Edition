@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <DefineConstants>$(DefineConstants);SLRR_CAREER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Slrr.Career\Slrr.Career.csproj" />
+    <!-- The CLI wrapper is compiled here until the lead wires it into tools/Slrr.Cli (docs/gaps/career.md). -->
+    <Compile Include="..\..\tools\Slrr.Cli\CmdCareer.cs" Link="CmdCareer.cs" />
+  </ItemGroup>
+</Project>

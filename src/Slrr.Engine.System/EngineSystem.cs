@@ -93,6 +93,20 @@ public sealed class EngineSystem : INativeModule
     /// <summary>Maps the id read by <c>File.readResID()</c> to a runtime resource id. Default: identity.</summary>
     public Func<int, int> ResolveResourceId { get; set; } = id => id;
 
+    /// <summary>
+    /// Archive name of a global archive index (the resource layer's table). When set together with
+    /// <see cref="ArchiveIndexOf"/>, files are written and read with the exe's resource-reference trailer (MEASURED
+    /// encoding, see <see cref="SdatTrailer"/>): ids are stored as (file-local archive number &lt;&lt; 16) | local id and
+    /// the archive names follow the values. Unset: one raw int per reference and no trailer (the earlier guess).
+    /// </summary>
+    public Func<int, string?>? ArchiveNameOf { get; set; }
+
+    /// <summary>Global archive index of an archive name, registering it when new (exe 0x538380, find-or-register).</summary>
+    public Func<string, int>? ArchiveIndexOf { get; set; }
+
+    /// <summary>readResID references to saved run-time resources (instance table), which are not recreated here (read as 0).</summary>
+    public int UnresolvedSavedInstances { get; private set; }
+
     // ---- string identity -------------------------------------------------------------------------------------------
 
     private readonly Dictionary<string, VmObject> _strings = new(StringComparer.Ordinal);
@@ -108,7 +122,9 @@ public sealed class EngineSystem : INativeModule
     {
         if (!_strings.TryGetValue(text, out var o))
         {
-            _strings[text] = o = vm.NewString(text);
+            // One pool with the VM's literals, so a string read from a file or returned by a native also equals the
+            // script literal of the same text under the engine's reference `==` (career area, docs/gaps/career.md).
+            _strings[text] = o = vm.InternLiteral(text);
         }
 
         return o;
@@ -279,11 +295,12 @@ public sealed class EngineSystem : INativeModule
         r.Register(FileClass, "write", "(Ljava.util.resource.ResourceRef;)I", c =>
         {
             var id = ResourceIdOf is { } f ? f(c.Vm, c.Object(0)) : DefaultResourceId(c.Vm, c.Object(0));
-            return Write(c.Self, w => w.WriteInt(id));
+            var stored = c.Self.Native is FileHandle h && h.Writer is not null ? EncodeResourceId(h, id) : id;
+            return Write(c.Self, w => w.WriteInt(stored));
         });
         r.Register(FileClass, "readInt", "()I", c => Value.Int(Reader(c.Self)?.ReadInt() ?? 0));
         r.Register(FileClass, "readFloat", "()F", c => Value.Float(Reader(c.Self)?.ReadFloat() ?? 0f));
-        r.Register(FileClass, "readResID", "()I", c => Value.Int(ResolveResourceId(Reader(c.Self)?.ReadInt() ?? 0)));
+        r.Register(FileClass, "readResID", "()I", c => Value.Int(ResolveResourceId(DecodeResourceId(Reader(c.Self), Reader(c.Self)?.ReadInt() ?? 0))));
         r.Register(FileClass, "readString", "()Ljava.lang.String;", c => InternedOrNull(c.Vm, Reader(c.Self)?.ReadString()));
 
         r.Register(FileClass, "delete", "(Ljava.lang.String;)I", c => Guard(c.String(0), () => Value.Bool(Delete(c.String(0)!)), Value.Zero));
@@ -342,7 +359,7 @@ public sealed class EngineSystem : INativeModule
             var real = Sandbox.ResolveWritable(name);
             Directory.CreateDirectory(Path.GetDirectoryName(real)!);
             var fs = new FileStream(real, FileMode.Create, FileAccess.Write, FileShare.Read);
-            h = new FileHandle(null, new SdatWriter(fs));
+            h = new FileHandle(null, new SdatWriter(fs), trailer: ArchiveNameOf is not null && ArchiveIndexOf is not null);
         }
         else
         {
@@ -367,6 +384,49 @@ public sealed class EngineSystem : INativeModule
     }
 
     private static SdatReader? Reader(VmObject self) => (self.Native as FileHandle)?.Reader;
+
+    /// <summary>exe 0x485c60: archive resources become (file-local archive number &lt;&lt; 16) | local id; 0 and run-time ids are stored as they are.</summary>
+    private int EncodeResourceId(FileHandle h, int id)
+    {
+        var hi = (id >> 16) & 0xFFFF;
+        if (id == 0 || hi == 0xFFFF || ArchiveNameOf?.Invoke(hi) is not { } name)
+        {
+            return id;
+        }
+
+        h.Archives ??= [];
+        var seq = h.Archives.FindIndex(a => string.Equals(a, name, StringComparison.OrdinalIgnoreCase)) + 1;
+        if (seq == 0)
+        {
+            h.Archives.Add(name);
+            seq = h.Archives.Count;
+        }
+
+        return (seq << 16) | (id & 0xFFFF);
+    }
+
+    /// <summary>exe 0x485ea0: maps a stored reference back through the file's trailer; files without one keep the raw value.</summary>
+    private int DecodeResourceId(SdatReader? reader, int stored)
+    {
+        if (stored == 0 || reader?.Trailer is not { } t || ArchiveIndexOf is null)
+        {
+            return stored;
+        }
+
+        var hi = (stored >> 16) & 0xFFFF;
+        if (hi == 0 || hi == 0xFFFF)
+        {
+            if (t.Instances.Any(i => (i.Seq & 0xFFFF) == (stored & 0xFFFF)))
+            {
+                UnresolvedSavedInstances++;
+                return 0;
+            }
+
+            return stored; // a run-time id this engine wrote raw
+        }
+
+        return t.Archives.TryGetValue(hi, out var name) ? (ArchiveIndexOf(name) << 16) | (stored & 0xFFFF) : 0;
+    }
 
     private Value Write(VmObject self, Action<SdatWriter> action)
     {
@@ -465,14 +525,22 @@ public sealed class EngineSystem : INativeModule
         }
     }
 
-    private sealed class FileHandle(SdatReader? reader, SdatWriter? writer)
+    private sealed class FileHandle(SdatReader? reader, SdatWriter? writer, bool trailer = false)
     {
         public SdatReader? Reader { get; } = reader;
 
         public SdatWriter? Writer { get; private set; } = writer;
 
+        /// <summary>Archive names referenced by write(ResourceRef), in file-local order (number = index + 1).</summary>
+        public List<string>? Archives { get; set; }
+
         public void Close()
         {
+            if (trailer && Writer is { } w)
+            {
+                w.WriteTrailer((Archives ?? []).Select((n, i) => (i + 1, n)).ToList());
+            }
+
             Writer?.Dispose();
             Writer = null;
         }
