@@ -1,0 +1,115 @@
+class	method	conf	note
+java.game.GameLogic	*	H	The game controller singleton. Created by java.game.Init's constructor (`gameLogic = new GameLogic()`), runs from there on: `createNativeInstance()` in its own constructor, then rpkScan/openLib of the content archives, VehicleType/Chassis/Map scans, controller join loop, `Hotkey`s for music/screenshot, a clock Thread, and finally `changeActiveSection(new SplashScreen(frontend.rpk:0x5))`. It is a GameType AND a Runnable whose run() is STATIC.
+java.game.GameLogic	kismajomCheck	H	`GameLogic.kismajomCheck(String[] codes)`: Garage calls it after Input.flushKeys() with the 5 cheat words stored Caesar-shifted by +1 ("mfunfspd" = letmeroc, "cfhgpsnpofz" = begformoney, "gbtuqspnpujpo" = fastpromotion, "jmjlfdifbujoh" = ilikecheating, "ujnfnbdijof" = timemachine). Returns the index of the code the player typed since the last flush, or -1. Effects (Garage.osdCommand CMD_TUNE): 0 ROC start, 1 +100000 money, 2 club promotion, 3 GameLogic.cheats=1, 4 day=180.
+java.game.Vehicle	*	H	A car as a whole: wraps `chassis` (the root Part) and is itself a GameType/GameRef of the native car object (cfg kind `car`). Constructed either from an existing chassis (`Vehicle(Part)`, `set(chassis)`) or by spawning a new one (`Vehicle(GameRef parent, int typeId, int colorIdx, float power, float optical, ...)` which calls `create(parent, new GameRef(typeId), "0,0,0,0,0,0", "Vehicle")`). Settings reach the native car only through EVENT_COMMAND strings: `transmission N`, `steerhelp F`, `asr F`, `abs F`, `difflock F`, `cruise N`, `damage_multiplier F`, `wakeup`.
+java.game.Vehicle	getSpeedSquare	H	Squared speed of the car (Valocity treats < 0.25 as stopped; Track displays `sqrt(v)*0.08`). Units not confirmed.
+java.game.Vehicle	getHorn	M	Non-zero while the horn is sounding (City reads it to trigger pedestrian/police reactions).
+java.game.Vehicle	hasCrime	M	Float 'crime' level of the car (City multiplies by 1.1 for the police pursuit trigger).
+java.game.Painter	*	H	Paint/decal tool state machine (GameState + GameType). Calls the three natives with the clicked part and brush parameters; registers a per-frame `control(float)` callback to paint under the cursor.
+java.game.Painter	doPaint	H	`doPaint(GameRef targetPart, int colorARGB, int brushResId, int commit, float rotation, float size, int flip)`: decal/stroke at the cursor pick. `commit`=0 preview (the 'cursor' ghost is passed as target when previewing), 1 apply. Colors are ARGB ints with alpha (`paintColor | 1711276032` = alpha 0x66).
+java.game.Painter	paintPart	H	`paintPart(GameRef part, int colorARGB)`: flood-paints a part (alpha forced to 0xFF with `| -16777216`).
+java.game.Painter	xPaint	H	`xPaint(GameRef car)`: Painter calls it with player.car (undo/clear paint; exact effect unknown).
+java.game.Navigator	*	H	Mini-map/GPS. Script class with a Viewport and Camera; the only native is updateNavigator.
+java.game.Navigator	updateNavigator	H	`updateNavigator(GameRef target, int mode)`: redraws the map for the tracked car; the script overload updateNavigator(target) passes the current `mode`.
+java.game.parts.Part	*	H	Base of every installable part; a GameType created from a gametype entry whose cfg kind is `part` (1,502 of them). Its constructor is `Part(int id)` and chains `super(id)`. The cfg (`slot`/`attach`/`compatible`/`category`...) is parsed by the engine; the script holds the economics (name, value, wear limits, prestige), the install checks and the data the physics reads (see the field contract on the Chassis class). See entry-points.md for the slot protocol.
+java.game.parts.Part	getWear	H	Float condition factor in [0,1]; 1.0 = new. Repair raises it to repair_max_wear (0.9). 24 sites.
+java.game.parts.Part	setWear	H	Sets wear; returns float (previous value probably). Part.repair: `if (getWear() < repair_max_wear) setWear(repair_max_wear)`.
+java.game.parts.Part	getTear	H	Second condition factor (damage/tear), same convention. Part.getConditionNoAttach = wear * tear.
+java.game.parts.Part	setTear	H	Sets tear.
+java.game.parts.Part	setMaxWear	H	Lifespan: `setMaxWear(kmToMaxWear(210000))` where kmToMaxWear(km) = km*1000 (metres). Wear accumulates natively with distance driven; 452 name-only sites (every engine/tyre/brake constructor).
+java.game.parts.Part	getTexture	H	Resource id of the paint texture. Vehicle saves/restores it.
+java.game.parts.Part	setTexture	H	Sets the paint texture (Descriptor.color chosen from GameLogic.CARCOLORS).
+java.game.parts.Part	getMesh	H	Resource id of the mesh currently shown (Part.save writes it).
+java.game.parts.Part	setMesh	H	Swaps the mesh (DecorativeBodyPart builds a scaled temp mesh and assigns its id).
+java.game.parts.Part	getRenderType	M	Index of the render variant (LOD/appearance) the engine uses; MrSir suspension scripts read it.
+java.game.parts.Part	setRenderType	M	Sets it (242 name-only sites; Brake sets 3 values).
+java.game.parts.Part	install_OK	H	`install_OK(GameRef car, int slot, GameRef outTarget, int ?, Vector3 dropPos)` returns int[] (null/empty when the part cannot be installed there). Garage then calls the script `installCheck(Part target, int[] match)` for a String reason. The int[] is the matched (slot, targetSlot) pair; exact layout unverified.
+java.game.parts.Part	flap	M	`flap(0)` queries, `flap(1)` toggles a flap/door state (Part.getFlap/toggleFlap); Mechanic sends command "flap_toggle" to the car.
+java.game.parts.Part	getLogo	H	Declared as script method returning `manufacturer`; the exe also registers a native getLogo (undeclared natively).
+java.game.parts.Part	getCar	H	Id of the Chassis/car the part is installed into (0 when loose). addPart uses `getCar()` and falls back to this.id().
+java.game.parts.Part	getWheelID	H	Index (0..3 = FL, FR, RL, RR) of the wheel position a suspension/brake/spring part belongs to, derived from the slot it is plugged into. 205 typed sites in the MrSir/CMS suspension scripts.
+java.game.parts.Part	disableSlot	H	`disableSlot(int slotId, int disabled)`: 1 greys out/blocks a slot so nothing can be installed or removed there (Chassis.updatevariables enforces an outside-in order this way: while the wheel is fitted only the wheel slot stays enabled, then brake, then spring/shock, then suspension; engine blocks disable crankshaft/camshaft slots).
+java.game.parts.Part	getSlotDamage	H	Per-slot damage state as a String (opaque engine text, saved verbatim by Part.save).
+java.game.parts.Part	setSlotDamage	H	Restores it in Part.load.
+java.game.parts.Part	setSlotPos	H	`setSlotPos(slotId, Vector3 pos, Ypr ori)`: moves a slot's mount point at runtime (suspension scripts reposition wheel/brake/shock slots: `(101+i)`, `(111+i)`; 328 name-only sites).
+java.game.parts.Part	getSlots	H	Number of slots this part has (cfg `slot` lines).
+java.game.parts.Part	getSlotID	H	`getSlotID(index)` -> the slot id declared in the cfg `slot ... <id>` line at that index. `getSlotID(-1)` is used by Part.save as the id of the slot that connects to the parent (it is skipped when saving children).
+java.game.parts.Part	partOnSlot	H	`partOnSlot(slotId)` -> the child Part script object linked at that slot (null when empty), seen from the part that owns the slot. 150 typed sites. On a child's own mounting slot it yields the parent.
+java.game.parts.Part	slotIDOnSlot	H	`slotIDOnSlot(slotId)` -> the slot id on the OPPOSITE side of the link that occupies this part's slot `slotId` (0 = empty): Part.save stores it per child; Vehicle.isTestable checks `seat.slotIDOnSlot(1) == 901` (the seat's own mounting slot 1 is plugged into chassis slot 901).
+java.game.parts.Part	getCarRef	H	The Chassis script object of the car (Part), used by BodyPart/RGearPart `getCar_LocalVersion()`.
+java.game.parts.Part	getMass	L	Registered natively, not declared in the shipped Part.class.
+java.game.parts.Part	getSlotIndex	L	Registered natively, not declared.
+java.game.parts.Part	isSlotDisabled	L	Registered natively, not declared.
+java.game.parts.Part	setSfxLoopParams	L	Registered natively, not declared.
+java.game.parts.WheelRef	*	H	Native wheel/suspension corner (java.lang.Native subclass, no constructor; the engine hands out instances via Chassis.getWheel(i), i = 0..3). The script part classes (Wheel, Tyre, Spring, ShockAbsorber, Suspension, Brake) push their computed constants into it from updatevariables(). Pacejka tyre model coefficients are indexed 0..14 (`setPacejka(int index, float value)`, Wheel.java sets all 15; Tyre.java comments say index 2 = friction, 4 = stiffness, 11 = max load, as set by the dedicated setters).
+java.game.parts.WheelRef	getPos	H	Wheel centre relative to the chassis (CarInfo, Chassis).
+java.game.parts.WheelRef	setPos	H	Moves the wheel position (Chassis.UpdateOnlyWheels applies the WheelPos*Mult tuning).
+java.game.parts.WheelRef	getYpr	L	No site.
+java.game.parts.WheelRef	setYpr	M	Sets toe/caster/camber as Ypr in radians (Suspension: `new Ypr(side*toe*DEG2RAD, caster*DEG2RAD, side*camber*DEG2RAD)`).
+java.game.parts.WheelRef	getDrive	L	No site.
+java.game.parts.WheelRef	setDrive	H	Fraction (0..1) of engine torque sent to this wheel: Chassis zeroes all four in updatevariables, Transmission sets `drive_front` on front wheels and the rest on rear.
+java.game.parts.WheelRef	getSteer	L	No site.
+java.game.parts.WheelRef	setSteer	L	No site (steering is native).
+java.game.parts.WheelRef	getRadius	H	Tyre radius in metres (CarInfo).
+java.game.parts.WheelRef	setRadius	H	Wheel.updatevariables passes wheel_radius.
+java.game.parts.WheelRef	setWidth	H	Rim width.
+java.game.parts.WheelRef	setCPatch	M	`setCPatch(width, maxAngle, offset)` contact patch: Wheel passes `cpatch_width/1000` (mm -> m), `CPatchMaximumAngle`, `offset*something`.
+java.game.parts.WheelRef	setFriction	H	Static friction coefficient (Tyre: insider_friction; Wheel resets to 1.0).
+java.game.parts.WheelRef	setFrictn_x	H	Lateral friction factor (marked 'unused now' in Tyre.java).
+java.game.parts.WheelRef	setSliction	H	Ratio dynamic/static friction.
+java.game.parts.WheelRef	setStiffness	H	Tyre stiffness (Wheel default 100, Tyre value).
+java.game.parts.WheelRef	setRollRes	H	Rolling resistance.
+java.game.parts.WheelRef	setBearing	H	Bearing friction (always 20.0 in the corpus).
+java.game.parts.WheelRef	setMaxLoad	H	Load capacity in newtons (`loadcap`).
+java.game.parts.WheelRef	setLoadSmooth	M	Load smoothing factor (Wheel sets 0.0, Tyre.java default 0.5).
+java.game.parts.WheelRef	setPacejka	H	See class note. 29 typed sites in Wheel.java/Tyre.java.
+java.game.parts.WheelRef	setForce	M	Spring force (Spring: `force * force_mul`).
+java.game.parts.WheelRef	setDamping	H	`setDamping(damping)` or `setDamping(bump, rebound)` (Spring passes both).
+java.game.parts.WheelRef	setRestLen	H	Spring rest length (Pneumatic_ShockAbsorber.Cur_length).
+java.game.parts.WheelRef	setMinLen	M	Travel limit `Cur_length - 0.05`.
+java.game.parts.WheelRef	setMaxLen	M	Travel limit `Cur_length + 0.05`.
+java.game.parts.WheelRef	setInstantCenter	H	Six floats (two 3-vectors) describing the suspension instant centres; 10000,... means 'none/infinite'. Chassis.updatevariables resets to 10000 before suspensions overwrite.
+java.game.parts.WheelRef	setBrake	H	Service brake torque for this wheel (Brake multiplies by the car's brake_balance for front/rear).
+java.game.parts.WheelRef	setHBrake	H	Handbrake torque.
+java.game.parts.WheelRef	setArm	H	Seven floats describing a suspension arm (29 sites in MrSir strut scripts: 0.296, 0.294, 0.03, 0, 0, 0, 1): pivot position (3), direction/offset (3) and a scale. Roles unverified.
+java.game.parts.WheelRef	setHub	M	Ten floats describing the hub geometry (109 name-only sites; first two are -1.0 and -0.121 in MrSir trailing arms). Roles unverified.
+java.game.parts.WheelRef	setOppWheel	L	Registered natively, not declared.
+java.game.parts.WheelRef	getBrake	L	Registered natively, not declared.
+java.game.parts.WheelRef	getHBrake	L	Registered natively, not declared.
+java.game.parts.SfxTable	*	H	Native RPM->sound mapping table for one car sound channel; obtained with `Chassis.getSfxTable(0..2)`. Engine blocks call `clear()` then `addItem(...)` in updatevariables() on tables 0 and 2 and clear table 1 (channel meaning unverified; table 2 is accompanied by setSfxExhaustMinVol, so it is probably the exhaust).
+java.game.parts.SfxTable	getItems	L	No site.
+java.game.parts.SfxTable	clear	H	Empties the table (42 typed sites, one per engine block per channel).
+java.game.parts.SfxTable	addItem	H	`addItem(ResourceRef sound, float rpm, float rpmMin, float rpmMax, float volMin, float volMax)`: e.g. (…0xA2r, 1500, 500, 6500, 0.42, 0.52) = a loop sample centred on 1500 rpm audible between 500 and 6500 with volume 0.42..0.52. Argument roles other than the ResourceRef are unverified. 552 name-only sites.
+java.game.parts.SfxTable	AddItemPtr	L	Slrr_GI.exe extra (same function body as addItem, returns int).
+java.game.parts.DynoData	*	H	Native dyno/engine-state record (Native subclass). Script-created: `<init>() { super(); newNative(); }`, finalize -> deleteNative. The ~64 script fields (cylinders, bore, stroke, valve timings, spark timing, turbo and nitro constants, mixture, flags) are filled by EnginePart.fillDynoData in the part tree and the whole object is run through calcDyno.
+java.game.parts.DynoData	newNative	H	Allocates the native twin (constructor).
+java.game.parts.DynoData	deleteNative	H	Frees it (finalize).
+java.game.parts.DynoData	calcDyno	H	`calcDyno(int steps)`: Chassis passes `maxRPM/250` (RPM step 250); computes the torque curve and fills `torque`, `torque2`, `maxRPM`, `maxHP`, `maxTorque`, `RPM_maxTorque`, `RPM_maxHP`. Returns float (unused).
+java.game.parts.DynoData	getTorque	H	`getTorque(float rpm, float boost)`; CarInfo and Block use rpm_idle and boost 0.
+java.game.parts.DynoData	getHP	H	`getHP(float rpm, float boost)`.
+java.game.parts.bodypart.Chassis	*	H	Root part of a car (cfg kind `car`, script class `cars...Baiern_CoupeSport` etc. extend it through the model classes). Its script FIELDS are the physics input: the engine reads the 23 field names listed below (torque, inertia, gear ratios, nitro...). It also gets the setters below and reads `dynodata`.
+java.game.parts.bodypart.Chassis	getTorque	L	No script site. Native engine torque lookup `getTorque(float rpm, float boost)`; scripts compute torque through DynoData instead.
+java.game.parts.bodypart.Chassis	getMass	H	Total car mass in kg from the cfg bodies.
+java.game.parts.bodypart.Chassis	getCM	H	Centre of mass (Vector3).
+java.game.parts.bodypart.Chassis	getMin	H	Bounding box minimum corner.
+java.game.parts.bodypart.Chassis	getMax	H	Bounding box maximum corner.
+java.game.parts.bodypart.Chassis	getWheelPos	M	Wheel position by index.
+java.game.parts.bodypart.Chassis	forceUpdate	H	Forces the engine to re-read the script fields after parts changed (49 typed sites: called at the end of every updatevariables, and by Vehicle after addStockParts with suspend_update).
+java.game.parts.bodypart.Chassis	getWheelDamage	H	Per-wheel damage String (saved in Chassis.save).
+java.game.parts.bodypart.Chassis	setWheelDamage	H	Restores it.
+java.game.parts.bodypart.Chassis	setCooling	L	`setCooling(min, max, spd)`; source comment: defaults 10, 50, 0.01, spd is squared. No site.
+java.game.parts.bodypart.Chassis	getSfxTable	H	`getSfxTable(int channel)` returns the SfxTable (0..2).
+java.game.parts.bodypart.Chassis	setSfxExhaustMinVol	H	Minimum exhaust volume (0.9 or 0.6).
+java.game.parts.bodypart.Chassis	setSteerWheelRadius	L	No site.
+java.game.parts.bodypart.Chassis	setSteerWheel	H	`setSteerWheel(radius_m, z_offset_m)` from SteeringWheel: `((diameter-66)/2)/1000`, `hub_depth/100`.
+java.game.parts.bodypart.Chassis	setHornSFX	H	`setHornSFX(ResourceRef sfx, float pitch, int index)`; each car model script calls it three times with index 1..3 (27 sites).
+java.game.parts.bodypart.Chassis	setNitroSFX	L	No site.
+java.game.parts.bodypart.Chassis	getMileage	H	Odometer (float).
+java.game.parts.bodypart.Chassis	setMileage	H	Restored from the save file.
+java.game.parts.bodypart.Chassis	setBuck	L	`setBuck(partID, buckid, freq, prob, rpmdep, amp)` engine bucking effect; no site. Registered as returning int, declared void.
+java.game.parts.bodypart.Chassis	getWheels	H	Number of wheels (4).
+java.game.parts.bodypart.Chassis	getWheel	H	`getWheel(i)` -> WheelRef for corner i (0..3 = FL, FR, RL, RR). 119 typed sites.
+java.game.parts.bodypart.Chassis	getIndexedData	H	Slrr_GI.exe extra. Reads a float from the native vehicle struct by INDEX where index = 0x20FC - offset of the field; the constants IndexedData_* in Chassis.java name them: Mileage 0x20FC, RPM 0x20FC-0x1B0, GearStrength, CarRuntime, ExhaustActivity, CurrentSteering1..3, Handbreak, BreakStrength, ThrottleStrength, ClutchStrength, NitroStrength, NOSLevel, EngineWear, LED flags, GearNumber (int), Flags 0x70, SpeedLimit 0x2104.
+java.game.parts.bodypart.Chassis	getIndexedAddr	L	Slrr_GI.exe extra: address form used with RawEdit.getI for int fields (declared, no site).
+java.game.parts.bodypart.Chassis	setAckermann	L	Registered natively, not declared.
+java.game.parts.bodypart.Chassis	setTorque	L	Registered natively, not declared.
