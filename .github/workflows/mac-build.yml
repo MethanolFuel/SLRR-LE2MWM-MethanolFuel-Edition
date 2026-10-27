@@ -1,0 +1,106 @@
+name: mac-build
+
+# Builds self-contained macOS packages (Apple Silicon and Intel) on Linux (managed code cross-publishes cleanly,
+# the native GLFW library for each architecture ships in the package), smoke-tests them on real macOS runners and
+# publishes them as a pre-release. Run it from the Actions tab (workflow_dispatch) or push a tag mac-*.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['mac-*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Publish both architectures
+        run: |
+          set -e
+          for spec in "osx-arm64 arm64" "osx-x64 x64"; do
+            set -- $spec
+            rid=$1; plat=$2
+            # the platform target changes between runs: start from a clean tree of build outputs
+            find src tools -type d \( -name obj -o -name bin \) -prune -exec rm -rf {} +
+            mkdir -p out/$rid
+            dotnet publish tools/Slrr.Cli -c Release -r $rid --self-contained -p:PlatformTarget=$plat -o out/$rid
+            if [ -f src/Slrr.App/Slrr.App.csproj ]; then
+              dotnet publish src/Slrr.App -c Release -r $rid --self-contained -p:PlatformTarget=$plat -o out/$rid
+            fi
+            cp tools/mac/README-MAC.txt out/$rid/
+            chmod +x out/$rid/slrr
+            [ -f out/$rid/slrr-app ] && chmod +x out/$rid/slrr-app || true
+            (cd out/$rid && zip -qr ../slrr-$rid.zip .)
+          done
+          ls -la out/*.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slrr-packages
+          path: out/*.zip
+
+  smoke:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: osx-arm64
+            runner: macos-15
+          - rid: osx-x64
+            runner: macos-15-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: slrr-packages
+          path: dist
+      - name: Unpack
+        run: |
+          mkdir pkg && unzip -q dist/slrr-${{ matrix.rid }}.zip -d pkg
+          xattr -dr com.apple.quarantine pkg || true
+          chmod +x pkg/slrr
+          uname -m
+      - name: Headless smoke test
+        run: |
+          set -x
+          pkg/slrr coverage . | tail -12
+          pkg/slrr engine-boot . | tail -4
+          pkg/slrr play --smoke --root . | grep -E "result|thread errors|natives missing"
+          pkg/slrr race-play --root . --track "Drag Track" --seconds 5 | tail -6
+      - name: Render and audio smoke test (needs an OpenGL context; informational)
+        continue-on-error: true
+        run: |
+          mkdir -p frames
+          pkg/slrr race-play --root . --track "Drag Track" --seconds 3 --render --audio --out frames --capture-every 30 --size 640x480 --wav frames/run.wav
+          ls -la frames | head -20
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: render-frames-${{ matrix.rid }}
+          path: frames
+          if-no-files-found: ignore
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: slrr-packages
+          path: dist
+      - name: Create pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="mac-preview-${{ github.run_number }}"
+          ls -la dist
+          gh release create "$TAG" dist/*.zip --repo "${{ github.repository }}" --target "${{ github.sha }}" --prerelease \
+            --title "macOS preview $TAG" \
+            --notes "Self-contained macOS preview of the C# rewrite built from ${{ github.sha }}. Apple Silicon: slrr-osx-arm64.zip, Intel: slrr-osx-x64.zip. Needs the game data from a clone of this repository, see README-MAC.txt inside the zip. Unsigned: run xattr -dr com.apple.quarantine on the unzipped folder. The Smoke jobs of the workflow run this exact package on real macOS runners; check them before relying on it."
