@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Game.Audio", "Slrr.Game.Audio.csproj", "{5074A158-945A-4048-9EBC-0CA6E108AA96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slrr.Game.Audio.Tests", "..\..\tests\Slrr.Game.Audio.Tests\Slrr.Game.Audio.Tests.csproj", "{76AE8B6F-E8D9-4400-99CE-03523CCBBFD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5074A158-945A-4048-9EBC-0CA6E108AA96}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{5074A158-945A-4048-9EBC-0CA6E108AA96}.Debug|Any CPU.Build.0 = Debug|x64
+		{5074A158-945A-4048-9EBC-0CA6E108AA96}.Release|Any CPU.ActiveCfg = Release|x64
+		{5074A158-945A-4048-9EBC-0CA6E108AA96}.Release|Any CPU.Build.0 = Release|x64
+		{76AE8B6F-E8D9-4400-99CE-03523CCBBFD1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{76AE8B6F-E8D9-4400-99CE-03523CCBBFD1}.Debug|Any CPU.Build.0 = Debug|x64
+		{76AE8B6F-E8D9-4400-99CE-03523CCBBFD1}.Release|Any CPU.ActiveCfg = Release|x64
+		{76AE8B6F-E8D9-4400-99CE-03523CCBBFD1}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal
