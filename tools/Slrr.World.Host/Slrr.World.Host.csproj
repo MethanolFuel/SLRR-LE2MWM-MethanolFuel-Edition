@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Slrr.Cli</RootNamespace>
+    <AssemblyName>slrr-world</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Slrr.Cli\CmdWorld.cs" Link="CmdWorld.cs" />
+    <ProjectReference Include="..\..\src\Slrr.World\Slrr.World.csproj" />
+  </ItemGroup>
+</Project>
