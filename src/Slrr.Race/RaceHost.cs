@@ -56,6 +56,18 @@ public sealed class RaceHostOptions
     /// last). Added for the career area (Slrr.Career: <c>GameLogic.kismajomCheck</c>).
     /// </summary>
     public IReadOnlyList<Func<GameHost, INativeModule>> ExtraModuleFactories { get; init; } = [];
+
+    /// <summary>Persistent save directory (careers, controls); null = a temporary directory deleted on dispose (GameHost default).</summary>
+    public string? SaveRoot { get; init; }
+
+    /// <summary>Device output of the mixer (e.g. an OpenAL stream); null = <see cref="WavPath"/> or a NullSink. Disposed with the host.</summary>
+    public Slrr.Audio.IAudioSink? AudioOutput { get; init; }
+
+    /// <summary>GL context of an application window to draw into; null = the renderer creates its own hidden offscreen context.</summary>
+    public Slrr.Render.Gl.GlHost? RenderHost { get; init; }
+
+    /// <summary><c>glFinish</c> after every draw (frame stats include GPU time); an interactive window turns it off.</summary>
+    public bool RenderFinishEachFrame { get; init; } = true;
 }
 
 /// <summary>
@@ -129,7 +141,8 @@ public sealed class RaceHost : IDisposable
                 CaptureEvery = options.CaptureEvery,
                 DrawOnlyOnCapture = options.DrawOnlyOnCapture,
                 SettleCarsOnGround = false, // physics puts the cars on the ground
-            })
+                FinishEachFrame = options.RenderFinishEachFrame,
+            }, options.RenderHost)
             {
                 Telemetry = new PhysicsRenderTelemetry(physics),
             };
@@ -140,7 +153,7 @@ public sealed class RaceHost : IDisposable
         {
             var cat = SoundCatalog.Scan(new GameFileSystem(root));
             var clips = new CatalogClipProvider(cat);
-            Slrr.Audio.IAudioSink output = options.WavPath is { } wav ? new WavFileSink(options.SampleRate, wav) : new NullSink(options.SampleRate);
+            Slrr.Audio.IAudioSink output = options.AudioOutput ?? (options.WavPath is { } wav ? new WavFileSink(options.SampleRate, wav) : new NullSink(options.SampleRate));
             audio = new RaceAudioSink(new GameAudioSink(new AudioMixer(options.SampleRate), clips, output, VehicleAudioAssets.FromCatalog(cat, clips)), physics);
         }
 
@@ -167,6 +180,7 @@ public sealed class RaceHost : IDisposable
         var host = new GameHost(new GameHostOptions
         {
             Root = root,
+            SaveRoot = options.SaveRoot,
             FrameTime = options.FrameTime,
             ScriptLog = options.ScriptLog,
             Physics = commands,

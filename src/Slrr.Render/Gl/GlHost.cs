@@ -12,16 +12,29 @@ namespace Slrr.Render.Gl;
 public sealed class GlHost : IDisposable
 {
     private readonly IWindow _window;
+    private readonly bool _ownsWindow;
 
-    private GlHost(IWindow window, GL gl)
+    private GlHost(IWindow window, GL gl, bool ownsWindow = true)
     {
         _window = window;
         Gl = gl;
+        _ownsWindow = ownsWindow;
     }
 
     public GL Gl { get; }
 
     public string Version => Gl.GetStringS(StringName.Version) + " / " + Gl.GetStringS(StringName.Renderer);
+
+    /// <summary>
+    /// Wraps the current context of an application window (e.g. the interactive <c>slrr-app</c>) so the renderers draw into it. The window stays
+    /// owned by the caller (<see cref="Dispose"/> does not close it); GL calls must stay on the thread that made the context current.
+    /// </summary>
+    public static GlHost FromWindow(IWindow window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        window.MakeCurrent();
+        return new GlHost(window, GL.GetApi(window), ownsWindow: false);
+    }
 
     public static GlHost? TryCreate(out string? error)
     {
@@ -52,6 +65,9 @@ public sealed class GlHost : IDisposable
 
     public void Dispose()
     {
-        _window.Dispose();
+        if (_ownsWindow)
+        {
+            _window.Dispose();
+        }
     }
 }

@@ -125,6 +125,12 @@ public sealed unsafe class SceneRenderer : IDisposable
 
     public bool TwoSidedLighting { get; set; } = true;
 
+    /// <summary>
+    /// <c>glFinish</c> at the end of <see cref="Draw"/> so <see cref="FrameStats.FrameMs"/> includes the GPU time (offscreen measurements).
+    /// An interactive window turns it off: the driver then overlaps CPU and GPU work and the swap paces the frame.
+    /// </summary>
+    public bool FinishEachFrame { get; set; } = true;
+
     public long TextureBudget { get; set; } = DefaultTextureBudget;
 
     public int TextureCount => _textures.Count;
@@ -243,7 +249,11 @@ public sealed unsafe class SceneRenderer : IDisposable
         }
 
         stats.CpuMs = sw.Elapsed.TotalMilliseconds;
-        _gl.Finish();
+        if (FinishEachFrame)
+        {
+            _gl.Finish();
+        }
+
         stats.FrameMs = sw.Elapsed.TotalMilliseconds;
         return stats;
     }
@@ -467,7 +477,14 @@ public sealed unsafe class SceneRenderer : IDisposable
         _mesh.Set("uBaseXf", m.Base?.ScaleOffset ?? new Vector4(1, 1, 0, 0));
         _mesh.Set("uBaseAttr", m.Base?.Attribute ?? 0);
         _mesh.Set("uHasDecal", m.Decal is null ? 0 : 1);
-        if (m.Decal is { } d)
+        if (m.Decal is null)
+        {
+            // Every sampler of the program gets a complete texture even when its branch is not taken: Apple's GL driver otherwise reports
+            // "unit 1 GLD_TEXTURE_INDEX_2D is unloadable" and may fall back to slower validation (macOS, UNTESTED here).
+            _gl.ActiveTexture(TextureUnit.Texture1);
+            _gl.BindTexture(TextureTarget.Texture2D, _textures.White);
+        }
+        else if (m.Decal is { } d)
         {
             _gl.ActiveTexture(TextureUnit.Texture1);
             var decalPath = d.TexturePath;
@@ -487,6 +504,11 @@ public sealed unsafe class SceneRenderer : IDisposable
             _gl.ActiveTexture(TextureUnit.Texture2);
             _gl.BindTexture(TextureTarget.Texture2D, m.EnvTexturePath is null ? _envTexture : _textures.Get(m.EnvTexturePath));
             _mesh.Set("uEnvStrength", m.EnvStrength);
+        }
+        else
+        {
+            _gl.ActiveTexture(TextureUnit.Texture2);
+            _gl.BindTexture(TextureTarget.Texture2D, _textures.White);
         }
 
         _mesh.Set("uDiffuse", m.Diffuse);
