@@ -35,6 +35,11 @@ public static class Commands
           render <car|map|ui> ...              offscreen renders to PNG (software GL is fine)
           drive <car> [--scenario ...]         vehicle physics scenarios (0-100, top speed, braking, skidpad)
           play [script | --smoke]              headless game host driven by scripted input
+          maps [...]                           load every shipped map through the real track scripts
+          carsim [...]                         drive a car through the game physics adapter on a map
+          race [...]                           headless race scripts with the engine command verbs
+          gameaudio <drive|formula>            in-game audio: scripted drive rendered to WAV, engine-sound formula
+          game-render <demo|play|cull|stream>  in-game renderer: scripted sequences to PNGs
           run-class <class> ...                run a shipped script class in the VM (--verify, --survey, --natives)
         """;
 
@@ -68,6 +73,11 @@ public static class Commands
                 "render" => CmdRender.Run(args[1..], o, e),
                 "drive" => CmdDrive.Run(args[1..], o, e),
                 "play" => CmdPlay.Run(args[1..], o, e),
+                "maps" => CmdMaps.Run(args[1..], o, e),
+                "carsim" => CmdCarSim.Run(args[1..], o, e),
+                "race" => CmdRace.Run(args[1..], o, e),
+                "gameaudio" => CmdGameAudio.Run(args[1..], o, e),
+                "game-render" => CmdGameRender.Run(args[1..], o, e),
                 "boot" => CmdBoot.Run(args[1..], o, e),
                 "engine-boot" => CmdEngine.Run(args[1..], o, e),
                 "parts" => CmdParts.Run(args[1..], o, e),
