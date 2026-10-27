@@ -228,9 +228,12 @@ public sealed class Drivetrain
             }
             else if (time - _lastShift >= MinShiftInterval)
             {
-                // Decisions on the rpm the driven wheels imply (not the free-revving engine during a shift or wheelspin).
+                // Decisions on the rpm the driven wheels imply (not the free-revving engine during a shift). Upshifts also
+                // need the rpm the car's ground speed implies: a spinning wheel (open differential, one wheel unloaded)
+                // must not walk the box up to top gear at a standstill (Caynon start, MEASURED with this model).
                 var wheelRpm = WheelRpm(car, Gear);
-                if (wheelRpm > limit * 0.95 && rpm > limit * 0.9 && Gear < TopGear && spec.Drivetrain.Ratios[Gear + 1] > 0)
+                var groundRpm = GroundRpm(car, Gear);
+                if (wheelRpm > limit * 0.95 && groundRpm > limit * UpshiftGroundFraction && rpm > limit * 0.9 && Gear < TopGear && spec.Drivetrain.Ratios[Gear + 1] > 0)
                 {
                     Shift(Gear + 1, time);
                 }
@@ -278,6 +281,30 @@ public sealed class Drivetrain
         into.HandBrake = Math.Clamp(c.Handbrake, 0, 1);
         into.Gear = reverseRequest ? -1 : Gear;
         into.Nitro = c.Nitro;
+    }
+
+    /// <summary>An upshift needs the ground-speed rpm above this fraction of RPM_limit (GUESSED; wheelspin guard).</summary>
+    public double UpshiftGroundFraction { get; set; } = 0.8;
+
+    /// <summary>Engine rpm the car's forward ground speed implies in <paramref name="gear"/> (driven wheels' mean radius).</summary>
+    public double GroundRpm(Vehicle car, int gear)
+    {
+        var dt = Spec.Drivetrain;
+        var index = gear < 0 ? 7 : gear;
+        if (index <= 0 || index >= dt.Ratios.Length)
+        {
+            return 0;
+        }
+
+        double r = 0, weight = 0;
+        foreach (var w in Spec.Wheels)
+        {
+            r += w.Drive * w.Radius;
+            weight += w.Drive;
+        }
+
+        r = weight > 0 ? r / weight : 0.3;
+        return Math.Abs(car.ForwardSpeed / Math.Max(r, 0.05) * dt.Ratios[index] * dt.FinalDrive) * 60 / (2 * Math.PI);
     }
 
     /// <summary>Minimum time between automatic shifts [s] (GUESSED).</summary>

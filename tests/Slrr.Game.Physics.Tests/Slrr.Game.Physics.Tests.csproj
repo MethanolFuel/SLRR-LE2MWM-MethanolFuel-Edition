@@ -3,7 +3,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <!-- tools/Slrr.Cli/CmdCarSim.cs is wrapped in #if SLRR_GAME_PHYSICS so Slrr.Cli keeps building until it references Slrr.Game.Physics. -->
-    <DefineConstants>$(DefineConstants);SLRR_GAME_PHYSICS</DefineConstants>
+    <DefineConstants>$(DefineConstants);SLRR_GAME_PHYSICS;SLRR_PHYSICS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
@@ -19,5 +19,6 @@
   <ItemGroup>
     <!-- The `carsim` CLI command lives in tools/Slrr.Cli (the lead wires it into Commands.cs); compiled here so it is built and tested in isolation. -->
     <Compile Include="..\..\tools\Slrr.Cli\CmdCarSim.cs" Link="Cli\CmdCarSim.cs" />
+    <Compile Include="..\..\tools\Slrr.Cli\CmdPhysCheck.cs" Link="Cli\CmdPhysCheck.cs" />
   </ItemGroup>
 </Project>

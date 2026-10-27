@@ -47,7 +47,7 @@ public sealed class GamePhysicsOptions
 /// <c>Chassis.getIndexedData</c> and <c>Vehicle.getSpeedSquare</c> (<see cref="PhysicsNatives"/>) see the simulation.
 /// Labels in docs/race/game-physics.md.
 /// </summary>
-public sealed class GamePhysicsWorld : IPhysicsWorld, ICarTelemetrySource
+public sealed class GamePhysicsWorld : IPhysicsWorld, ICarTelemetrySource, IImpactSource
 {
     private static readonly char[] Separators = [' ', '\t'];
 
@@ -81,6 +81,13 @@ public sealed class GamePhysicsWorld : IPhysicsWorld, ICarTelemetrySource
     public double Alpha => Scene.Alpha;
 
     public IReadOnlyList<ImpactEvent> Impacts => Scene.Impacts;
+
+    /// <summary>Every impact of the scene (forwarded from <see cref="PhysicsScene.Impact"/>).</summary>
+    public event Action<ImpactEvent>? Impact
+    {
+        add => Scene.Impact += value;
+        remove => Scene.Impact -= value;
+    }
 
     /// <summary>Commands seen (target id, text, consumed) - transcript for tests/diagnostics.</summary>
     public List<(int Target, string Text, bool Consumed)> CommandLog { get; } = [];
@@ -190,6 +197,18 @@ public sealed class GamePhysicsWorld : IPhysicsWorld, ICarTelemetrySource
                     f2.Drivetrain.SteerHelp = Math.Clamp(F(1), 0f, 4f);
                 }
 
+                break;
+            case "difflock":
+                // MEASURED (0x4597ea): "difflock f" stores f, or 0.1 when f <= 0 (the stock Chassis sends 0.0).
+                if (car is FullCar fd)
+                {
+                    var lockValue = F(1);
+                    fd.Spec.Drivetrain.DiffLock = lockValue > 0 ? lockValue : 0.1;
+                }
+
+                break;
+            case "damage_multiplier":
+                car.DamageMultiplier = Math.Max(0, F(1)); // GUESSED role: scales the damage model's increments
                 break;
             case "sethorn":
                 car.Controls.Horn = F(1) != 0;

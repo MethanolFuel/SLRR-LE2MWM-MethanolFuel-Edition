@@ -18,6 +18,11 @@ public sealed class SpecOptions
     /// F_WheelFriction_XMult 1, MEASURED file values); where the GI cave applies them is not traced. Null = Redline (none).</summary>
     public EngineSettings? Settings { get; set; }
 
+    /// <summary>Centre of mass from the chassis bodies plus every installed part's bodies at their slot positions
+    /// (GUESSED, off by default: the slot frames do not place the parts yet; on the SunStrip the engine block lands at
+    /// z = -0.05 and the rims at the chassis origin, so the slot semantics are not understood).</summary>
+    public bool PartsInCenterOfMass { get; set; }
+
     /// <summary>Body height used for the inertia box and frontal area when the cfg gives no usable bounds (GUESSED).</summary>
     public double BodyHeight { get; set; } = 1.3;
 }
@@ -97,9 +102,22 @@ public static class SpecBuilder
             }
         }
 
+        if (cs.CenterOfMassOverride is null && options.PartsInCenterOfMass
+            && PartsCenterOfMass(chassis, out var withParts, out var placed, spec.Wheels.Select(w => w.Position).ToList()))
+        {
+            spec.Notes.Add(FormattableString.Invariant(
+                $"centre of mass {withParts} from the chassis bodies and {placed} placed part bodies (chassis bodies alone: {spec.CenterOfMass}; GUESSED placement through the slot frames)"));
+            spec.CenterOfMass = withParts;
+        }
+
         foreach (var ((w1, w2), (force, damping)) in cs.Rollbars.OrderBy(r => r.Key.Wheel1).ThenBy(r => r.Key.Wheel2))
         {
             spec.Rollbars.Add(new RollbarSpec(w1, w2, force, damping));
+        }
+
+        if (def?.Source is { } cfgSource)
+        {
+            spec.Body.AddRange(ChassisShape.Read(cfgSource, spec.Notes));
         }
 
         // Body box: wheel extents (GUESSED proportions) for inertia and frontal area.
@@ -175,6 +193,97 @@ public static class SpecBuilder
         }
 
         return spec;
+    }
+
+    /// <summary>
+    /// Every part's frame in the chassis frame: a child's mount slot is put onto the parent's slot it links to
+    /// (child = parentFrame * parentSlot * inverse(childMountSlot)), slot transforms = Ypr rotation then position
+    /// (GUESSED convention; the same <c>CreateFromYawPitchRoll</c> the map objects use, docs/phase4/world.md). Chassis
+    /// slots 101..104 (rims), 111..114 (brakes), 121..124 (suspension), 301..304 (shocks) and 311..314 (springs) hold
+    /// positions near zero (MEASURED on the SunStrip: e.g. slot 101 at (-0.12, 0, 0), slot 111 at (-0.113, 0, 0)), so they
+    /// are taken as wheel-local and rooted at wheel (id % 10 - 1)'s cfg centre (GUESSED, <paramref name="wheelCenters"/>).
+    /// </summary>
+    public static Dictionary<PartState, System.Numerics.Matrix4x4> PartFrames(PartState chassis, IReadOnlyList<Vec3>? wheelCenters = null)
+    {
+        var frames = new Dictionary<PartState, System.Numerics.Matrix4x4>(ReferenceEqualityComparer.Instance) { [chassis] = System.Numerics.Matrix4x4.Identity };
+        var queue = new Queue<PartState>();
+        queue.Enqueue(chassis);
+        while (queue.Count > 0)
+        {
+            var parent = queue.Dequeue();
+            var pf = frames[parent];
+            foreach (var (slot, child) in parent.Children)
+            {
+                if (frames.ContainsKey(child))
+                {
+                    continue;
+                }
+
+                var mount = child.MountSlot;
+                var childSlot = mount is null ? System.Numerics.Matrix4x4.Identity : SlotMatrix(mount.Position, mount.Orientation);
+                System.Numerics.Matrix4x4.Invert(childSlot, out var inv);
+                var parentFrame = pf;
+                if (parent == chassis && wheelCenters is not null && WheelOfSlot(slot.Id) is { } wi && wi < wheelCenters.Count)
+                {
+                    var c = wheelCenters[wi];
+                    parentFrame = System.Numerics.Matrix4x4.CreateTranslation((float)c.X, (float)c.Y, (float)c.Z) * pf;
+                }
+
+                frames[child] = inv * SlotMatrix(slot.Position, slot.Orientation) * parentFrame;
+                queue.Enqueue(child);
+            }
+        }
+
+        return frames;
+    }
+
+    /// <summary>Wheel index of a wheel-local chassis slot id (101..104, 111..114, 121..124, 301..304, 311..314), else null.</summary>
+    public static int? WheelOfSlot(int id) =>
+        id is >= 101 and <= 104 or >= 111 and <= 114 or >= 121 and <= 124 or >= 301 and <= 304 or >= 311 and <= 314 ? id % 10 - 1 : null;
+
+    private static System.Numerics.Matrix4x4 SlotMatrix(System.Numerics.Vector3 pos, Ypr o) =>
+        System.Numerics.Matrix4x4.CreateFromYawPitchRoll(o.Y, o.P, o.R) * System.Numerics.Matrix4x4.CreateTranslation(pos);
+
+    /// <summary>Mass-weighted centre of the chassis cfg bodies and every placed part's cfg bodies (chassis frame).</summary>
+    public static bool PartsCenterOfMass(PartState chassis, out Vec3 center, out int placedBodies, IReadOnlyList<Vec3>? wheelCenters = null)
+    {
+        center = default;
+        placedBodies = 0;
+        var frames = PartFrames(chassis, wheelCenters);
+        double m = 0, x = 0, y = 0, z = 0;
+        foreach (var (part, frame) in frames)
+        {
+            foreach (var b in part.Definition?.Bodies ?? [])
+            {
+                if (!(b.Mass > 0))
+                {
+                    continue;
+                }
+
+                var p = System.Numerics.Vector3.Transform(b.Position, frame);
+                if (!float.IsFinite(p.X) || !float.IsFinite(p.Y) || !float.IsFinite(p.Z))
+                {
+                    continue;
+                }
+
+                m += b.Mass;
+                x += b.Mass * p.X;
+                y += b.Mass * p.Y;
+                z += b.Mass * p.Z;
+                if (part != chassis)
+                {
+                    placedBodies++;
+                }
+            }
+        }
+
+        if (m <= 0 || placedBodies == 0)
+        {
+            return false;
+        }
+
+        center = new Vec3(x / m, y / m, z / m);
+        return true;
     }
 
     /// <summary>The 17 tyre coefficients as the exe holds them (named setters share the array; see <see cref="TyreParams"/>).</summary>

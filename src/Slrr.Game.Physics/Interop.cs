@@ -44,29 +44,44 @@ public static class Conv
 }
 
 /// <summary>
-/// How a map surface (<see cref="SurfaceInfo"/>) becomes the physics contact's friction / rolling resistance.
-/// MEASURED role (docs/phase4/physics.md): the exe multiplies the tyre peak friction by the surface value at +0x50
-/// and adds +0x54 to the tyre rolling resistance. GUESSED: that +0x50/+0x54 are the <c>.scm</c> <c>friction</c> /
-/// <c>rollres</c> keys, the neutral defaults, and the rolling resistance scale (the .scm uses 1.0 neutral, 2.0..3.0 on
-/// sand/grass, while tyre coefficients are ~0.01: a surface adds <c>(rollres - 1) * RollScale</c>).
+/// How a map surface (<see cref="SurfaceInfo"/>) becomes the physics contact's friction / rolling resistance /
+/// collision coefficient. MEASURED (exe .scm handlers 0x4627f0..0x462c5e, docs/phase4/physics.md): every material starts
+/// with friction = ground_friction, rollres = 0.001, collcoeff = 0.2; a <c>friction f</c> line stores f * ground_friction,
+/// <c>rollres r</c> and <c>collcoeff c</c> store the raw values. Slrr.World fills absent keys with its own neutral 1.0
+/// (SurfaceInfo.Default*), so a value equal to that default is read as "absent" (GUESSED; no shipped material writes
+/// rollres 1.0 or collcoeff 1.0, MEASURED on the five text .scm files).
 /// </summary>
 public sealed class SurfaceMapping
 {
-    public double RollScale { get; init; } = 0.01;
+    /// <summary>Config.ground_friction (script default 1.0, MEASURED).</summary>
+    public double GroundFriction { get; init; } = SurfaceDefaults.GroundFriction;
 
-    /// <summary>Friction of placed-object shapes and unknown indices (GUESSED 1.0).</summary>
-    public double DefaultFriction { get; init; } = 1.0;
+    /// <summary>Friction of placed-object shapes and unknown indices (= the exe's material default, ground_friction).</summary>
+    public double DefaultFriction { get; init; } = SurfaceDefaults.GroundFriction;
 
-    public (double Friction, double RollingResistance) Map(SurfaceTable? table, int surface)
+    public GroundHit Apply(GroundHit hit, SurfaceTable? table, int surface)
+    {
+        var (f, rr, cc) = Map(table, surface);
+        return hit with { Friction = f, RollingResistance = rr, CollisionCoefficient = cc, Surface = surface };
+    }
+
+    public (double Friction, double RollingResistance, double CollisionCoefficient) Map(SurfaceTable? table, int surface)
     {
         if (table is null || surface < 0 || surface >= table.Count)
         {
-            return (DefaultFriction, 0);
+            return (DefaultFriction, SurfaceDefaults.RollingResistance, SurfaceDefaults.CollisionCoefficient);
         }
 
         var s = table.Get(surface);
-        var rr = s.HasExplicitProperties ? Math.Max(0, s.RollResistance - 1.0) * RollScale : 0;
-        return (s.Friction > 0 ? s.Friction : DefaultFriction, rr);
+        if (!s.HasExplicitProperties)
+        {
+            return (GroundFriction, SurfaceDefaults.RollingResistance, SurfaceDefaults.CollisionCoefficient);
+        }
+
+        var friction = s.Friction > 0 ? s.Friction * GroundFriction : GroundFriction;
+        var rr = s.RollResistance == SurfaceInfo.DefaultRollResistance ? SurfaceDefaults.RollingResistance : Math.Max(0, s.RollResistance);
+        var cc = s.CollisionCoeff == SurfaceInfo.DefaultCollisionCoeff ? SurfaceDefaults.CollisionCoefficient : s.CollisionCoeff;
+        return (friction, rr, cc);
     }
 }
 
@@ -163,8 +178,8 @@ public sealed class WorldGround : PhysGround
     private GroundHit Make(SurfaceHit h, double t, Vec3? point = null)
     {
         LastSurface = h.Surface;
-        var (f, rr) = _surfaces.Map(_world.Surfaces, h.Surface);
+        var (f, rr, cc) = _surfaces.Map(_world.Surfaces, h.Surface);
         // Ground-grid triangles face up (Y > 0.05); BVH hits are oriented toward the ray origin by the world.
-        return new GroundHit(point ?? h.Position.ToVec3(), h.Normal.ToVec3(), t, f, rr);
+        return new GroundHit(point ?? h.Position.ToVec3(), h.Normal.ToVec3(), t, f, rr, cc, h.Surface);
     }
 }

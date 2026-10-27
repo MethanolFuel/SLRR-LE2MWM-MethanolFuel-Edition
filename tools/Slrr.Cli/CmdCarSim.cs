@@ -75,7 +75,7 @@ public static class CmdCarSim
 
         foreach (var i in r.Impacts.Take(10))
         {
-            o.WriteLine(string.Create(inv, $"impact t={i.Time:F2} car {i.CarId} dv {i.DeltaV:F2} m/s normal {i.Normal} other {i.Other} source 0x{i.Source:X8}"));
+            o.WriteLine(string.Create(inv, $"impact t={i.Time:F2} car {i.CarId} dv {i.DeltaV:F2} m/s closing {i.RelativeSpeed:F2} m/s impulse {i.Impulse:F0} N s energy {i.Energy:F0} J damage +{i.Damage:F3} normal {i.Normal} other {i.Other} source 0x{i.Source:X8}"));
         }
 
         if (r.Impacts.Count > 10)

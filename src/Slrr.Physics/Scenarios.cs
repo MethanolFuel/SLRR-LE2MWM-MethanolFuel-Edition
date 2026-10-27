@@ -71,14 +71,22 @@ public static class Scenarios
         var start = car.Position;
         var t0 = car.Time;
         var input = new DriverInput { Throttle = 0, Brake = 1, Clutch = 0, Gear = driver.Gear };
-        while (car.ForwardSpeed > 0.05 && car.Time - t0 < 30)
+        // Stop on the speed magnitude, not the forward component: a car that spins under braking (asymmetric brakes)
+        // reaches zero forward speed while still sliding sideways.
+        var heading0 = Math.Atan2(-car.Forward.X, -car.Forward.Z);
+        var maxYaw = 0.0;
+        while (Horizontal(car.Velocity) > 0.05 && car.Time - t0 < 30)
         {
             car.Step(input);
+            var dh = Math.Atan2(-car.Forward.X, -car.Forward.Z) - heading0;
+            maxYaw = Math.Max(maxYaw, Math.Abs(Math.Atan2(Math.Sin(dh), Math.Cos(dh))));
         }
 
         var d = Horizontal(car.Position - start);
         var locked = car.Wheels.Count(w => w.Spin == 0);
-        return new ScenarioResult("100-0 km/h", d, "m", car.ForwardSpeed <= 0.05, Fmt($"{car.Time - t0:F2} s, mean {100 * Kmh / (car.Time - t0) / spec.Gravity:F2} g, {locked} wheels locked at the end"));
+        var spin = maxYaw > 30 * Math.PI / 180;
+        return new ScenarioResult("100-0 km/h", d, "m", Horizontal(car.Velocity) <= 0.05 && !spin,
+            Fmt($"{car.Time - t0:F2} s, mean {100 * Kmh / (car.Time - t0) / spec.Gravity:F2} g, {locked} wheels locked at the end, heading change {maxYaw * 180 / Math.PI:F0} deg{(spin ? " (SPUN)" : "")}"));
     }
 
     /// <summary>
@@ -164,7 +172,7 @@ public static class Scenarios
     private static string Fmt(FormattableString s) => FormattableString.Invariant(s);
 
     /// <summary>Upshifts at 97 % of RPM_limit with the clutch open for the shift time (GUESSED driver).</summary>
-    private sealed class AutoShifter(VehicleSpec spec)
+    public sealed class AutoShifter(VehicleSpec spec)
     {
         private double _shiftEnd = -1;
 

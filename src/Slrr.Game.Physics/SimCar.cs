@@ -93,7 +93,28 @@ public abstract class SimCar
 
     public abstract Vec3 AngularVelocity { get; set; }
 
+    /// <summary>Bounding box of the whole collision shape (car-vs-car spheres, broad phase).</summary>
     public abstract BodyBox Box { get; }
+
+    /// <summary>The boxes that collide with the map (default: just <see cref="Box"/>).</summary>
+    public virtual IReadOnlyList<BodyBox> Boxes => [Box];
+
+    /// <summary>Accumulated damage d (0 intact, 1 wrecked; <see cref="DamageModel"/>).</summary>
+    public double Damage { get; protected set; }
+
+    /// <summary><c>damage_multiplier f</c> verb (GUESSED role: scales the damage the model adds).</summary>
+    public double DamageMultiplier { get; set; } = 1.0;
+
+    /// <summary>Body up-axis Y below which the car counts as overturned (on its side or roof; GUESSED 0.3 = 72 degrees).</summary>
+    public const double OverturnedUpY = 0.3;
+
+    public bool Overturned => Orientation.Rotate(Vec3.UnitY).Y < OverturnedUpY;
+
+    /// <summary>Seconds the car has been overturned and nearly at rest (|v| &lt; 1 m/s); 0 otherwise.</summary>
+    public double OverturnedTime { get; internal set; }
+
+    /// <summary>Adds impact damage at a world point (base: the whole car).</summary>
+    public virtual void AddDamage(Vec3 point, double amount, double wheelReach) => Damage = Math.Min(1.0, Damage + amount);
 
     public abstract double Time { get; }
 
@@ -134,9 +155,11 @@ public abstract class SimCar
     }
 
     /// <summary>The 8 world corners of <see cref="Box"/>.</summary>
-    public void BoxCorners(Span<Vec3> into)
+    public void BoxCorners(Span<Vec3> into) => BoxCorners(Box, into);
+
+    /// <summary>The 8 world corners of a box of this car's chassis frame.</summary>
+    public void BoxCorners(BodyBox b, Span<Vec3> into)
     {
-        var b = Box;
         var o = Origin;
         var q = Orientation;
         var k = 0;
@@ -221,6 +244,8 @@ public abstract class SimCar
             GVertical = (float)f.Y,
             Odometer = Odometer,
             ImpactTotal = ImpactTotal,
+            Damage = Damage,
+            Overturned = Overturned,
             Wheels = [],
         };
         Telemetry = fill(t);
@@ -240,6 +265,7 @@ public sealed class FullCar : SimCar
     private readonly DriverInput _input = new();
     private readonly double[] _rotation;
     private BodyBox _box;
+    private BodyBox[] _boxes;
 
     public FullCar(int id, string name, VehicleSpec spec, PhysGround ground, int substeps = 8)
         : base(id, name)
@@ -247,7 +273,66 @@ public sealed class FullCar : SimCar
         Vehicle = new Vehicle(spec, ground, substeps);
         Drivetrain = new Drivetrain(spec);
         _rotation = new double[spec.Wheels.Count];
-        _box = DefaultBox(spec);
+        _boxes = spec.Body.Count > 0 ? spec.Body.Select(b => new BodyBox(b.Center, b.HalfExtents)).ToArray() : [DefaultBox(spec)];
+        _box = Union(_boxes);
+    }
+
+    public override IReadOnlyList<BodyBox> Boxes => _boxes;
+
+    /// <summary>Engine damage follows the car's damage; the corner nearest the impact in the car's x/z plane (within the
+    /// reach) takes twice the
+    /// amount on its tyre friction and brake (GUESSED split; the scaling itself is MEASURED, see <see cref="DamageModel"/>).</summary>
+    public override void AddDamage(Vec3 point, double amount, double wheelReach)
+    {
+        base.AddDamage(point, amount, wheelReach);
+        Vehicle.EngineDamage = Damage;
+        var spec = Spec;
+        var best = -1;
+        var bestD = wheelReach;
+        var local = Vehicle.Orientation.InverseRotate(point - Vehicle.Position) + spec.CenterOfMass;
+        for (var i = 0; i < spec.Wheels.Count; i++)
+        {
+            // distance in the car's horizontal plane (x, z): a bumper hit above the wheel line still reaches the corner
+            var wp = spec.Wheels[i].Position;
+            var d = Math.Sqrt((wp.X - local.X) * (wp.X - local.X) + (wp.Z - local.Z) * (wp.Z - local.Z));
+            if (d < bestD)
+            {
+                bestD = d;
+                best = i;
+            }
+        }
+
+        if (best >= 0)
+        {
+            var w = Vehicle.Wheels[best];
+            w.Damage = Math.Min(1.0, w.Damage + 2 * amount);
+        }
+    }
+
+    /// <summary>Clears damage (repairs; scripts' repair paths are not wired).</summary>
+    public void Repair()
+    {
+        Damage = 0;
+        Vehicle.EngineDamage = 0;
+        foreach (var w in Vehicle.Wheels)
+        {
+            w.Damage = 0;
+        }
+    }
+
+    private static BodyBox Union(IReadOnlyList<BodyBox> boxes)
+    {
+        var min = new Vec3(double.MaxValue, double.MaxValue, double.MaxValue);
+        var max = -min;
+        foreach (var b in boxes)
+        {
+            var lo = b.Center - b.HalfExtents;
+            var hi = b.Center + b.HalfExtents;
+            min = new Vec3(Math.Min(min.X, lo.X), Math.Min(min.Y, lo.Y), Math.Min(min.Z, lo.Z));
+            max = new Vec3(Math.Max(max.X, hi.X), Math.Max(max.Y, hi.Y), Math.Max(max.Z, hi.Z));
+        }
+
+        return new BodyBox((min + max) * 0.5, (max - min) * 0.5);
     }
 
     public Vehicle Vehicle { get; }
@@ -276,7 +361,12 @@ public sealed class FullCar : SimCar
 
     public override double Time => Vehicle.Time;
 
-    public void SetBox(BodyBox box) => _box = box;
+    /// <summary>Replaces the collision shape by one box (tests, callers with their own shape).</summary>
+    public void SetBox(BodyBox box)
+    {
+        _box = box;
+        _boxes = [box];
+    }
 
     /// <summary>
     /// GUESSED body box from the wheel layout (the exe's chassis collision comes from the car's mesh/physics bodies,
@@ -301,20 +391,30 @@ public sealed class FullCar : SimCar
     {
         var spec = Spec;
         Vehicle.Reset(origin, 0);
-        Vehicle.Orientation = orientation.Normalized();
-        var cm = spec.CenterOfMass;
-        var pos = origin + orientation.Rotate(cm);
-        if (snap && GroundBelow(origin, out var gy))
+        var placed = false;
+        if (snap && spec.Wheels.Count > 0)
         {
-            // Wheels resting on the ground at their static stance (wheel centre = cfg position, contact radius below).
-            var lift = spec.Wheels.Count == 0 ? 0.5 : spec.Wheels.Average(w => cm.Y - w.Position.Y + w.Radius);
-            pos = new Vec3(pos.X, gy + lift, pos.Z);
+            // Every wheel on the ground below (origin.Y + 2 m, GUESSED margin: a car placed slightly below a road still
+            // lands on it while a bridge far above is ignored), body tilted onto the wheels' ground plane.
+            placed = Vehicle.PlaceOnGround(origin, orientation, 2.0, align: true);
         }
 
-        Vehicle.Position = pos;
-        Vehicle.Velocity = Vec3.Zero;
-        Vehicle.AngularVelocity = Vec3.Zero;
-        Vehicle.SyncContacts();
+        if (!placed)
+        {
+            var cm = spec.CenterOfMass;
+            var pos = origin + orientation.Rotate(cm);
+            if (snap && GroundBelow(origin, out var gy))
+            {
+                var lift = spec.Wheels.Count == 0 ? 0.5 : spec.Wheels.Average(w => cm.Y - w.Position.Y + w.Radius);
+                pos = new Vec3(pos.X, gy + lift, pos.Z);
+            }
+
+            Vehicle.Orientation = orientation.Normalized();
+            Vehicle.Position = pos;
+            Vehicle.Velocity = Vec3.Zero;
+            Vehicle.AngularVelocity = Vec3.Zero;
+            Vehicle.SyncContacts();
+        }
         Drivetrain.Reset();
         Array.Clear(_rotation);
     }

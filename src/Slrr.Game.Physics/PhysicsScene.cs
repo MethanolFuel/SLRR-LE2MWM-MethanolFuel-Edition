@@ -12,7 +12,7 @@ namespace Slrr.Game.Physics;
 /// same result because cars only interact in the serial collision pass), plain double arithmetic.
 /// The 120 Hz rate is this project's choice (Slrr.Physics' step); the exe's physics rate was not measured.
 /// </summary>
-public sealed class PhysicsScene : ICarTelemetrySource
+public sealed class PhysicsScene : ICarTelemetrySource, IImpactSource
 {
     public const double StepRate = Vehicle.StepRate;
     public const double FixedStep = 1.0 / StepRate;
@@ -37,6 +37,12 @@ public sealed class PhysicsScene : ICarTelemetrySource
 
     /// <summary>Step cars on worker threads (same results; useful from ~8 full cars).</summary>
     public bool Parallel { get; set; }
+
+    /// <summary>
+    /// Rollover recovery (GUESSED, off by default): a car overturned and nearly at rest for this many seconds is put back
+    /// upright at its place and heading (what a player's reset key does; the exe's own behaviour was not traced).
+    /// </summary>
+    public double? RecoverOverturnedAfter { get; set; }
 
     /// <summary>Cars whose centre of mass drops this far below the map's lowest point are held (fell through the world).</summary>
     public double FallMargin { get; set; } = 50;
@@ -208,6 +214,25 @@ public sealed class PhysicsScene : ICarTelemetrySource
                     car.State = CarRunState.Held;
                     car.Settings["fell"] = t.ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
                 }
+            }
+        }
+
+        foreach (var car in _cars)
+        {
+            if (!car.Simulated)
+            {
+                continue;
+            }
+
+            car.OverturnedTime = car.Overturned && car.Speed < 1.0 ? car.OverturnedTime + h : 0;
+            if (RecoverOverturnedAfter is { } after && car.OverturnedTime >= after)
+            {
+                var fwd = car.Orientation.Rotate(new Vec3(0, 0, -1));
+                var yaw = Math.Atan2(-fwd.X, -fwd.Z);
+                car.Place(car.Origin + new Vec3(0, 1.0, 0), Quat.FromAxisAngle(Vec3.UnitY, yaw));
+                car.State = CarRunState.Driving;
+                car.OverturnedTime = 0;
+                car.Settings["recovered"] = t.ToString("F3", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
