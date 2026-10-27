@@ -54,6 +54,9 @@ public sealed class GameRenderOptions
     public Vector4 ClearColor { get; init; } = new(0.20f, 0.23f, 0.28f, 1f);
 
     public long TextureBudget { get; init; } = SceneRenderer.DefaultTextureBudget;
+
+    /// <summary><c>glFinish</c> after every draw so the frame stats include GPU time (default); an interactive window turns it off.</summary>
+    public bool FinishEachFrame { get; init; } = true;
 }
 
 /// <summary>One drawn frame.</summary>
@@ -78,7 +81,7 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
     private readonly GlHost _host;
     private readonly GameContent _content;
     private readonly SceneRenderer _renderer;
-    private readonly OffscreenTarget _target;
+    private OffscreenTarget _target;
     private readonly MapStreamer _streamer;
     private readonly HashSet<StaticChunk> _resident = new(ReferenceEqualityComparer.Instance);
     private IGameWorld? _world;
@@ -89,6 +92,8 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
     private int _frameCounter;
     private float _lastRenderTime;
     private float _lastTickTime;
+    private int _width;
+    private int _height;
 
     public GameRenderAdapter(GameRenderOptions options, GlHost? host = null)
     {
@@ -105,8 +110,10 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
 
         _host = host;
         _content = new GameContent(options.Root);
-        _renderer = new SceneRenderer(host.Gl, _content) { Cull = options.Cull, TextureBudget = options.TextureBudget };
-        _target = new OffscreenTarget(host.Gl, options.Width, options.Height);
+        _renderer = new SceneRenderer(host.Gl, _content) { Cull = options.Cull, TextureBudget = options.TextureBudget, FinishEachFrame = options.FinishEachFrame };
+        _width = Math.Max(options.Width, 1);
+        _height = Math.Max(options.Height, 1);
+        _target = new OffscreenTarget(host.Gl, _width, _height);
         _streamer = new MapStreamer(new RegionMapLoader(_content));
         MapSource = new HostMapSource(_content, options.MapRadius);
         Telemetry = new HostCarTelemetry();
@@ -165,6 +172,36 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
 
     /// <summary>Last 3D views built (diagnostics).</summary>
     public IReadOnlyList<string> LastViews { get; private set; } = [];
+
+    /// <summary>Size of the offscreen target in pixels (changed by <see cref="Resize"/>).</summary>
+    public int Width => _width;
+
+    public int Height => _height;
+
+    /// <summary>GL framebuffer object holding the last drawn frame (a window blits it to its own framebuffer).</summary>
+    public uint TargetFramebuffer => _target.Framebuffer;
+
+    /// <summary>Recreates the offscreen target at a new size (an interactive window that was resized); no-op when unchanged.</summary>
+    public void Resize(int width, int height)
+    {
+        width = Math.Max(width, 1);
+        height = Math.Max(height, 1);
+        if (width == _width && height == _height)
+        {
+            return;
+        }
+
+        _target.Dispose();
+        _width = width;
+        _height = height;
+        _target = new OffscreenTarget(_host.Gl, width, height);
+    }
+
+    /// <summary>
+    /// Draws the current state into the offscreen target and leaves it bound, without recording a <see cref="FrameRecord"/> (an interactive
+    /// window draws every display frame; <see cref="Frames"/> would grow without bound).
+    /// </summary>
+    public FrameStats DrawNow() => DrawFrame(_world?.Vm.Time ?? 0f);
 
     public void Attach(IGameWorld world)
     {
@@ -258,7 +295,7 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
         _lastRenderTime = time;
         var views = BuildViews(world, dt, out var overlay);
         _target.Bind();
-        var stats = _renderer.Draw(views, overlay, _options.Width, _options.Height, _options.ClearColor);
+        var stats = _renderer.Draw(views, overlay, _width, _height, _options.ClearColor);
         LastStats = stats;
         _drawn++;
         return stats;
@@ -295,7 +332,7 @@ public sealed class GameRenderAdapter : Slrr.Game.IRenderer, IDisposable
     private SceneView BuildView(IGameWorld world, ResourceTree tree, CameraBinding cam, float dt)
     {
         var view = new SceneView { Name = cam.Name, Rect = cam.Rect };
-        var aspect = cam.Rect.W * _options.Width / Math.Max(cam.Rect.H * _options.Height, 1f);
+        var aspect = cam.Rect.W * _width / Math.Max(cam.Rect.H * _height, 1f);
         view.Camera = new SceneCamera
         {
             Position = cam.Pose.Eye,

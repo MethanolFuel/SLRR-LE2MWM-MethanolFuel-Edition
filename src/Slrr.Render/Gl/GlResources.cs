@@ -185,6 +185,9 @@ public sealed unsafe class OffscreenTarget : IDisposable
 
     public int Height { get; }
 
+    /// <summary>GL name of the framebuffer object (for <c>glBlitFramebuffer</c> into a window).</summary>
+    public uint Framebuffer => _fbo;
+
     public void Bind()
     {
         _gl.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);

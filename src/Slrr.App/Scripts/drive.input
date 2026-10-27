@@ -1,0 +1,49 @@
+# builtin:drive - main menu -> new career -> used car dealer -> buy -> Choose Track -> Drag Track -> drive with the Up key.
+# Every click is a synthetic mouse move/press/release at window coordinates aimed at the gadget's box; keys go through the key map.
+until section MainMenu 30
+capture 01-mainmenu
+click "NEW CAREER"
+until screen StringRequesterDialog 5
+type "Bob"
+capture 02-name
+click "OK"
+until screen PlayerSetupDialog 5
+click "OK"
+until section Garage 30
+wait 1
+click "OK"                                  # WELCOME! hint dialog
+wait 0.5
+capture 03-garage
+click "Buy used cars or sell your car"
+until section CarMarket 10
+until text "PRESS ENTER" 20
+wait 5                                      # the loading dialog takes Enter only after the cars are built
+key Enter
+until text "Car Dealer" 10
+capture 04-dealer
+clickcmd SELECT                             # buy button (Input.AXIS_SELECT)
+until screen NoYesDialog 5
+click "YES"
+until section Garage 30
+wait 2
+capture 05-garage-car
+click "Choose Track"
+until section TrackSelect 15
+wait 1
+click "Drag Track"
+wait 0.5
+capture 06-trackselect
+on screen~ Options click "OK"
+click "TAKE IT"
+until track 90
+wait 2
+capture 07-track
+keydown Up
+wait 4
+capture 08-drive-4s
+wait 4
+capture 09-drive-8s
+expect speed > 30
+keyup Up
+print
+quit
